@@ -1,6 +1,5 @@
 package com.jax.movies.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -33,6 +32,7 @@ private val LightColorScheme = lightColorScheme(
     */
 )
 
+
 @Composable
 fun MoviesTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -55,4 +55,5 @@ fun MoviesTheme(
         typography = Typography,
         content = content
     )
+
 }
