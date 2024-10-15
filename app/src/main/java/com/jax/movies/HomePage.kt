@@ -17,6 +17,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -80,14 +81,10 @@ fun HomePage(){
 @Composable
 fun MovieItem(movie: Movie) {
     Column(modifier = Modifier) {
-        Box(
+        Image(painter = painterResource(R.drawable.zamena),
+            contentDescription = "image of cinema",
             modifier = Modifier.height(156.dp)
-                .width(111.dp).background(color = Color.Gray,
-                    shape = RoundedCornerShape(4.dp)
-                )
-        ){
-            Text(text = movie.rating.toString())
-        }
+                .width(111.dp))
         Spacer(Modifier.height(6.dp))
         Text(
             text = movie.title,
