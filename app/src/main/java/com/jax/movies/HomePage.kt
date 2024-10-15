@@ -5,12 +5,17 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -21,20 +26,51 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jax.movies.data.Movie
+import com.jax.movies.data.allMovies
 
 @Composable
 fun HomePage(){
-    Column(modifier = Modifier.fillMaxSize()) {
-        Text(text = "SkillCinema",
-            fontSize = 26.sp)
-        val premieres = listOf(
-            Movie(title = "Premiere 1", genre = "Genre 1"),
-            Movie(title = "Premiere 2", genre = "Genre 2"),
-            Movie(title = "Premiere 3", genre = "Genre 3")
-        )
+    val scrollState = rememberScrollState()
+    Column(modifier = Modifier.fillMaxSize()
+        .padding(10.dp)
+        .verticalScroll(state = scrollState),
+        verticalArrangement = Arrangement.spacedBy(24.dp)) {
+        Spacer(Modifier.height(50.dp))
+        Image(painter = painterResource(R.drawable.vector),
+            contentDescription = null)
         LazyRow(modifier = Modifier.padding(top = 8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            items(premieres){
+            items(allMovies.premieres){
+                item -> MovieItem(item)
+            }
+        }
+        LazyRow(modifier = Modifier.padding(top = 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            items(allMovies.popular){
+                item -> MovieItem(item)
+            }
+        }
+        LazyRow(modifier = Modifier.padding(top = 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            items(allMovies.militants){
+                item -> MovieItem(item)
+            }
+        }
+        LazyRow(modifier = Modifier.padding(top = 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            items(allMovies.dramaOfFrance) { item ->
+                MovieItem(item)
+            }
+        }
+        LazyRow(modifier = Modifier.padding(top = 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            items(allMovies.top){
+                item -> MovieItem(item)
+            }
+        }
+        LazyRow(modifier = Modifier.padding(top = 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            items(allMovies.show){
                 item -> MovieItem(item)
             }
         }
@@ -43,11 +79,16 @@ fun HomePage(){
 
 @Composable
 fun MovieItem(movie: Movie) {
-    Column {
+    Column(modifier = Modifier) {
         Box(
             modifier = Modifier.height(156.dp)
-                .width(111.dp).background(color = Color.Gray)
-        )
+                .width(111.dp).background(color = Color.Gray,
+                    shape = RoundedCornerShape(4.dp)
+                )
+        ){
+            Text(text = movie.rating.toString())
+        }
+        Spacer(Modifier.height(6.dp))
         Text(
             text = movie.title,
             fontSize = 14.sp
