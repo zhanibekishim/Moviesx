@@ -15,7 +15,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             MoviesTheme {
                 //HomePage()
+
                 OnBoardingScreen(onFinish = {
+
                     // Действие, когда пользователь завершает экран onboarding
                     // Например, переход к главному экрану приложения
                     // awdawd
