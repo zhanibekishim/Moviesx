@@ -18,6 +18,8 @@ class MainActivity : ComponentActivity() {
                 OnBoardingScreen(onFinish = {
                     // Действие, когда пользователь завершает экран onboarding
                     // Например, переход к главному экрану приложения
+                    // awdawd
+                    // rommmm
                 })
             }
         }
