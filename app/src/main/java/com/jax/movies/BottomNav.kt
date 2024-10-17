@@ -39,7 +39,6 @@ fun BottomNavigationBar(navController: NavController) {
                 selected = currentRoute == item.route,
                 onClick = {
                     navController.navigate(item.route) {
-                        // Убедитесь, что у вас правильная навигация
                         popUpTo(navController.graph.startDestinationId) { inclusive = true }
                         launchSingleTop = true
                     }
@@ -48,7 +47,7 @@ fun BottomNavigationBar(navController: NavController) {
                     Icon(
                         painter = painterResource(id = item.iconID),
                         contentDescription = null,
-                        tint = if (currentRoute == item.route) Blue1 else Color.Gray, // Цвет иконки
+                        tint = if (currentRoute == item.route) Blue1 else Color.Gray,
                         modifier = Modifier.size(24.dp)
                     )
                 }

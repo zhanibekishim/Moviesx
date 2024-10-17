@@ -53,9 +53,13 @@ fun OnBoardingScreen(onFinish: () -> Unit) {
             Button(
                 onClick = {
                     coroutineScope.launch {
-                        if (pagerState.currentPage < onboardingPages.size - 1)
+                        // Если текущая страница не последняя, листаем дальше
+                        if (pagerState.currentPage < onboardingPages.size - 1) {
                             pagerState.animateScrollToPage(pagerState.currentPage + 1)
-                        else onFinish()
+                        } else {
+                            // Завершаем онбординг и переходим на главный экран
+                            onFinish()
+                        }
                     }
                 },
                 colors = ButtonDefaults.buttonColors(

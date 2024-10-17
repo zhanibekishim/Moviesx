@@ -20,31 +20,36 @@ fun MainScreen() {
     val navController = rememberNavController()
 
     Scaffold(
-        bottomBar = { BottomNavigationBar(navController) } // Здесь добавляем BottomNavigationBar
+        bottomBar = { BottomNavigationBar(navController) }
     ) {
-        NavGraph(navHostController = navController)
+        BottomNavGraph(navHostController = navController)
     }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun NavGraph(navHostController: NavHostController) {
-    NavHost(navController = navHostController, startDestination = "onboarding") {
+fun RootNavGraph(navController: NavHostController) {
+    NavHost(navController = navController, startDestination = "onboarding") {
         composable("onboarding") {
             OnBoardingScreen(onFinish = {
-                // Переход к главному экрану после завершения OnBoarding
-                navHostController.navigate("home") {
-                    // Удаляем все предыдущие экраны из стека, чтобы вернуться к ним нельзя было
+                navController.navigate("main") {
                     popUpTo("onboarding") { inclusive = true }
                 }
             })
         }
+
+        composable("main") {
+            MainScreen()
+        }
+    }
+}
+
+@Composable
+fun BottomNavGraph(navHostController: NavHostController) {
+    NavHost(navController = navHostController, startDestination = "home") {
         composable("home") { HomePage() }
         composable("search") { SearchScreen() }
         composable("profile") { ProfileScreen() }
-
-
-
     }
 }
 
