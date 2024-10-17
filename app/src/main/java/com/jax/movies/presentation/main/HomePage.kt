@@ -1,45 +1,41 @@
-package com.jax.movies
+package com.jax.movies.presentation.main
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
+import com.jax.movies.R
 import com.jax.movies.data.Movie
-import com.jax.movies.data.allMovies
+import com.jax.movies.data.AllMovies
 
 
 @Composable
-fun HomePage() {
+fun HomePage(
+    paddingValues: PaddingValues,
+    onMovieClick: (id:Long,type:String) -> Unit
+) {
     val scrollState = rememberScrollState()
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 18.dp)
+            .padding(paddingValues = paddingValues)
             .verticalScroll(state = scrollState),
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
@@ -48,18 +44,60 @@ fun HomePage() {
             painter = painterResource(R.drawable.vector),
             contentDescription = null
         )
-        LazyRowItem(allMovies.premieres, "Премьера")
-        LazyRowItem(allMovies.popular, "Популярное")
-        LazyRowItem(allMovies.militants, "Боевики США")
-        LazyRowItem(allMovies.dramaOfFrance, "Драма Франции")
-        LazyRowItem(allMovies.top, "Топ-5")
-        LazyRowItem(allMovies.show, "Сериалы")
+        LazyRowItem(
+            items = AllMovies.premieres,
+            type = "Премьера",
+            onMovieClick = {
+                onMovieClick(it,"Премьера")
+            }
+        )
+        LazyRowItem(
+            items = AllMovies.popular,
+            type = "Популярное",
+            onMovieClick = {
+                onMovieClick(it,"Популярное")
+            }
+        )
+        LazyRowItem(
+            items = AllMovies.militants,
+            type = "Боевики США",
+            onMovieClick = {
+                onMovieClick(it,"Боевики США")
+            }
+        )
+        LazyRowItem(
+            items = AllMovies.dramaOfFrance,
+            type = "Драма Франции",
+            onMovieClick = {
+                onMovieClick(it,"Драма Франции")
+            }
+        )
+
+        LazyRowItem(
+            items = AllMovies.top,
+            type = "Топ-5",
+            onMovieClick = {
+                onMovieClick(it,"Топ-5")
+            }
+        )
+        LazyRowItem(
+            items = AllMovies.show,
+            type = "Сериалы",
+            onMovieClick = {
+                onMovieClick(it,"Сериалы")
+            }
+        )
     }
 }
 
 @Composable
-fun MovieItem(movie: Movie) {
-    Column {
+fun MovieItem(
+    movie: Movie,
+    onMovieClick: () -> Unit
+) {
+    Column(
+        modifier = Modifier.clickable { onMovieClick() }
+    ) {
         Image(
             painter = painterResource(R.drawable.zamena),
             contentDescription = "image of cinema",
@@ -82,7 +120,8 @@ fun MovieItem(movie: Movie) {
 @Composable
 fun LazyRowItem(
     items: List<Movie>,
-    type: String
+    type: String,
+    onMovieClick: (Long) -> Unit
 ) {
     Column(
         modifier = Modifier,
@@ -98,7 +137,12 @@ fun LazyRowItem(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(items) { item ->
-                MovieItem(item)
+                MovieItem(
+                    movie = item,
+                    onMovieClick = {
+                        onMovieClick(item.id)
+                    }
+                )
             }
         }
     }
