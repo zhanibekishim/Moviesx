@@ -36,6 +36,7 @@ fun HomePage(
         modifier = Modifier
             .fillMaxSize()
             .padding(paddingValues = paddingValues)
+            .padding(start = 16.dp)
             .verticalScroll(state = scrollState),
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
