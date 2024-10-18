@@ -1,4 +1,4 @@
-package com.jax.movies
+package com.jax.movies.presentation.main
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
