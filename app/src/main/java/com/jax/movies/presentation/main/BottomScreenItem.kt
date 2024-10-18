@@ -8,6 +8,7 @@ sealed class BottomScreenItem(
     val title: String,
     @DrawableRes val iconId: Int
 ) {
+
     data object HomeScreen : BottomScreenItem(
         iconId = R.drawable.icon_home,
         route = HOME,

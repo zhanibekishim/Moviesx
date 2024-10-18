@@ -13,6 +13,7 @@ class NavigationState(
     fun navigateTo(route: String) {
         navHostController.navigate(route) {
             popUpTo(navHostController.graph.findStartDestination().id) {
+               if(route != GRAPH.MAIN_GRAPH) inclusive =true
                 saveState = true
             }
             launchSingleTop = true

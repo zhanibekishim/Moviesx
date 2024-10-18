@@ -2,44 +2,16 @@ package com.jax.movies.navigation
 
 import android.net.Uri
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.jax.movies.presentation.main.HomePage
-import com.jax.movies.presentation.main.BottomNavigationBar
 import com.jax.movies.presentation.main.BottomScreenItem
+import com.jax.movies.presentation.main.HomePage
 import com.jax.movies.presentation.movie.MovieContent
 import com.jax.movies.presentation.profile.ProfileScreen
 import com.jax.movies.presentation.search.SearchScreen
-
-@Composable
-fun Test() {
-    val navigationState = rememberNavigationState()
-    Scaffold(
-        bottomBar = {
-            BottomNavigationBar(
-                navController = navigationState.navHostController,
-                onHomeClick = {
-                    navigationState.navigateTo(BottomScreenItem.HomeScreen.route)
-                },
-                onProfileClick = {
-                    navigationState.navigateTo(BottomScreenItem.ProfileScreen.route)
-                },
-                onSearchClick = {
-                    navigationState.navigateTo(BottomScreenItem.SearchScreen.route)
-                }
-            )
-        }
-    ) { paddingValues ->
-        MainNavGraph(
-            navigationState = navigationState,
-            paddingValues = paddingValues
-        )
-    }
-}
 
 @Composable
 fun MainNavGraph(
@@ -77,7 +49,7 @@ fun NavGraphBuilder.detailsScreen() {
             val type = backStackEntry.arguments?.getString("type")
                 ?: throw IllegalStateException("Type is missing")
 
-            MovieContent(movieId =  id.toLong(), movieType = type)
+            MovieContent(movieId = id.toLong(), movieType = type)
         }
     }
 }
