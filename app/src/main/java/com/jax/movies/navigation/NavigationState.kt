@@ -12,13 +12,18 @@ class NavigationState(
 
     fun navigateTo(route: String) {
         navHostController.navigate(route) {
-            popUpTo(navHostController.graph.findStartDestination().id) {
-                saveState = true
+            if (route == GRAPH.MAIN_GRAPH) {
+                popUpTo(GRAPH.ON_BOARDING_SCREEN) {
+                    inclusive = true // Удаляет экран онбординга из стека
+                }
+            } else {
+                popUpTo(navHostController.graph.findStartDestination().id) {
+                    saveState = true
+                }
             }
             launchSingleTop = true
             restoreState = true
         }
-
     }
 
 
