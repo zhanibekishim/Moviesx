@@ -1,28 +1,32 @@
 package com.jax.movies.presentation.main
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.jax.movies.domain.entity.Movie
 import com.jax.movies.domain.usecase.GetPremiersListUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
 class MainViewModel() : ViewModel() {
     private val getPremiersListUseCase = GetPremiersListUseCase()
     private val _state = MutableStateFlow<MoviesListScreenState>(MoviesListScreenState.Initial)
     val state: StateFlow<MoviesListScreenState> get() = _state.asStateFlow()
 
-    suspend fun fetchMovies() {
+    fun fetchMovies() {
         _state.value = MoviesListScreenState.Loading
-        getPremiersListUseCase().collect { result ->
-            result.fold(
-                onFailure = { exception ->
-                    _state.value = MoviesListScreenState.Error(exception.toString())
-                },
-                onSuccess = { movies ->
-                    _state.value = MoviesListScreenState.Success(movies)
-                }
-            )
+        viewModelScope.launch {
+            getPremiersListUseCase().collect { result ->
+                result.fold(
+                    onFailure = { exception ->
+                        _state.value = MoviesListScreenState.Error(exception.toString())
+                    },
+                    onSuccess = { movies ->
+                        _state.value = MoviesListScreenState.Success(movies)
+                    }
+                )
+            }
         }
     }
 }

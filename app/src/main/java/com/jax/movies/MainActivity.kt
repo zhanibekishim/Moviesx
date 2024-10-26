@@ -18,6 +18,10 @@ class MainActivity : ComponentActivity() {
         setContent {
             MoviesTheme {
               /*  MoviesMainScreen()*/
+                lifecycleScope.launch {
+                    val detailInfo = MoviesApiFactory.apiService.getDetailMovie(4444)
+                    Log.d("dsadasdasdsadasdsadsa",detailInfo.toString())
+                }
             }
         }
     }

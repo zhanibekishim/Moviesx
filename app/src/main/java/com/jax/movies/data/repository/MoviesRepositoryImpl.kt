@@ -19,7 +19,7 @@ class MoviesRepositoryImpl : MoviesRepository {
     override suspend fun getPremiersList(): StateFlow<Result<List<Movie>>> = flow {
         try {
             val filmsDtoList = apiService.getPremieres(2023, "JANUARY").films
-            val films = filmsDtoList.map { mapper.dtoToEntity(it) }
+            val films = filmsDtoList.map { mapper.movieDtoToEntity(it) }
             emit(Result.success(films))
         } catch (e: Exception) {
             emit(Result.failure(e))
@@ -29,4 +29,14 @@ class MoviesRepositoryImpl : MoviesRepository {
         started = SharingStarted.Lazily,
         initialValue = Result.success(emptyList())
     )
+
+    override suspend fun getDetailInfo(id: Long): Result<Movie> {
+        return try {
+            val detailInfo = apiService.getDetailMovie(id)
+            val movie = mapper.detailDtoToEntity(detailInfo)
+            Result.success(movie)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 }

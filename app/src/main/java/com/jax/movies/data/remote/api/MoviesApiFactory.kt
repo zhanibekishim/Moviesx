@@ -8,7 +8,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 class MoviesApiFactory {
 
     companion object {
-        private const val BASE_URL = "https://kinopoiskapiunofficial.tech/api/v2.2/films/"
+        private const val BASE_URL = "https://kinopoiskapiunofficial.tech/api/v2.2/"
 
         private val client = OkHttpClient.Builder()
             .addInterceptor(HttpLoggingInterceptor().apply {

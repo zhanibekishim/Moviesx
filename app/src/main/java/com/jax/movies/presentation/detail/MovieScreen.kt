@@ -1,4 +1,4 @@
-package com.jax.movies.presentation.movie
+package com.jax.movies.presentation.detail
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
