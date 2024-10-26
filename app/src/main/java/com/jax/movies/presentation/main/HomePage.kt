@@ -40,8 +40,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jax.movies.R
-import com.jax.movies.domain.Movie
-import com.jax.movies.domain.AllMovies
+import com.jax.movies.domain.entity.OldMovie
+import com.jax.movies.domain.entity.AllMovies
 
 
 @Composable
@@ -111,7 +111,7 @@ fun HomePage(
 
 @Composable
 fun MovieItem(
-    movie: Movie,
+    oldMovie: OldMovie,
     onMovieClick: () -> Unit
 ) {
     var visible by remember { mutableStateOf(false) }
@@ -145,11 +145,11 @@ fun MovieItem(
         )
         Spacer(Modifier.height(6.dp))
         Text(
-            text = movie.title,
+            text = oldMovie.title,
             fontSize = 14.sp
         )
         Text(
-            text = movie.genre,
+            text = oldMovie.genre,
             fontSize = 12.sp
         )
     }
@@ -157,7 +157,7 @@ fun MovieItem(
 
 @Composable
 fun LazyRowItem(
-    items: List<Movie>,
+    items: List<OldMovie>,
     type: String,
     onMovieClick: (Long) -> Unit
 ) {
@@ -182,7 +182,7 @@ fun LazyRowItem(
         ) {
             items(displayedItems) { item ->
                 MovieItem(
-                    movie = item,
+                    oldMovie = item,
                     onMovieClick = {
                         onMovieClick(item.id)
                     }

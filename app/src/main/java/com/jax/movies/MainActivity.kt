@@ -18,10 +18,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             MoviesTheme {
               /*  MoviesMainScreen()*/
-                lifecycleScope.launch {
-                    val movies = MoviesApiFactory.apiService.getPremieres(2023, "JANUARY")
-                    Log.d("dsadasdasdsa", "onCreate: $movies")
-                }
             }
         }
     }

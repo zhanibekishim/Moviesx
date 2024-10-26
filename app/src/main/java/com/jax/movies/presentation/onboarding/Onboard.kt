@@ -1,4 +1,4 @@
-package com.jax.movies.domain
+package com.jax.movies.presentation.onboarding
 import com.jax.movies.R
 
 data class OnBoardingPage(
