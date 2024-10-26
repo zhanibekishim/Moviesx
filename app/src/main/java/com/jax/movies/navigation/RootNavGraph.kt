@@ -21,7 +21,6 @@ fun RootNavGraph() {
             OnBoardingScreen(onFinish = {
                 navigationState.navigateTo(GRAPH.MAIN_GRAPH)
             })
-
         }
 
         composable(route = GRAPH.MAIN_GRAPH) {

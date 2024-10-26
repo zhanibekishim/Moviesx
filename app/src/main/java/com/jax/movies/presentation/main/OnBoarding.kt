@@ -20,8 +20,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.jax.movies.data.OnBoardingPage
-import com.jax.movies.data.onboardingPages
+import com.jax.movies.domain.OnBoardingPage
+import com.jax.movies.domain.onboardingPages
 import com.jax.movies.ui.theme.MoviesTheme
 import kotlinx.coroutines.launch
 

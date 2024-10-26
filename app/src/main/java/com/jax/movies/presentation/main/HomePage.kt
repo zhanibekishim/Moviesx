@@ -40,8 +40,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jax.movies.R
-import com.jax.movies.data.Movie
-import com.jax.movies.data.AllMovies
+import com.jax.movies.domain.Movie
+import com.jax.movies.domain.AllMovies
 
 
 @Composable

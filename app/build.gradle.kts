@@ -18,6 +18,9 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+        val key = property("API-KEY")
+            ?: error("You need to add api key to local.properties")
+        buildConfigField("String", "API_KEY", "\"$key\"")
     }
 
     buildTypes {
@@ -38,6 +41,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -51,8 +55,11 @@ android {
 
 dependencies {
 
-    val nav_version = "2.8.3"
-    implementation("androidx.navigation:navigation-compose:$nav_version")
+    implementation("androidx.navigation:navigation-compose:2.8.3")
+
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

@@ -1,4 +1,4 @@
-package com.jax.movies.data
+package com.jax.movies.domain
 import com.jax.movies.R
 
 data class OnBoardingPage(
