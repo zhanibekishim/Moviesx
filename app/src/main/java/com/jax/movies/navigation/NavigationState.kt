@@ -21,7 +21,7 @@ class NavigationState(
                     saveState = true
                 }
             }
-            launchSingleTop = true
+            launchSingleTop = true 
             restoreState = true
         }
     }

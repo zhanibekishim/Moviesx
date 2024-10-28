@@ -1,5 +1,7 @@
 package com.jax.movies.presentation.detail.movies
 
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jax.movies.domain.usecase.GetMovieCollectionUseCaseImpl
@@ -19,7 +21,7 @@ class MoviesDetailViewModel : ViewModel() {
     fun fetchMoviesDetail(type:MoviesType){
         _state.value = MoviesDetailState.Loading
         viewModelScope.launch {
-            getMoviesCollectionUseCase(type.name).collect { result ->
+            getMoviesCollectionUseCase(type).collect { result ->
                 result.fold(
                     onFailure = { exception ->
                         _state.value =
@@ -32,4 +34,9 @@ class MoviesDetailViewModel : ViewModel() {
             }
         }
     }
+}
+@Preview
+@Composable
+fun Preview(){
+
 }
