@@ -1,8 +1,8 @@
 package com.jax.movies.domain.usecase
 
-import com.jax.movies.data.repository.MoviesRepositoryImpl
+import com.jax.movies.domain.entity.Movie
+import kotlinx.coroutines.flow.StateFlow
 
-class GetMovieCollectionUseCase {
-    private val repository = MoviesRepositoryImpl()
-    suspend operator fun invoke(type: String) = repository.getMovieCollection(type)
+interface GetMovieCollectionUseCase{
+    suspend operator fun invoke(type: String): StateFlow<Result<List<Movie>>>
 }

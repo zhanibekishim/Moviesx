@@ -2,7 +2,7 @@ package com.jax.movies.presentation.detail.movies
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jax.movies.domain.usecase.GetMovieCollectionUseCase
+import com.jax.movies.domain.usecase.GetMovieCollectionUseCaseImpl
 import com.jax.movies.presentation.movies.MoviesType
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 
 class MoviesDetailViewModel : ViewModel() {
 
-    private val getMoviesCollectionUseCase = GetMovieCollectionUseCase()
+    private val getMoviesCollectionUseCase = GetMovieCollectionUseCaseImpl()
     private val _state: MutableStateFlow<MoviesDetailScreenState> =
         MutableStateFlow(MoviesDetailScreenState.Initial)
     val state: StateFlow<MoviesDetailScreenState> = _state.asStateFlow()
