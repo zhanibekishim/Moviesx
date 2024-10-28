@@ -4,6 +4,7 @@ import com.jax.movies.data.mapper.MoviesMapper
 import com.jax.movies.data.remote.api.MoviesApiFactory
 import com.jax.movies.domain.entity.Movie
 import com.jax.movies.domain.repository.MoviesRepository
+import com.jax.movies.presentation.movies.MoviesType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -20,8 +21,11 @@ class MoviesRepositoryImpl : MoviesRepository {
     private val mapper = MoviesMapper()
     private val scope = CoroutineScope(Dispatchers.IO)
 
-    override suspend fun getMovieCollection(type: String): StateFlow<Result<List<Movie>>> = flow {
-        val response = apiService.getCollection(type)
+    override suspend fun getMovieCollection(type: MoviesType): StateFlow<Result<List<Movie>>> = flow {
+        val response = when(type){
+            MoviesType.TOP_250 , MoviesType.TOP_POPULAR_MOVIES ,MoviesType.POPULAR_SERIES -> apiService.getCollection(type.name)
+            MoviesType.PREMIERS -> apiService.getPremieres()
+        }
         val movies = response.films.map { mapper.movieDtoToEntity(it) }
         emit(Result.success(movies))
     }.retry(

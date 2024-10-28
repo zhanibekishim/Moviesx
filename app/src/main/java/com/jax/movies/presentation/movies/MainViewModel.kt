@@ -6,60 +6,80 @@ import com.jax.movies.domain.usecase.GetMovieCollectionUseCaseImpl
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+
 
 class MainViewModel : ViewModel() {
 
+    private val getMovieCollectionUseCase = GetMovieCollectionUseCaseImpl()
+    private val _moviesListState: MutableStateFlow<MoviesListState> =
+        MutableStateFlow(MoviesListState(
+            moviesList = MoviesType.entries.map { MoviesListState.MoviesState.Initial }
+        ))
+    val moviesListState: StateFlow<MoviesListState> = _moviesListState.asStateFlow()
+
     init {
-        MoviesType.entries.forEach {
-            fetchMovies(it)
+        MoviesType.entries.forEach { type ->
+            fetchMovies(type)
         }
     }
 
-    private val getMoviesCollectionUseCase = GetMovieCollectionUseCaseImpl()
-
-    private val _top250State: MutableStateFlow<MoviesScreenState> =
-        MutableStateFlow(MoviesScreenState.Initial)
-    val top250State: StateFlow<MoviesScreenState> = _top250State.asStateFlow()
-
-    private val _topPopularsState: MutableStateFlow<MoviesScreenState> =
-        MutableStateFlow(MoviesScreenState.Initial)
-    val topPopularsState: StateFlow<MoviesScreenState> = _topPopularsState.asStateFlow()
-
-    private val _premiersState: MutableStateFlow<MoviesScreenState> =
-        MutableStateFlow(MoviesScreenState.Initial)
-    val premiersState: StateFlow<MoviesScreenState> = _premiersState.asStateFlow()
-
-    private val _boevikiState: MutableStateFlow<MoviesScreenState> =
-        MutableStateFlow(MoviesScreenState.Initial)
-    val boevikiState: StateFlow<MoviesScreenState> = _boevikiState.asStateFlow()
-
-    private val _serialsState: MutableStateFlow<MoviesScreenState> =
-        MutableStateFlow(MoviesScreenState.Initial)
-    val serialsState: StateFlow<MoviesScreenState> = _serialsState.asStateFlow()
-
     private fun fetchMovies(type: MoviesType) {
-        val currentState = when (type) {
-            MoviesType.TOP_250 -> _top250State
-            MoviesType.TOP_POPULARS -> _topPopularsState
-            MoviesType.PREMIERS -> _premiersState
-            MoviesType.BOEVIKI -> _top250State
-            MoviesType.SERIALS -> _boevikiState
-        }
-        currentState.value = MoviesScreenState.Loading
+        updateMovieState(type, MoviesListState.MoviesState.Loading)
         viewModelScope.launch {
-            getMoviesCollectionUseCase(type.name).collect { result ->
+            getMovieCollectionUseCase(type).collect { result ->
                 result.fold(
                     onFailure = { exception ->
-                        currentState.value =
-                            MoviesScreenState.Error(exception.message.toString())
+                        updateMovieState(
+                            type,
+                            MoviesListState.MoviesState.Error(exception.message.toString())
+                        )
                     },
                     onSuccess = { movies ->
-                        currentState.value = MoviesScreenState.Success(movies)
+                        updateMovieState(
+                            type,
+                            MoviesListState.MoviesState.Success(movies = movies, moviesType =type)
+                        )
                     }
                 )
             }
         }
     }
 
+    private fun updateMovieState(type: MoviesType, newState: MoviesListState.MoviesState) {
+        _moviesListState.update { currentState ->
+            val updatedMoviesList = currentState.moviesList.toMutableList()
+            val index = MoviesType.entries.indexOf(type)
+            updatedMoviesList[index] = newState
+            currentState.copy(moviesList = updatedMoviesList)
+        }
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

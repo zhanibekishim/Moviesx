@@ -9,10 +9,11 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface MoviesApiService {
+
     @GET("films/premieres")
     suspend fun getPremieres(
-        @Query("year") year: Int,
-        @Query("month") month: String,
+        @Query("year") year: Int = 2023,
+        @Query("month") month: String = "APRIL",
         @Header("X-API-KEY") apiKey: String = BuildConfig.API_KEY
     ): MoviesResponseDto
 

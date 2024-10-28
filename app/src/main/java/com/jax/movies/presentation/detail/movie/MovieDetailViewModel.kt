@@ -11,18 +11,18 @@ import kotlinx.coroutines.launch
 
 class MovieDetailViewModel : ViewModel() {
     private val getDetailMovieUseCaseImpl = GetDetailMovieUseCaseImpl()
-    private val _state = MutableStateFlow<MovieDetailScreenState>(MovieDetailScreenState.Initial)
-    val state: StateFlow<MovieDetailScreenState> get() = _state.asStateFlow()
+    private val _state = MutableStateFlow<MovieDetailState>(MovieDetailState.Initial)
+    val state: StateFlow<MovieDetailState> get() = _state.asStateFlow()
 
     fun fetchDetailInfo(movie: Movie) {
-        _state.value = MovieDetailScreenState.Loading
+        _state.value = MovieDetailState.Loading
         viewModelScope.launch {
             getDetailMovieUseCaseImpl(movie.id).fold(
                 onFailure = { message ->
-                    _state.value = MovieDetailScreenState.Error(message.toString())
+                    _state.value = MovieDetailState.Error(message.toString())
                 },
                 onSuccess = { movie ->
-                    _state.value = MovieDetailScreenState.Success(movie)
+                    _state.value = MovieDetailState.Success(movie)
                 }
             )
         }
