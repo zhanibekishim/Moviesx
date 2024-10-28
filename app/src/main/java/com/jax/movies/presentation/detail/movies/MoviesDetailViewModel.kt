@@ -35,8 +35,3 @@ class MoviesDetailViewModel : ViewModel() {
         }
     }
 }
-@Preview
-@Composable
-fun Preview(){
-
-}
