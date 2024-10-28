@@ -3,6 +3,7 @@ package com.jax.movies.navigation
 import android.net.Uri
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -79,5 +80,7 @@ sealed class HomePage(val route: String) {
     data object Detail : Details("Detail")
 }
 */
+
+//@Preview
 
 

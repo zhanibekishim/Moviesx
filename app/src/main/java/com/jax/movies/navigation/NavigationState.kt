@@ -14,7 +14,7 @@ class NavigationState(
         navHostController.navigate(route) {
             if (route == GRAPH.MAIN_GRAPH) {
                 popUpTo(GRAPH.ON_BOARDING_SCREEN) {
-                    inclusive = true // Удаляет экран онбординга из стека
+                    inclusive = true
                 }
             } else {
                 popUpTo(navHostController.graph.findStartDestination().id) {
