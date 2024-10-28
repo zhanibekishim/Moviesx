@@ -1,4 +1,4 @@
-package com.jax.movies.presentation.main
+package com.jax.movies.presentation.movies
 
 import androidx.annotation.DrawableRes
 import com.jax.movies.R

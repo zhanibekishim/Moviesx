@@ -4,7 +4,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.jax.movies.presentation.main.MainPages
+import com.jax.movies.presentation.movies.MainPages
 import com.jax.movies.presentation.onboarding.OnBoardingScreen
 
 

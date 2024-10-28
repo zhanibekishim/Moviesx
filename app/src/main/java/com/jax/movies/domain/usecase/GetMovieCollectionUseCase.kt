@@ -2,7 +2,7 @@ package com.jax.movies.domain.usecase
 
 import com.jax.movies.data.repository.MoviesRepositoryImpl
 
-class GetMoviesCollectionsUseCase {
+class GetMovieCollectionUseCase {
     private val repository = MoviesRepositoryImpl()
-    suspend operator fun invoke(types: List<String>) = repository.getMoviesCollections(types)
+    suspend operator fun invoke(type: String) = repository.getMovieCollection(type)
 }

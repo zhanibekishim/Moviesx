@@ -1,4 +1,4 @@
-package com.jax.movies.presentation.main
+package com.jax.movies.presentation.movies
 
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.size

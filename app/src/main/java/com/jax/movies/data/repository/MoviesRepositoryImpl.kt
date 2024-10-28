@@ -19,39 +19,24 @@ class MoviesRepositoryImpl : MoviesRepository {
     private val apiService = MoviesApiFactory.apiService
     private val mapper = MoviesMapper()
     private val scope = CoroutineScope(Dispatchers.IO)
-    override suspend fun getPremiersList(): StateFlow<Result<List<Movie>>> = flow {
-        try {
-            val filmsDtoList = apiService.getPremieres(2023, "JANUARY").films
-            val films = filmsDtoList.map { mapper.movieDtoToEntity(it) }
-            emit(Result.success(films))
-        } catch (e: Exception) {
-            emit(Result.failure(e))
+
+    override suspend fun getMovieCollection(type: String): StateFlow<Result<List<Movie>>> = flow {
+        val response = apiService.getCollection(type)
+        val movies = response.films.map { mapper.movieDtoToEntity(it) }
+        emit(Result.success(movies))
+    }.retry(
+        retries = RETRY_COUNT,
+        predicate = {
+            delay(DELAY_TIME)
+            true
         }
+    ).catch {
+        emit(Result.failure(it))
     }.stateIn(
         scope = scope,
         started = SharingStarted.Lazily,
         initialValue = Result.success(emptyList())
     )
-
-    override suspend fun getMoviesCollections(types: List<String>): StateFlow<Result<List<List<Movie>>>> =
-        flow {
-            val collections = mutableListOf<List<Movie>>()
-            types.forEach { type ->
-                val response = apiService.getCollection(type)
-                val movies = response.films.map { mapper.movieDtoToEntity(it) }
-                collections.add(movies)
-            }
-            emit(Result.success(collections.toList()))
-        }.retry(retries = RETRY_COUNT, predicate = {
-            delay(DELAY_TIME)
-            true
-        }).catch {
-            emit(Result.failure(it))
-        }.stateIn(
-            scope = scope,
-            started = SharingStarted.Lazily,
-            initialValue = Result.success(emptyList())
-        )
 
     override suspend fun getDetailInfo(id: Long): Result<Movie> {
         return try {

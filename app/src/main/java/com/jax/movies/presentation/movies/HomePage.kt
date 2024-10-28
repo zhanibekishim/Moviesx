@@ -1,4 +1,4 @@
-package com.jax.movies.presentation.main
+package com.jax.movies.presentation.movies
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState

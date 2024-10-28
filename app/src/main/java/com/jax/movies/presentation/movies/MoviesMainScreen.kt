@@ -1,4 +1,4 @@
-package com.jax.movies.presentation.main
+package com.jax.movies.presentation.movies
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box

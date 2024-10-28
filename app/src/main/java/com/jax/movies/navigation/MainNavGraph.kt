@@ -7,9 +7,9 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.jax.movies.presentation.main.BottomScreenItem
-import com.jax.movies.presentation.main.HomePage
-import com.jax.movies.presentation.detail.MovieContent
+import com.jax.movies.presentation.movies.BottomScreenItem
+import com.jax.movies.presentation.movies.HomePage
+import com.jax.movies.presentation.detail.movie.MovieContent
 import com.jax.movies.presentation.profile.ProfileScreen
 import com.jax.movies.presentation.search.SearchScreen
 

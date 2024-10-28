@@ -7,7 +7,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.lifecycle.lifecycleScope
 import com.jax.movies.data.remote.api.MoviesApiFactory
-import com.jax.movies.presentation.main.MoviesMainScreen
 import com.jax.movies.ui.theme.MoviesTheme
 import kotlinx.coroutines.launch
 
