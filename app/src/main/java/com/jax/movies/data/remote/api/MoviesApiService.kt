@@ -16,6 +16,12 @@ interface MoviesApiService {
         @Header("X-API-KEY") apiKey: String = BuildConfig.API_KEY
     ): MoviesResponseDto
 
+    @GET("films/collections")
+    suspend fun getCollection(
+        @Query("type") type: String,
+        @Query("page") page: Int = 1,
+        @Header("X-API-KEY") apiKey: String = BuildConfig.API_KEY
+    ): MoviesResponseDto
 
     @GET("films/{id}")
     suspend fun getDetailMovie(

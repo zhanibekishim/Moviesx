@@ -23,8 +23,6 @@ import androidx.compose.ui.unit.sp
 import com.jax.movies.ui.theme.MoviesTheme
 import kotlinx.coroutines.launch
 
-
-
 @ExperimentalFoundationApi
 @Composable
 fun OnBoardingScreen(onFinish: () -> Unit) {
