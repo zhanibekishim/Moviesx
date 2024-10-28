@@ -24,7 +24,6 @@ import com.jax.movies.ui.theme.MoviesTheme
 import kotlinx.coroutines.launch
 
 
-// OnBoarding Screen
 
 @ExperimentalFoundationApi
 @Composable
@@ -51,11 +50,9 @@ fun OnBoardingScreen(onFinish: () -> Unit) {
             Button(
                 onClick = {
                     coroutineScope.launch {
-                        // Если текущая страница не последняя, листаем дальше
                         if (pagerState.currentPage < onboardingPages.size - 1) {
                             pagerState.animateScrollToPage(pagerState.currentPage + 1)
                         } else {
-                            // Завершаем онбординг и переходим на главный экран
                             onFinish()
                         }
                     }
@@ -73,19 +70,16 @@ fun OnBoardingScreen(onFinish: () -> Unit) {
             }
         }
 
-        // Горизонтальный пейджер для отображения страниц
         HorizontalPager(state = pagerState) { page ->
             OnBoardingPageContent(onboardingPages[page])
         }
 
-        // Индикация точек с использованием текущей страницы
         DotsIndicator(
             totalDots = onboardingPages.size,
             selectedIndex = pagerState.currentPage
         )
     }
 }
-// Содержимое для HorizontalPager
 
 @Composable
 fun OnBoardingPageContent(page: OnBoardingPage) {
@@ -108,7 +102,6 @@ fun OnBoardingPageContent(page: OnBoardingPage) {
         )
     }
 }
-// Индикатор
 @Composable
 fun DotsIndicator(totalDots: Int, selectedIndex: Int) {
     Row(
