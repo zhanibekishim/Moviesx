@@ -19,7 +19,7 @@ class MoviesDetailViewModel : ViewModel() {
     fun fetchMoviesDetail(type:MoviesType){
         _state.value = MoviesDetailState.Loading
         viewModelScope.launch {
-            getMoviesCollectionUseCase(type.name).collect { result ->
+            getMoviesCollectionUseCase(type).collect { result ->
                 result.fold(
                     onFailure = { exception ->
                         _state.value =
