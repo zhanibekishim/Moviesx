@@ -4,9 +4,10 @@ import com.jax.movies.data.mapper.MoviesMapper
 import com.jax.movies.data.remote.api.MoviesApiFactory
 import com.jax.movies.domain.entity.Movie
 import com.jax.movies.domain.repository.MoviesRepository
-import com.jax.movies.presentation.movies.MoviesType
+import com.jax.movies.presentation.home.MoviesType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -19,28 +20,30 @@ class MoviesRepositoryImpl : MoviesRepository {
 
     private val apiService = MoviesApiFactory.apiService
     private val mapper = MoviesMapper()
-    private val scope = CoroutineScope(Dispatchers.IO)
+    private val scope = CoroutineScope(Dispatchers.Main.immediate+SupervisorJob())
 
-    override suspend fun getMovieCollection(type: MoviesType): StateFlow<Result<List<Movie>>> = flow {
-        val response = when(type){
-            MoviesType.TOP_250 , MoviesType.TOP_POPULAR_MOVIES ,MoviesType.POPULAR_SERIES -> apiService.getCollection(type.name)
-            MoviesType.PREMIERS -> apiService.getPremieres()
-        }
-        val movies = response.films.map { mapper.movieDtoToEntity(it) }
-        emit(Result.success(movies))
-    }.retry(
-        retries = RETRY_COUNT,
-        predicate = {
-            delay(DELAY_TIME)
-            true
-        }
-    ).catch {
-        emit(Result.failure(it))
-    }.stateIn(
-        scope = scope,
-        started = SharingStarted.Lazily,
-        initialValue = Result.success(emptyList())
-    )
+    override suspend fun getMovieCollection(type: MoviesType): StateFlow<Result<List<Movie>>> =
+        flow {
+            val response = when (type) {
+                MoviesType.TOP_250_MOVIES, MoviesType.COMICS_THEME, MoviesType.TOP_POPULAR_MOVIES ->
+                    apiService.getCollection(type.name)
+                MoviesType.PREMIERS -> apiService.getPremieres()
+            }
+            val movies = response.films.map { mapper.movieDtoToEntity(it) }
+            emit(Result.success(movies))
+        }.retry(
+            retries = RETRY_COUNT,
+            predicate = {
+                delay(DELAY_TIME)
+                true
+            }
+        ).catch {
+            emit(Result.failure(it))
+        }.stateIn(
+            scope = scope,
+            started = SharingStarted.Lazily,
+            initialValue = Result.success(emptyList())
+        )
 
     override suspend fun getDetailInfo(id: Long): Result<Movie> {
         return try {

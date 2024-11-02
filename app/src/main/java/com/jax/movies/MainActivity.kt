@@ -7,6 +7,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.lifecycle.lifecycleScope
 import com.jax.movies.data.remote.api.MoviesApiFactory
+import com.jax.movies.presentation.home.MoviesMainScreen
 import com.jax.movies.ui.theme.MoviesTheme
 import kotlinx.coroutines.launch
 
@@ -16,7 +17,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             MoviesTheme {
-              /*  MoviesMainScreen()*/
+              MoviesMainScreen()
                 lifecycleScope.launch {
                     val detailInfo = MoviesApiFactory.apiService.getDetailMovie(4444)
                     Log.d("dsadasdasdsadasdsadsa",detailInfo.toString())

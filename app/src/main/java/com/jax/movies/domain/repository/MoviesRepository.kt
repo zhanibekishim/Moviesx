@@ -1,7 +1,7 @@
 package com.jax.movies.domain.repository
 
 import com.jax.movies.domain.entity.Movie
-import com.jax.movies.presentation.movies.MoviesType
+import com.jax.movies.presentation.home.MoviesType
 import kotlinx.coroutines.flow.StateFlow
 
 interface MoviesRepository {

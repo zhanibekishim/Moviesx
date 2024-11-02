@@ -5,6 +5,8 @@ import androidx.compose.runtime.remember
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.jax.movies.domain.entity.Movie
+import com.jax.movies.presentation.home.MoviesType
 
 class NavigationState(
     val navHostController: NavHostController
@@ -27,8 +29,16 @@ class NavigationState(
     }
 
 
-    fun navigateToMovie(id: Long,type:String) {
-        navHostController.navigate(Details.Movie.getRouteWithArgs(id,type)) {
+    fun navigateToMovie(movie: Movie) {
+        navHostController.navigate(Details.MovieScreen.getRouteWithArgs(movie)) {
+            popUpTo(navHostController.graph.findStartDestination().id) {
+                saveState = true
+            }
+            restoreState = true
+        }
+    }
+    fun navigateToMovies(type: MoviesType) {
+        navHostController.navigate(Details.MoviesScreen.getRouteWithArgs(type)) {
             popUpTo(navHostController.graph.findStartDestination().id) {
                 saveState = true
             }

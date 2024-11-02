@@ -1,21 +1,20 @@
 package com.jax.movies.presentation.detail.movie
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
+import com.jax.movies.domain.entity.Movie
 
 
 @Composable
 fun MovieContent(
-    movieId: Long, movieType: String
+   movie: Movie
 ) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(text = movieType.plus(" ").plus(movieId))
+    Column {
+        Text(text = movie.name)
+        Text(text = movie.year.toString())
+        Text(text = movie.slogan)
+        Text(text = movie.shortDescription)
+        Text(text = movie.description)
     }
 }
