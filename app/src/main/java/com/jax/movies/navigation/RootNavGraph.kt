@@ -1,14 +1,10 @@
 package com.jax.movies.navigation
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.jax.movies.presentation.home.MainPages
-import com.jax.movies.presentation.onboarding.OnBoardingScreen
 
-
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun RootNavGraph() {
     val navigationState = rememberNavigationState()
@@ -17,12 +13,7 @@ fun RootNavGraph() {
         route = GRAPH.ROOT,
         startDestination = GRAPH.ON_BOARDING_SCREEN,
     ) {
-        composable(route = GRAPH.ON_BOARDING_SCREEN) {
-            OnBoardingScreen(onFinish = {
-                navigationState.navigateTo(GRAPH.MAIN_GRAPH)
-            })
-        }
-
+        onBoardingScreen(navigationState)
         composable(route = GRAPH.MAIN_GRAPH) {
             MainPages()
         }

@@ -40,6 +40,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
@@ -53,7 +54,7 @@ fun HomePage(
     modifier: Modifier = Modifier
 ) {
     val homeViewModel: HomeViewModel = viewModel()
-    val state = homeViewModel.homeScreenState.collectAsState()
+    val state = homeViewModel.homeScreenState.collectAsStateWithLifecycle()
 
     Column(
         modifier = modifier
@@ -68,7 +69,7 @@ fun HomePage(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .statusBarsPadding()
-                .padding(bottom = 16.dp)
+                .padding(vertical = 16.dp)
         )
         Spacer(Modifier.height(24.dp))
         state.value.moviesList.forEach {moviesListState ->
@@ -200,7 +201,7 @@ private fun LoadingScreen(
         contentAlignment = Alignment.Center,
         modifier = modifier.fillMaxSize()
     ) {
-        CircularProgressIndicator()
+        CircularProgressIndicator(color = Color.Red)
     }
 }
 

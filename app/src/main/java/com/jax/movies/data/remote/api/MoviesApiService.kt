@@ -30,4 +30,6 @@ interface MoviesApiService {
         @Path("id") id: Long,
         @Header("X-API-KEY") apiKey: String = BuildConfig.API_KEY
     ): Response<DetailResponseDto>
+
+
 }
