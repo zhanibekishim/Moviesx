@@ -51,8 +51,21 @@ android {
 
 dependencies {
 
+    implementation(libs.androidx.ui.test.android)
+    implementation(libs.androidx.ui.test.android)
+    implementation("io.coil-kt:coil-compose:2.0.0")
+
     val nav_version = "2.8.3"
     implementation("androidx.navigation:navigation-compose:$nav_version")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1") // Use latest version
+    // Retrofit
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+// Retrofit with Scalar Converter
+    implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
+    implementation ("com.google.code.gson:gson:2.8.9") // or latest version
+    implementation ("com.squareup.retrofit2:converter-gson:2.9.0") // Gson converter for Retrofit
+    implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.8.0")
+    implementation ("com.squareup.okhttp3:okhttp:4.9.3")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

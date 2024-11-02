@@ -27,14 +27,14 @@ class NavigationState(
     }
 
 
-    fun navigateToMovie(id: Long,type:String) {
-        navHostController.navigate(Details.Movie.getRouteWithArgs(id,type)) {
-            popUpTo(navHostController.graph.findStartDestination().id) {
-                saveState = true
-            }
-            restoreState = true
-        }
-    }
+//    fun navigateToMovie(id: Long,type:String) {
+//        navHostController.navigate(Details.Movie.getRouteWithArgs(id,type)) {
+//            popUpTo(navHostController.graph.findStartDestination().id) {
+//                saveState = true
+//            }
+//            restoreState = true
+//        }
+//    }
 }
 
 @Composable

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.compose.rememberNavController
 import com.jax.movies.navigation.MainNavGraph
 import com.jax.movies.navigation.RootNavGraph
 import com.jax.movies.navigation.rememberNavigationState
@@ -22,26 +23,26 @@ fun MoviesMainScreen() {
 
 @Composable
 fun MainPages() {
-    val navigationState = rememberNavigationState()
+    val navController = rememberNavController()
     Scaffold(
         bottomBar = {
             BottomNavigationBar(
-                navController = navigationState.navHostController,
+                navController = navController,
                 onHomeClick = {
-                    navigationState.navigateTo(BottomScreenItem.HomeScreen.route)
+                    navController.navigate(BottomScreenItem.HomeScreen.route)
                 },
                 onProfileClick = {
-                    navigationState.navigateTo(BottomScreenItem.ProfileScreen.route)
+                    navController.navigate(BottomScreenItem.ProfileScreen.route)
                 },
                 onSearchClick = {
-                    navigationState.navigateTo(BottomScreenItem.SearchScreen.route)
+                    navController.navigate(BottomScreenItem.SearchScreen.route)
                 }
             )
         }
     ) { paddingValues ->
         MainNavGraph(
-            navigationState = navigationState,
-            paddingValues = paddingValues
+            paddingValues = paddingValues,
+            navController = navController
         )
     }
 }

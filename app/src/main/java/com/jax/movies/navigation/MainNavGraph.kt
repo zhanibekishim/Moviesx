@@ -3,41 +3,57 @@ package com.jax.movies.navigation
 import android.net.Uri
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
+import com.jax.movies.data.MovieViewModel
+import com.jax.movies.presentation.detail.DetailContent
 import com.jax.movies.presentation.main.BottomScreenItem
 import com.jax.movies.presentation.main.HomePage
+import com.jax.movies.presentation.main.ItemDetails
 import com.jax.movies.presentation.movie.MovieContent
 import com.jax.movies.presentation.profile.ProfileScreen
 import com.jax.movies.presentation.search.SearchScreen
 
 @Composable
 fun MainNavGraph(
-    navigationState: NavigationState,
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
+    navController: NavHostController
 ) {
+
+    val viewModel: MovieViewModel = viewModel()
     NavHost(
-        navController = navigationState.navHostController,
+        navController = navController,
         route = GRAPH.MAIN_GRAPH,
         startDestination = BottomScreenItem.HomeScreen.route
     ) {
         composable(BottomScreenItem.HomeScreen.route) {
             HomePage(
-                paddingValues = paddingValues,
-                onMovieClick = { id, type ->
-                    navigationState.navigateToMovie(id = id, type = type)
+                uiState = viewModel.uiState,
+                onMovieClick = {
+                    navController.navigate(ItemDetails.MovieDetail.route)
+                },
+                onTypeClick = {
+                    category, movies ->
+                    viewModel.setMovies(movies)
+                    navController.navigate(HomeRoute.OneTypeMovies.createRoute(category))
                 }
             )
         }
-        composable(BottomScreenItem.SearchScreen.route) { SearchScreen(paddingValues) }
+        composable(BottomScreenItem.SearchScreen.route) {
+            SearchScreen(paddingValues,
+                uiState = viewModel.uiState
+        ) }
         composable(BottomScreenItem.ProfileScreen.route) { ProfileScreen(paddingValues) }
-        detailsScreen()
     }
 
 }
-
+/*
 fun NavGraphBuilder.detailsScreen() {
     navigation(
         route = GRAPH.DETAILS_GRAPH,
@@ -53,15 +69,17 @@ fun NavGraphBuilder.detailsScreen() {
         }
     }
 }
+*/
 
-
-sealed class Details(val route: String) {
+/*sealed class Details(val route: String) {
     data object Movie : Details("Movie/{id}/{type}") {
         fun getRouteWithArgs(id: Long, type: String): String {
             return "Movie/$id/${Uri.encode(type)}"
         }
     }
 }
+*/
+
 /*fun NavGraphBuilder.homeScreenGraph() {
    navigation(route = "", startDestination = HomePage.Movies.route){
        composable(HomePage.Movies.route) {
@@ -79,5 +97,3 @@ sealed class HomePage(val route: String) {
     data object Detail : Details("Detail")
 }
 */
-
-

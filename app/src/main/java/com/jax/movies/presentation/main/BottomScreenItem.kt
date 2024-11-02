@@ -26,10 +26,14 @@ sealed class BottomScreenItem(
         route = PROFILE,
         title = PROFILE
     )
-
     private companion object {
         const val HOME = "home"
         const val SEARCH = "search"
         const val PROFILE = "profile"
     }
+}
+sealed class ItemDetails(
+    val route: String
+){
+    object MovieDetail: ItemDetails("details")
 }
