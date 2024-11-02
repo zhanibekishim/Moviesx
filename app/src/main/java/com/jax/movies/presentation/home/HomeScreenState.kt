@@ -2,7 +2,7 @@ package com.jax.movies.presentation.home
 
 import com.jax.movies.domain.entity.Movie
 
-data class MoviesListState(
+data class HomeScreenState(
     val moviesList: List<MoviesState>
 ) {
     sealed interface MoviesState {

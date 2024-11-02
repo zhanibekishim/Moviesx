@@ -1,7 +1,7 @@
 package com.jax.movies.data.mapper
 
 import com.jax.movies.data.remote.model.CountryNameContainerDto
-import com.jax.movies.data.remote.model.DetailResponse
+import com.jax.movies.data.remote.model.DetailResponseDto
 import com.jax.movies.data.remote.model.GenreNameContainerDto
 import com.jax.movies.data.remote.model.MovieDto
 import com.jax.movies.domain.entity.CountryNameContainer
@@ -26,7 +26,7 @@ class MoviesMapper {
         )
     }
 
-    fun detailDtoToEntity(detailDto: DetailResponse): Movie {
+    fun detailDtoToEntity(detailDto: DetailResponseDto): Movie {
         return Movie(
             id = detailDto.id,
             name = detailDto.name,

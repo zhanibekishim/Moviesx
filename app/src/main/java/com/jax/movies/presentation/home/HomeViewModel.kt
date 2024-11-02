@@ -2,6 +2,7 @@ package com.jax.movies.presentation.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jax.movies.domain.Resource
 import com.jax.movies.domain.usecase.GetMovieCollectionUseCaseImpl
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -10,14 +11,14 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 
-class MainViewModel : ViewModel() {
+class HomeViewModel : ViewModel() {
 
     private val getMovieCollectionUseCase = GetMovieCollectionUseCaseImpl()
-    private val _moviesListState: MutableStateFlow<MoviesListState> =
-        MutableStateFlow(MoviesListState(
-            moviesList = MoviesType.entries.map { MoviesListState.MoviesState.Initial }
+    private val _homeScreenState: MutableStateFlow<HomeScreenState> =
+        MutableStateFlow(HomeScreenState(
+            moviesList = MoviesType.entries.map { HomeScreenState.MoviesState.Initial }
         ))
-    val moviesListState: StateFlow<MoviesListState> = _moviesListState.asStateFlow()
+    val homeScreenState: StateFlow<HomeScreenState> = _homeScreenState.asStateFlow()
 
     init {
         MoviesType.entries.forEach { type ->
@@ -26,29 +27,29 @@ class MainViewModel : ViewModel() {
     }
 
     private fun fetchMovies(type: MoviesType) {
-        updateMovieState(type, MoviesListState.MoviesState.Loading)
+        updateMovieState(type, HomeScreenState.MoviesState.Loading)
         viewModelScope.launch {
             getMovieCollectionUseCase(type).collect { result ->
-                result.fold(
-                    onFailure = { exception ->
+                when(result){
+                    is Resource.Error -> {
                         updateMovieState(
                             type,
-                            MoviesListState.MoviesState.Error(exception.message.toString())
-                        )
-                    },
-                    onSuccess = { movies ->
-                        updateMovieState(
-                            type,
-                            MoviesListState.MoviesState.Success(movies = movies, moviesType =type)
+                            HomeScreenState.MoviesState.Error(result.message.cause.toString())
                         )
                     }
-                )
+                    is Resource.Success -> {
+                        updateMovieState(
+                            type,
+                            HomeScreenState.MoviesState.Success(movies = result.data, moviesType =type)
+                        )
+                    }
+                }
             }
         }
     }
 
-    private fun updateMovieState(type: MoviesType, newState: MoviesListState.MoviesState) {
-        _moviesListState.update { currentState ->
+    private fun updateMovieState(type: MoviesType, newState: HomeScreenState.MoviesState) {
+        _homeScreenState.update { currentState ->
             val updatedMoviesList = currentState.moviesList.toMutableList()
             val index = MoviesType.entries.indexOf(type)
             updatedMoviesList[index] = newState

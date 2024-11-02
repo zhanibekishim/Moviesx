@@ -178,13 +178,12 @@ private fun SearchTopAppBar(
                 top = WindowInsets.statusBars
                     .asPaddingValues()
                     .calculateTopPadding()
-            )
+            ).padding(16.dp)
     ) {
         IconButton(onClick = onClickBack) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = stringResource(id = R.string.go_back),
-                tint = Color.White,
                 modifier = Modifier.size(24.dp)
             )
         }

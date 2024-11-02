@@ -2,6 +2,7 @@ package com.jax.movies.presentation.detail.movie
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jax.movies.domain.Resource
 import com.jax.movies.domain.entity.Movie
 import com.jax.movies.domain.usecase.GetDetailMovieUseCaseImpl
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,14 +18,10 @@ class MovieDetailViewModel : ViewModel() {
     fun fetchDetailInfo(movie: Movie) {
         _state.value = MovieDetailState.Loading
         viewModelScope.launch {
-            getDetailMovieUseCaseImpl(movie.id).fold(
-                onFailure = { message ->
-                    _state.value = MovieDetailState.Error(message.toString())
-                },
-                onSuccess = { movie ->
-                    _state.value = MovieDetailState.Success(movie)
-                }
-            )
+            when(val result = getDetailMovieUseCaseImpl(movie.id)){
+                is Resource.Error ->   _state.value = MovieDetailState.Error(result.toString())
+                is Resource.Success ->  _state.value = MovieDetailState.Success(result.data)
+            }
         }
     }
 }

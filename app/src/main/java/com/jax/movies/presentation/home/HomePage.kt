@@ -1,5 +1,6 @@
 package com.jax.movies.presentation.home
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -51,8 +52,8 @@ fun HomePage(
     paddingValues: PaddingValues,
     modifier: Modifier = Modifier
 ) {
-    val mainViewModel: MainViewModel = viewModel()
-    val state = mainViewModel.moviesListState.collectAsState()
+    val homeViewModel: HomeViewModel = viewModel()
+    val state = homeViewModel.homeScreenState.collectAsState()
 
     Column(
         modifier = modifier
@@ -66,15 +67,16 @@ fun HomePage(
             contentDescription = null,
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
+                .statusBarsPadding()
                 .padding(bottom = 16.dp)
         )
         Spacer(Modifier.height(24.dp))
         state.value.moviesList.forEach {moviesListState ->
             when (moviesListState) {
-                is MoviesListState.MoviesState.Initial -> {}
-                is MoviesListState.MoviesState.Loading -> LoadingScreen()
-                is MoviesListState.MoviesState.Error -> ErrorScreen(errorMessage = moviesListState.message)
-                is MoviesListState.MoviesState.Success -> {
+                is HomeScreenState.MoviesState.Initial -> {}
+                is HomeScreenState.MoviesState.Loading -> LoadingScreen()
+                is HomeScreenState.MoviesState.Error -> ErrorScreen(errorMessage = moviesListState.message)
+                is HomeScreenState.MoviesState.Success -> {
                     MainContent(
                         movies = moviesListState.movies,
                         type = moviesListState.moviesType,
@@ -193,6 +195,7 @@ private fun MovieItem(
 private fun LoadingScreen(
     modifier: Modifier = Modifier
 ) {
+    Log.d("dasdasdasdas","Loading")
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier.fillMaxSize()

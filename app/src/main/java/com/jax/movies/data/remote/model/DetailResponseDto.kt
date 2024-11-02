@@ -2,7 +2,7 @@ package com.jax.movies.data.remote.model
 
 import com.google.gson.annotations.SerializedName
 
-data class DetailResponse(
+data class DetailResponseDto(
     @SerializedName("kinoposikId") val id:Long,
     @SerializedName("nameRu") val name:String,
     @SerializedName("posterUrl") val posterUrl:String,

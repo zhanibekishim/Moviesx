@@ -2,6 +2,7 @@ package com.jax.movies.data.repository
 
 import com.jax.movies.data.mapper.MoviesMapper
 import com.jax.movies.data.remote.api.MoviesApiFactory
+import com.jax.movies.domain.Resource
 import com.jax.movies.domain.entity.Movie
 import com.jax.movies.domain.repository.MoviesRepository
 import com.jax.movies.presentation.home.MoviesType
@@ -22,15 +23,18 @@ class MoviesRepositoryImpl : MoviesRepository {
     private val mapper = MoviesMapper()
     private val scope = CoroutineScope(Dispatchers.Main.immediate+SupervisorJob())
 
-    override suspend fun getMovieCollection(type: MoviesType): StateFlow<Result<List<Movie>>> =
+    override suspend fun getMovieCollection(type: MoviesType): StateFlow<Resource<List<Movie>>> =
         flow {
             val response = when (type) {
                 MoviesType.TOP_250_MOVIES, MoviesType.COMICS_THEME, MoviesType.TOP_POPULAR_MOVIES ->
                     apiService.getCollection(type.name)
                 MoviesType.PREMIERS -> apiService.getPremieres()
             }
-            val movies = response.films.map { mapper.movieDtoToEntity(it) }
-            emit(Result.success(movies))
+            if(response.isSuccessful){
+                response.body()?.let {respBody->
+                    emit(Resource.Success(respBody.films.map { mapper.movieDtoToEntity(it) }))
+                }?: emit(Resource.Error(Exception("Response body is null")))
+            }
         }.retry(
             retries = RETRY_COUNT,
             predicate = {
@@ -38,22 +42,28 @@ class MoviesRepositoryImpl : MoviesRepository {
                 true
             }
         ).catch {
-            emit(Result.failure(it))
+            emit(Resource.Error(it))
         }.stateIn(
             scope = scope,
             started = SharingStarted.Lazily,
-            initialValue = Result.success(emptyList())
+            initialValue = Resource.Success(emptyList())
         )
 
-    override suspend fun getDetailInfo(id: Long): Result<Movie> {
+    override suspend fun getDetailInfo(id: Long): Resource<Movie> {
         return try {
-            val detailInfo = apiService.getDetailMovie(id)
-            val movie = mapper.detailDtoToEntity(detailInfo)
-            Result.success(movie)
+            val response = apiService.getDetailMovie(id)
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    Resource.Success(mapper.detailDtoToEntity(it))
+                } ?: Resource.Error(Exception("Response body is null"))
+            } else {
+                Resource.Error(Exception("Error: ${response.code()} - ${response.message()}"))
+            }
         } catch (e: Exception) {
-            Result.failure(e)
+            Resource.Error(e)
         }
     }
+
 
     private companion object {
         const val RETRY_COUNT = 5L
