@@ -1,0 +1,140 @@
+[33mcommit c196ceccec7637f849a6d5d4b3000cad0068470a[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Merge: c6a1fa8 63895f3
+Author: Romanid04 <118803238+Romanid04@users.noreply.github.com>
+Date:   Sat Oct 19 03:52:22 2024 +0500
+
+    Merge remote-tracking branch 'origin/master'
+
+[33mcommit c6a1fa8cc1b53f4ab6e0b1ac01ff24a2d2dbba80[m
+Author: Romanid04 <118803238+Romanid04@users.noreply.github.com>
+Date:   Sat Oct 19 03:52:12 2024 +0500
+
+    last version
+
+[33mcommit 63895f352b1c51b63ca80a736637d2cbf6abc480[m
+Author: zhanibekishimss <230103150@sdu.edu.kz>
+Date:   Sat Oct 19 00:37:32 2024 +0500
+
+    Adding new features and correcting
+
+[33mcommit d5508f3235014e2c80e14cdad1b1cd6bdb57fa2b[m
+Merge: 5719f71 f2ef9f9
+Author: zhanibekishimss <230103150@sdu.edu.kz>
+Date:   Fri Oct 18 23:55:52 2024 +0500
+
+    merging
+
+[33mcommit 5719f715574e7a04ae65e4ea37fb2454fa72f53e[m
+Author: zhanibekishimss <230103150@sdu.edu.kz>
+Date:   Fri Oct 18 23:38:52 2024 +0500
+
+    bag
+
+[33mcommit f2ef9f94082ea0d224ec3d1fa01b68edc0df4b3a[m
+Author: Sula <sultanaibuz@mail.ru>
+Date:   Fri Oct 18 23:32:24 2024 +0500
+
+    awdawd
+
+[33mcommit 011fd770fc90ba9409862bc34bdf65add9b3d731[m[33m ([m[1;31morigin/refactoring[m[33m)[m
+Author: zhanibekishimss <230103150@sdu.edu.kz>
+Date:   Fri Oct 18 01:19:49 2024 +0500
+
+    Refactoring whole application ,adding detail navigation
+
+[33mcommit 44d8ce20d7cc4126e226e8d30e9a138462b3246e[m
+Author: Sula <sultanaibuz@mail.ru>
+Date:   Thu Oct 17 16:05:36 2024 +0500
+
+    awdawd
+
+[33mcommit 38735b162f44b1155fc7ca2a41fe5e89a9714cea[m
+Author: Sula <sultanaibuz@mail.ru>
+Date:   Thu Oct 17 15:30:14 2024 +0500
+
+    awdawd
+
+[33mcommit 93f8ad8ef98499ae9f288d39af2156a7fa291a67[m
+Author: Sula <sultanaibuz@mail.ru>
+Date:   Thu Oct 17 15:29:12 2024 +0500
+
+    awdawd
+
+[33mcommit 61a4e418d1eeb28c4380342599a8c4f45a18ed23[m
+Author: Romanid04 <118803238+Romanid04@users.noreply.github.com>
+Date:   Wed Oct 16 12:30:11 2024 +0500
+
+    3) Change the data, create Onboard.kt in data folder for clean code
+
+[33mcommit ad40125f28a658c26cdbe84c0bb36e3904e22ac9[m
+Author: Sula <sultanaibuz@mail.ru>
+Date:   Wed Oct 16 12:15:21 2024 +0500
+
+    awdawd
+
+[33mcommit 6a28076a397232c80009bda692a2aa4fc5690131[m
+Author: Romanid04 <118803238+Romanid04@users.noreply.github.com>
+Date:   Wed Oct 16 11:50:55 2024 +0500
+
+    2) Check update in MainActivity
+
+[33mcommit b74bfe3ac7345ee8606531fc712ef0dbaebfb993[m
+Merge: 0dc628f b8fea38
+Author: Romanid04 <118803238+Romanid04@users.noreply.github.com>
+Date:   Wed Oct 16 03:28:08 2024 +0500
+
+    Merge remote-tracking branch 'origin/master'
+
+[33mcommit 0dc628fa36c9d12a914fc700b1f494d6b4d59803[m
+Author: Romanid04 <118803238+Romanid04@users.noreply.github.com>
+Date:   Wed Oct 16 03:26:40 2024 +0500
+
+    UI OnBoarding page with transition used coroutineScope HorizontalPager
+
+[33mcommit b8fea38a022c6cae5565b42eff32f076d6cd8331[m
+Author: akbooo <subb04a@gmail.com>
+Date:   Tue Oct 15 21:51:45 2024 +0500
+
+    a
+
+[33mcommit 915d9ddf1ecce56dda487c729b4b1129f6736c9a[m
+Author: akbooo <subb04a@gmail.com>
+Date:   Tue Oct 15 21:23:10 2024 +0500
+
+    home page is started
+
+[33mcommit 73927b91e62f1f346c14961de1ace3ea63d8e971[m
+Author: akbooo <subb04a@gmail.com>
+Date:   Tue Oct 15 21:13:35 2024 +0500
+
+    home page is started
+
+[33mcommit 1853c0bc3ff69df654724152818cb11f38998e0a[m
+Author: akbooo <subb04a@gmail.com>
+Date:   Tue Oct 15 21:06:54 2024 +0500
+
+    home page is started
+
+[33mcommit f4498b98eb1a0cefdda0728568266d094dfa529d[m
+Author: akbooo <subb04a@gmail.com>
+Date:   Mon Oct 14 19:50:40 2024 +0500
+
+    home page is started
+
+[33mcommit 3194a13217f656c33dda06eb7fa076afb8a3d5a2[m
+Author: akbooo <subb04a@gmail.com>
+Date:   Mon Oct 14 19:31:38 2024 +0500
+
+    created data class
+
+[33mcommit 325810f4c0b915a65a8d902e331060ca51d39b35[m
+Author: Romanid04 <118803238+Romanid04@users.noreply.github.com>
+Date:   Mon Oct 14 18:07:46 2024 +0500
+
+    check 1 2 3
+
+[33mcommit 538445e474c016b3ba327abea9b1ae44556d71f0[m
+Author: zhanibekishimss <230103150@sdu.edu.kz>
+Date:   Mon Oct 14 17:48:19 2024 +0500
+
+    Initial commit
