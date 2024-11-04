@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -50,7 +51,7 @@ import com.jax.movies.data.UIState
 @Composable
 fun HomePage(
     uiState: UIState,
-    onMovieClick: () -> Unit,
+    onMovieClick: (Movie) -> Unit,
     onTypeClick: (String, List<Movie>) -> Unit
 ) {
     when (uiState) {
@@ -64,7 +65,7 @@ fun HomePage(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(start = 16.dp)
+                    .padding(start = 16.dp, bottom = 80.dp)
                     .verticalScroll(state = scrollState),
                 verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
@@ -77,10 +78,10 @@ fun HomePage(
                     "Премьера", "Популярное",
                     "Боевики США", "Драма Франции", "Топ-250", "Сериалы"
                 )
-
-                for (i in 0..categories.size - 1) {
+                val size = minOf(categories.size, uiState.movies.size)
+                for (i in 0 until size) {
                     LazyRowItem(items = uiState.movies[i],
-                        type = categories.get(i),
+                        type = categories[i],
                         onMovieClick = onMovieClick)
                 }
 //        LazyRowItem(
@@ -131,7 +132,7 @@ fun HomePage(
 
         is UIState.Error -> {
             Text(
-                text = " Error",
+                text = "Error",
                 color = Color.Red
             )
         }
@@ -143,23 +144,34 @@ fun MovieItem(
     movie: Movie,
     onMovieClick: () -> Unit
 ) {
-    Column(modifier = Modifier.width(111.dp)
-        .clickable { onMovieClick() }) {
+    Column(modifier = Modifier
+        .width(111.dp)
+        .height(260.dp)
+        .clickable { onMovieClick() }
+        .padding(4.dp)) {
         Box(modifier = Modifier
             .clip(RoundedCornerShape(4.dp))
             .width(111.dp)
-            .height(156.dp)){
+            .height(156.dp)) {
 
-            Image(painter = rememberAsyncImagePainter(model = movie.image),
-                contentDescription = "poster of movie")
-
-            Text(
-                text = movie.name
-            )
-            Text(
-                text = movie.genres.firstOrNull()?.genre.orEmpty()
+            Image(
+                painter = rememberAsyncImagePainter(model = movie.image),
+                contentDescription = "poster of movie",
+                modifier = Modifier.fillMaxSize()
             )
         }
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            text = movie.nameRu,
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Bold,
+            maxLines = 2,
+            modifier = Modifier.height(50.dp)
+        )
+        Text(
+            text = movie.genres.firstOrNull()?.name.orEmpty(),
+            fontSize = 10.sp
+        )
     }
 
 }
@@ -168,11 +180,11 @@ fun MovieItem(
 fun LazyRowItem(
     items: List<Movie>,
     type: String,
-    onMovieClick: () -> Unit
+    onMovieClick: (Movie) -> Unit
 ) {
     Column(
         modifier = Modifier
-            .width(111.dp),
+            .fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {
         Text(
@@ -185,10 +197,10 @@ fun LazyRowItem(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            items(items.take(6).size) { item ->
+            items(items.take(6)) { item ->
                 MovieItem(
-                    movie = items.get(item),
-                    onMovieClick = onMovieClick
+                    movie = item,
+                    onMovieClick = { onMovieClick(item) }
                 )
             }
         }

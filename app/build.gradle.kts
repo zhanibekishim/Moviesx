@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+        kotlin("plugin.serialization") version "1.9.10" // use the Kotlin version you're using
 }
 
 android {
@@ -66,6 +67,7 @@ dependencies {
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0") // Gson converter for Retrofit
     implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.8.0")
     implementation ("com.squareup.okhttp3:okhttp:4.9.3")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.10.0") // Use the latest version available
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
