@@ -32,6 +32,13 @@ private val LightColorScheme = lightColorScheme(
     */
 )
 
+@Composable
+fun MovieAppTheme(content: @Composable () -> Unit) {
+    MaterialTheme(
+        colorScheme = if (true) LightColorScheme else DarkColorScheme,
+        content = content
+    )
+}
 
 @Composable
 fun MoviesTheme(

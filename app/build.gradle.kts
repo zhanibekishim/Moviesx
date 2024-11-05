@@ -56,6 +56,10 @@ dependencies {
     implementation(libs.androidx.ui.test.android)
     implementation("io.coil-kt:coil-compose:2.0.0")
 
+    implementation ("androidx.compose.runtime:runtime-livedata:1.5.0") // Или актуальная версия
+    implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.6.0") // Или актуальная версия
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.0") // Или актуальная версия
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0")
     val nav_version = "2.8.3"
     implementation("androidx.navigation:navigation-compose:$nav_version")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1") // Use latest version

@@ -41,6 +41,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jax.movies.R
@@ -65,7 +66,7 @@ fun HomePage(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(start = 16.dp, bottom = 80.dp)
+                    .padding(start = 16.dp, bottom = 60.dp)
                     .verticalScroll(state = scrollState),
                 verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
@@ -82,7 +83,10 @@ fun HomePage(
                 for (i in 0 until size) {
                     LazyRowItem(items = uiState.movies[i],
                         type = categories[i],
-                        onMovieClick = onMovieClick)
+                        onMovieClick = onMovieClick,
+                        onTypeClick = { category, movies ->
+                            onTypeClick(category, movies)
+                        })
                 }
 //        LazyRowItem(
 //            items = AllMovies.premieres,
@@ -142,21 +146,27 @@ fun HomePage(
 @Composable
 fun MovieItem(
     movie: Movie,
-    onMovieClick: () -> Unit
+    onMovieClick: () -> Unit,
+    width: Dp = 111.dp,
+    height: Dp = 260.dp,
+    imageHeight: Dp = 156.dp
 ) {
-    Column(modifier = Modifier
-        .width(111.dp)
-        .height(260.dp)
-        .clickable { onMovieClick() }
-        .padding(4.dp)) {
-        Box(modifier = Modifier
-            .clip(RoundedCornerShape(4.dp))
-            .width(111.dp)
-            .height(156.dp)) {
-
+    Column(
+        modifier = Modifier
+            .width(width)
+            .height(height)
+            .clickable { onMovieClick() }
+            .padding(4.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .clip(RoundedCornerShape(4.dp))
+                .width(width)
+                .height(imageHeight)
+        ) {
             Image(
                 painter = rememberAsyncImagePainter(model = movie.image),
-                contentDescription = "poster of movie",
+                contentDescription = "постер фильма",
                 modifier = Modifier.fillMaxSize()
             )
         }
@@ -173,18 +183,18 @@ fun MovieItem(
             fontSize = 10.sp
         )
     }
-
 }
 
 @Composable
 fun LazyRowItem(
     items: List<Movie>,
     type: String,
-    onMovieClick: (Movie) -> Unit
+    onMovieClick: (Movie) -> Unit,
+    onTypeClick: (String, List<Movie>) -> Unit
 ) {
     Column(
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth().clickable { onTypeClick(type, items) },
         verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {
         Text(
