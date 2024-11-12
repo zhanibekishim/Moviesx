@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jax.movies.domain.Resource
 import com.jax.movies.domain.usecase.GetMovieCollectionUseCaseImpl
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -15,9 +16,7 @@ class HomeViewModel : ViewModel() {
 
     private val getMovieCollectionUseCase = GetMovieCollectionUseCaseImpl()
     private val _homeScreenState: MutableStateFlow<HomeScreenState> =
-        MutableStateFlow(HomeScreenState(
-            moviesList = MoviesType.entries.map { HomeScreenState.MoviesState.Initial }
-        ))
+        MutableStateFlow(HomeScreenState())
     val homeScreenState: StateFlow<HomeScreenState> = _homeScreenState.asStateFlow()
 
     init {
@@ -29,8 +28,9 @@ class HomeViewModel : ViewModel() {
     private fun fetchMovies(type: MoviesType) {
         updateMovieState(type, HomeScreenState.MoviesState.Loading)
         viewModelScope.launch {
+            delay(3000)
             getMovieCollectionUseCase(type).collect { result ->
-                when(result){
+                when (result) {
                     is Resource.Error -> {
                         updateMovieState(
                             type,
@@ -40,7 +40,7 @@ class HomeViewModel : ViewModel() {
                     is Resource.Success -> {
                         updateMovieState(
                             type,
-                            HomeScreenState.MoviesState.Success(movies = result.data, moviesType =type)
+                            HomeScreenState.MoviesState.Success(movies = result.data)
                         )
                     }
                 }
@@ -50,37 +50,12 @@ class HomeViewModel : ViewModel() {
 
     private fun updateMovieState(type: MoviesType, newState: HomeScreenState.MoviesState) {
         _homeScreenState.update { currentState ->
-            val updatedMoviesList = currentState.moviesList.toMutableList()
-            val index = MoviesType.entries.indexOf(type)
-            updatedMoviesList[index] = newState
-            currentState.copy(moviesList = updatedMoviesList)
+            when (type) {
+                MoviesType.TOP_250_MOVIES -> currentState.copy(top250MoviesState = newState)
+                MoviesType.TOP_POPULAR_MOVIES -> currentState.copy(popularMoviesState = newState)
+                MoviesType.COMICS_THEME -> currentState.copy(comicsMoviesState = newState)
+                MoviesType.PREMIERS -> currentState.copy(premiersMoviesState = newState)
+            }
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
