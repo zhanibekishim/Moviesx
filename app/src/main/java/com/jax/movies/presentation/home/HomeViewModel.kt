@@ -2,7 +2,7 @@ package com.jax.movies.presentation.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jax.movies.domain.Resource
+import com.jax.movies.utils.Resource
 import com.jax.movies.domain.usecase.GetMovieCollectionUseCaseImpl
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow

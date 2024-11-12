@@ -2,7 +2,7 @@ package com.jax.movies.data.repository
 
 import com.jax.movies.data.mapper.MoviesMapper
 import com.jax.movies.data.remote.api.MoviesApiFactory
-import com.jax.movies.domain.Resource
+import com.jax.movies.utils.Resource
 import com.jax.movies.domain.entity.Movie
 import com.jax.movies.domain.repository.MoviesRepository
 import com.jax.movies.presentation.home.MoviesType

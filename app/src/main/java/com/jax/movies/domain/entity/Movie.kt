@@ -3,7 +3,6 @@ package com.jax.movies.domain.entity
 import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Immutable
 import androidx.navigation.NavType
 import com.google.gson.Gson
@@ -16,6 +15,7 @@ data class Movie(
     val name: String,
     val year: Int,
     val posterUrl: String,
+    val ratingKp: Double,
     val slogan: String,
     val shortDescription: String,
     val description: String,

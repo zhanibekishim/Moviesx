@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class MovieDto(
     @SerializedName("kinopoiskId") val id: Long,
+    @SerializedName("ratingKinopoisk") val ratingKp: Double,
     @SerializedName("nameRu") val name: String,
     @SerializedName("year") val year: Int,
     @SerializedName("genres") val genres: List<GenreNameContainerDto>,

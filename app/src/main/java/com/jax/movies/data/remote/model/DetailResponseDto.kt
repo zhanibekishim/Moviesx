@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class DetailResponseDto(
     @SerializedName("kinoposikId") val id:Long,
+    @SerializedName("ratingKinopoisk") val ratingKp: Double,
     @SerializedName("nameRu") val name:String,
     @SerializedName("posterUrl") val posterUrl:String,
     @SerializedName("year") val year:Int,

@@ -1,7 +1,6 @@
-package com.jax.movies.presentation.detail.movies
+package com.jax.movies.presentation.detail.films
 
 import android.util.Log
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,7 +18,6 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
@@ -28,24 +26,19 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.bumptech.glide.integration.compose.GlideImage
 import com.jax.movies.R
 import com.jax.movies.domain.entity.Movie
+import com.jax.movies.presentation.home.MovieItem
 import com.jax.movies.presentation.home.MoviesType
 
 @Composable
@@ -55,14 +48,14 @@ fun MoviesDetailScreen(
     onClickBack: () -> Unit,
 ) {
 
-    val viewModel: MoviesDetailViewModel = viewModel()
+    val viewModel: FilmsViewModel = viewModel()
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     when (val currentState = state) {
-        is MoviesDetailState.Initial -> {}
-        is MoviesDetailState.Loading -> LoadingScreen()
-        is MoviesDetailState.Error -> ErrorScreen(currentState.message)
-        is MoviesDetailState.Success -> {
+        is FilmsScreenState.Initial -> {}
+        is FilmsScreenState.Loading -> LoadingScreen()
+        is FilmsScreenState.Error -> ErrorScreen(currentState.message)
+        is FilmsScreenState.Success -> {
             MainContent(
                 movies = currentState.movies,
                 moviesType = type,
@@ -76,7 +69,6 @@ fun MoviesDetailScreen(
     }
 }
 
-@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 private fun MainContent(
     movies: List<Movie>,
@@ -105,32 +97,10 @@ private fun MainContent(
 
         ) {
             items(movies) { movie ->
-                Column(
-                    modifier = Modifier
-                        .clickable { onMovieClick(movie) }
-                        .fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    GlideImage(
-                        model = movie.posterUrl,
-                        contentDescription = movie.name,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .height(156.dp)
-                            .clip(RoundedCornerShape(8.dp))
-                    )
-                    Text(text = movie.name, textAlign = TextAlign.Center)
-                    Text(
-                        text = if (movie.genres.isNotEmpty() && movie.genres[0].genre.isNotEmpty()) {
-                            movie.genres[0].genre
-                        } else {
-                            "No genre available"
-                        },
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = 1,
-                        textAlign = TextAlign.Center
-                    )
-                }
+                MovieItem(
+                    onMovieClick = { onMovieClick(movie) },
+                    movie = movie
+                )
             }
         }
     }
@@ -179,7 +149,8 @@ private fun SearchTopAppBar(
                 top = WindowInsets.statusBars
                     .asPaddingValues()
                     .calculateTopPadding()
-            ).padding(16.dp)
+            )
+            .padding(16.dp)
     ) {
         IconButton(onClick = onClickBack) {
             Icon(

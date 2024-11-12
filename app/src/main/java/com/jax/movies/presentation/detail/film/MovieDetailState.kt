@@ -1,4 +1,4 @@
-package com.jax.movies.presentation.detail.movie
+package com.jax.movies.presentation.detail.film
 
 import com.jax.movies.domain.entity.Movie
 

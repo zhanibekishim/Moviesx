@@ -18,6 +18,7 @@ class MoviesMapper {
             genres = dtoGenresToEntity(movieDto.genres),
             countries = dtoCountriesToEntity(movieDto.countries),
             posterUrl = movieDto.posterUrl,
+            ratingKp = movieDto.ratingKp,
             ageLimit = "",
             slogan = "",
             description = "",
@@ -36,6 +37,7 @@ class MoviesMapper {
             posterUrl = detailDto.posterUrl,
             ageLimit = detailDto.ageLimit,
             slogan = detailDto.slogan,
+            ratingKp = detailDto.ratingKp,
             description = detailDto.description,
             shortDescription = detailDto.shortDescription,
             lengthMovie = detailDto.duration

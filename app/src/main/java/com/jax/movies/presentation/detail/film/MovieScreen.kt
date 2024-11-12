@@ -1,4 +1,4 @@
-package com.jax.movies.presentation.detail.movie
+package com.jax.movies.presentation.detail.film
 
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
