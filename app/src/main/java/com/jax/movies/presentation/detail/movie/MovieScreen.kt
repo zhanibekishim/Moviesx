@@ -1,4 +1,4 @@
-package com.jax.movies.presentation.detail.film
+package com.jax.movies.presentation.detail.movie
 
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
@@ -25,11 +25,12 @@ fun MovieContent(
     val viewModel: MovieDetailViewModel = viewModel()
     val state by viewModel.state.collectAsStateWithLifecycle()
     when (val currentState = state) {
+        is MovieDetailState.Initial -> {}
+        is MovieDetailState.Loading -> LoadingScreen()
         is MovieDetailState.Error -> ErrorScreen(errorMessage = currentState.message)
-        MovieDetailState.Initial -> {}
-        MovieDetailState.Loading -> LoadingScreen()
         is MovieDetailState.Success -> {
-            MainContent(movie = currentState.movie)}
+            MainContent(movie = currentState.movie)
+        }
     }
     LaunchedEffect(key1 = movie) {
         viewModel.fetchDetailInfo(movie)

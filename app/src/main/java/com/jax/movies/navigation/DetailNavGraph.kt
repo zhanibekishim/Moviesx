@@ -8,8 +8,8 @@ import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.google.gson.Gson
 import com.jax.movies.domain.entity.Movie
-import com.jax.movies.presentation.detail.film.MovieContent
-import com.jax.movies.presentation.detail.films.MoviesDetailScreen
+import com.jax.movies.presentation.detail.movie.MovieContent
+import com.jax.movies.presentation.detail.movies.MoviesDetailScreen
 import com.jax.movies.presentation.home.BottomScreenItem
 import com.jax.movies.presentation.home.MoviesType
 

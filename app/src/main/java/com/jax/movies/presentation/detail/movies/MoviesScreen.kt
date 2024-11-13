@@ -1,4 +1,4 @@
-package com.jax.movies.presentation.detail.films
+package com.jax.movies.presentation.detail.movies
 
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
@@ -48,14 +48,14 @@ fun MoviesDetailScreen(
     onClickBack: () -> Unit,
 ) {
 
-    val viewModel: FilmsViewModel = viewModel()
+    val viewModel: MoviesViewModel = viewModel()
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     when (val currentState = state) {
-        is FilmsScreenState.Initial -> {}
-        is FilmsScreenState.Loading -> LoadingScreen()
-        is FilmsScreenState.Error -> ErrorScreen(currentState.message)
-        is FilmsScreenState.Success -> {
+        is MoviesScreenState.Initial -> {}
+        is MoviesScreenState.Loading -> LoadingScreen()
+        is MoviesScreenState.Error -> ErrorScreen(currentState.message)
+        is MoviesScreenState.Success -> {
             MainContent(
                 movies = currentState.movies,
                 moviesType = type,
