@@ -1,8 +1,8 @@
 package com.jax.movies.presentation.detail.movie
 
-import com.jax.movies.domain.entity.Actor
-import com.jax.movies.domain.entity.GalleryImage
-import com.jax.movies.domain.entity.Movie
+import com.jax.movies.domain.entity.films.Actor
+import com.jax.movies.domain.entity.films.GalleryImage
+import com.jax.movies.domain.entity.home.Movie
 
 sealed class MovieDetailState {
     data object Initial : MovieDetailState()

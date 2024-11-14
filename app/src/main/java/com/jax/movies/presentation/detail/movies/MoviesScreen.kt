@@ -37,7 +37,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jax.movies.R
-import com.jax.movies.domain.entity.Movie
+import com.jax.movies.domain.entity.home.Movie
+import com.jax.movies.presentation.home.ErrorScreen
 import com.jax.movies.presentation.home.MovieItem
 import com.jax.movies.presentation.home.MoviesType
 
@@ -106,34 +107,6 @@ private fun MainContent(
     }
 }
 
-
-@Composable
-private fun LoadingScreen(
-    modifier: Modifier = Modifier
-) {
-    Log.d("dsadasdasasdas", "Loading Screen")
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = modifier.fillMaxSize()
-    ) {
-        CircularProgressIndicator(color = Color.Red)
-    }
-}
-
-@Composable
-private fun ErrorScreen(
-    errorMessage: String,
-    modifier: Modifier = Modifier
-) {
-    Log.d("dsadasdasasdas", "ErrorScreen: $errorMessage")
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = modifier.fillMaxSize()
-    ) {
-        Text(text = errorMessage, color = Color.Red)
-    }
-}
-
 @Composable
 private fun SearchTopAppBar(
     onClickBack: () -> Unit,
@@ -169,6 +142,19 @@ private fun SearchTopAppBar(
                 .align(Alignment.CenterVertically)
         )
         Spacer(modifier = Modifier.weight(1f))
+    }
+}
+
+@Composable
+fun LoadingScreen(
+    modifier: Modifier = Modifier
+) {
+    Log.d("dsadasdasasdas", "Loading Screen")
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = modifier.fillMaxSize()
+    ) {
+        CircularProgressIndicator(color = Color.Red)
     }
 }
 

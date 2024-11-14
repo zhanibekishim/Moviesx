@@ -1,6 +1,6 @@
 package com.jax.movies.presentation.home
 
-import com.jax.movies.domain.entity.Movie
+import com.jax.movies.domain.entity.home.Movie
 
 
 /*

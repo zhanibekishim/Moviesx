@@ -4,9 +4,9 @@ import com.jax.movies.data.remote.model.home.CountryNameContainerDto
 import com.jax.movies.data.remote.model.home.DetailResponseDto
 import com.jax.movies.data.remote.model.home.GenreNameContainerDto
 import com.jax.movies.data.remote.model.home.MovieDto
-import com.jax.movies.domain.entity.CountryNameContainer
-import com.jax.movies.domain.entity.GenreNameContainer
-import com.jax.movies.domain.entity.Movie
+import com.jax.movies.domain.entity.home.CountryNameContainer
+import com.jax.movies.domain.entity.home.GenreNameContainer
+import com.jax.movies.domain.entity.home.Movie
 
 class MoviesMapper {
 

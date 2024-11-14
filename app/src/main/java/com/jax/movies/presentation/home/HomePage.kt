@@ -1,5 +1,6 @@
 package com.jax.movies.presentation.home
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -41,7 +42,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -50,7 +50,7 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideSubcomposition
 import com.bumptech.glide.integration.compose.RequestState
 import com.jax.movies.R
-import com.jax.movies.domain.entity.Movie
+import com.jax.movies.domain.entity.home.Movie
 import com.valentinilk.shimmer.shimmer
 
 @Composable
@@ -216,7 +216,6 @@ private fun LazyRowItem(
     }
 }
 
-@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun MovieItem(
     movie: Movie,
@@ -236,22 +235,12 @@ fun MovieItem(
                 .clickable { onMovieClick(movie) },
             contentAlignment = Alignment.TopEnd
         ) {
-            GlideSubcomposition(
-                modifier = Modifier
+            FetchedImage(
+                linkToImage = movie.posterUrl,
+                modifierForParent = Modifier
                     .sizeIn(maxHeight = 150.dp, maxWidth = 150.dp)
                     .clip(RoundedCornerShape(8.dp)),
-                model = movie.posterUrl,
-                content = {
-                    when (state) {
-                        is RequestState.Failure -> ErrorItem()
-                        is RequestState.Loading -> LoadingItem(modifier = Modifier.sizeIn(maxHeight = 100.dp))
-                        is RequestState.Success -> Image(
-                            painter = painter,
-                            contentDescription = movie.name,
-                            contentScale = ContentScale.Crop
-                        )
-                    }
-                }
+                modifierForImage = Modifier
             )
             if (movie.ratingKp != 0.0) {
                 Box(
@@ -286,12 +275,37 @@ fun MovieItem(
     }
 }
 
+@OptIn(ExperimentalGlideComposeApi::class)
+@Composable
+fun FetchedImage(
+    linkToImage:String,
+    modifierForParent: Modifier = Modifier,
+    modifierForImage: Modifier = Modifier
+) {
+    GlideSubcomposition(
+        modifier = modifierForParent,
+        model = linkToImage,
+        content = {
+            when (state) {
+                is RequestState.Failure -> ErrorItem()
+                is RequestState.Loading -> LoadingItem()
+                is RequestState.Success -> Image(
+                    painter = painter,
+                    contentDescription = "",
+                    contentScale = ContentScale.Crop,
+                    modifier = modifierForImage
+                )
+            }
+        }
+    )
+}
+
 @Composable
 fun LoadingItem(
     modifier: Modifier = Modifier
 ) {
     Box(
-        modifier = modifier,
+        modifier = modifier.sizeIn(maxHeight = 100.dp),
         contentAlignment = Alignment.Center
     ) {
         CircularProgressIndicator()
@@ -331,28 +345,15 @@ private fun ShimmerLoadingItems(
 }
 
 @Composable
-private fun ErrorScreen(
+fun ErrorScreen(
     errorMessage: String,
     modifier: Modifier = Modifier
 ) {
+    Log.d("dsadasdasasdas", "ErrorScreen: $errorMessage")
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier.fillMaxSize()
     ) {
         Text(text = errorMessage, color = Color.Red)
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun Test() {
-    Box(
-        modifier = Modifier
-            .size(50.dp)
-            .background(Color.Red)
-            .clip(RoundedCornerShape(topStart = 4.dp))
-            .background(Color.Blue)
-            .clip(RoundedCornerShape(bottomEnd = 4.dp))
-
-    )
 }

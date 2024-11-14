@@ -1,10 +1,10 @@
-package com.jax.movies.domain.entity
+package com.jax.movies.domain.entity.home
 
 import android.os.Parcelable
 import androidx.compose.runtime.Immutable
 import kotlinx.parcelize.Parcelize
 @Immutable
 @Parcelize
-data class GenreNameContainer(
-   val genre:String
+data class CountryNameContainer(
+  val country: String
 ):Parcelable

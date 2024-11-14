@@ -5,7 +5,7 @@ import androidx.compose.runtime.remember
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.jax.movies.domain.entity.Movie
+import com.jax.movies.domain.entity.home.Movie
 import com.jax.movies.presentation.home.MoviesType
 
 class NavigationState(

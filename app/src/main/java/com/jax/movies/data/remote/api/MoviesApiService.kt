@@ -1,6 +1,7 @@
 package com.jax.movies.data.remote.api
 
 import com.jax.movies.BuildConfig
+import com.jax.movies.data.remote.model.films.ActorDetailInfoResponse
 import com.jax.movies.data.remote.model.films.ActorDto
 import com.jax.movies.data.remote.model.films.GalleryResponse
 import com.jax.movies.data.remote.model.films.SimilarFilmsResponse
@@ -42,12 +43,6 @@ interface MoviesApiService {
         @Header("X-API-KEY") apiKey: String = BuildConfig.API_KEY
     ): Response<List<ActorDto>>
 
-  /*  @GET("v1/staff/{filmId}")
-    suspend fun getActor(
-        @Path("filmId") id: Int,
-        @Header("X-API-KEY") apiKey: String = BuildConfig.API_KEY
-    ): Response<ActorsResponse>*/
-
     @GET("v2.2/films/{filmId}/images")
     suspend fun getGallery(
         @Path("filmId") id: Long,
@@ -61,6 +56,12 @@ interface MoviesApiService {
         @Path("filmId") id: Long,
         @Header("X-API-KEY") apiKey: String = BuildConfig.API_KEY
     ): Response<SimilarFilmsResponse>
+
+    @GET("v1/staff/{id}")
+    suspend fun getActorDetailInfo(
+        @Path("id") id: Long,
+        @Header("X-API-KEY") apiKey: String = BuildConfig.API_KEY
+    ): Response<ActorDetailInfoResponse>
 
     private companion object {
         const val GALLERY_TYPE = "STILL"

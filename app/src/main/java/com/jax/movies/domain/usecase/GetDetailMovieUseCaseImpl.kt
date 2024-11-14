@@ -2,7 +2,7 @@ package com.jax.movies.domain.usecase
 
 import com.jax.movies.data.repository.MoviesRepositoryImpl
 import com.jax.movies.utils.Resource
-import com.jax.movies.domain.entity.Movie
+import com.jax.movies.domain.entity.home.Movie
 import kotlinx.coroutines.flow.Flow
 
 class GetDetailMovieUseCaseImpl:GetDetailMovieUseCase {

@@ -2,7 +2,6 @@ package com.jax.movies.presentation.detail.movie
 
 import android.annotation.SuppressLint
 import android.util.Log
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,7 +20,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -35,7 +33,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -43,17 +40,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.bumptech.glide.integration.compose.GlideSubcomposition
-import com.bumptech.glide.integration.compose.RequestState
 import com.jax.movies.R
-import com.jax.movies.domain.entity.Actor
-import com.jax.movies.domain.entity.GalleryImage
-import com.jax.movies.domain.entity.Movie
+import com.jax.movies.domain.entity.films.Actor
+import com.jax.movies.domain.entity.films.GalleryImage
+import com.jax.movies.domain.entity.home.Movie
+import com.jax.movies.presentation.detail.movies.LoadingScreen
+import com.jax.movies.presentation.home.ErrorScreen
+import com.jax.movies.presentation.home.FetchedImage
 import com.jax.movies.presentation.home.MovieItem
 
 @Composable
 fun MovieContent(
+    onActorClick: (Actor) -> Unit,
     onMovieClick: (Movie) -> Unit,
     onBackClicked: () -> Unit,
     onLikeClicked: () -> Unit,
@@ -73,6 +71,7 @@ fun MovieContent(
         is MovieDetailState.Success -> {
             MainContent(
                 movie = currentState.movie,
+                onActorClick = onActorClick,
                 onMovieClick = onMovieClick,
                 onBackClicked = onBackClicked,
                 onLikeClicked = onLikeClicked,
@@ -92,10 +91,11 @@ fun MovieContent(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalGlideComposeApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 private fun MainContent(
+    onActorClick: (Actor) -> Unit,
     onMovieClick: (Movie) -> Unit,
     onBackClicked: () -> Unit,
     onLikeClicked: () -> Unit,
@@ -137,22 +137,11 @@ private fun MainContent(
                         .fillMaxWidth()
                         .height(600.dp)
                 ) {
-                    GlideSubcomposition(
-                        modifier = Modifier
+                    FetchedImage(
+                        linkToImage = movie.posterUrl,
+                        modifierForParent = Modifier
                             .fillMaxWidth()
                             .matchParentSize(),
-                        model = movie.posterUrl,
-                        content = {
-                            when (state) {
-                                is RequestState.Failure -> ErrorItem(modifier = Modifier.fillMaxSize())
-                                is RequestState.Loading -> LoadingItem(modifier = Modifier.fillMaxSize())
-                                is RequestState.Success -> Image(
-                                    painter = painter,
-                                    contentDescription = movie.name,
-                                    contentScale = ContentScale.Crop
-                                )
-                            }
-                        }
                     )
                     TitleSection(
                         modifier = Modifier.align(Alignment.BottomCenter),
@@ -179,6 +168,8 @@ private fun MainContent(
                     countOther = actors.size,
                     itemInColumn = 2,
                     actors = actors,
+                    onActorClick = onActorClick,
+                    onTitleClick = {},
                     modifier = Modifier.padding(horizontal = 26.dp)
                 )
             }
@@ -188,6 +179,8 @@ private fun MainContent(
                     countOther = filmCrew.size,
                     itemInColumn = 2,
                     actors = filmCrew,
+                    onActorClick = onActorClick,
+                    onTitleClick = {},
                     modifier = Modifier.padding(horizontal = 26.dp)
                 )
             }
@@ -199,9 +192,9 @@ private fun MainContent(
                 )
             }
             item {
-                SimilarMoviesSection(
-                    count = similarMovies.size,
-                    similarMovies = similarMovies,
+                RelatedMoviesSection(
+                    countOrAll = similarMovies.size.toString(),
+                    relatedMovies = similarMovies,
                     onMovieClick = onMovieClick,
                     modifier = Modifier
                         .padding(horizontal = 26.dp)
@@ -238,7 +231,7 @@ private fun TitleSection(
                 Text(text = genre.genre, color = Color(0xFFB5B5C9))
             }
         }
-        Row{
+        Row {
             movie.countries.forEachIndexed { index, country ->
                 if (index < movie.countries.size - 1) Text(text = ",")
                 Text(text = country.country, color = Color(0xFFB5B5C9))
@@ -316,9 +309,10 @@ private fun MainDescriptionWithSubDescription(
 }
 
 @Composable
-private fun StepTitle(
+fun StepTitle(
+    onTitleClick: () -> Unit,
     title: String,
-    count: Int,
+    countOrOther: String,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -332,13 +326,13 @@ private fun StepTitle(
             modifier = Modifier.weight(1f)
         )
         Text(
-            text = count.toString(),
+            text = countOrOther,
             fontWeight = FontWeight.W600,
             fontSize = 14.sp,
             color = Color(0xFF3D3BFF)
 
         )
-        IconButton(onClick = {}) {
+        IconButton(onClick = onTitleClick) {
             Icon(
                 painter = painterResource(id = R.drawable.arrow_right),
                 contentDescription = "see all",
@@ -350,6 +344,8 @@ private fun StepTitle(
 
 @Composable
 private fun ActorsSection(
+    onTitleClick: () -> Unit,
+    onActorClick: (Actor) -> Unit,
     title: String,
     countOther: Int,
     itemInColumn: Int,
@@ -357,7 +353,12 @@ private fun ActorsSection(
     modifier: Modifier = Modifier
 ) {
     Column {
-        StepTitle(title = title, count = countOther, modifier = modifier)
+        StepTitle(
+            title = title,
+            countOrOther = countOther.toString(),
+            modifier = modifier,
+            onTitleClick = onTitleClick
+        )
         LazyHorizontalGrid(
             rows = GridCells.Fixed(itemInColumn),
             modifier = modifier
@@ -365,39 +366,36 @@ private fun ActorsSection(
                 .height(200.dp)
         ) {
             items(actors) { actor ->
-                ActorItem(actor = actor)
+                ActorItem(
+                    actor = actor,
+                    onActorClick = onActorClick,
+                    modifier = Modifier.size(width = 207.dp, height = 68.dp)
+                )
             }
         }
     }
 }
 
-@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun ActorItem(
+    onActorClick: (Actor) -> Unit,
     actor: Actor,
     modifier: Modifier = Modifier
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = modifier.size(width = 207.dp, height = 68.dp)
+        modifier = modifier
     ) {
-        GlideSubcomposition(
-            model = actor.posterUrl,
-            modifier = Modifier
+        FetchedImage(
+            linkToImage = actor.posterUrl,
+            modifierForParent = Modifier
                 .width(49.dp)
-                .height(68.dp),
-            content = {
-                when (state) {
-                    is RequestState.Failure -> ErrorItem(modifier = Modifier.fillMaxSize())
-                    is RequestState.Loading -> LoadingItem(modifier = Modifier.fillMaxSize())
-                    is RequestState.Success -> Image(
-                        painter = painter,
-                        contentDescription = actor.nameEn,
-                        contentScale = ContentScale.Crop
-                    )
+                .height(68.dp)
+                .clickable {
+                    onActorClick(actor)
+                    Log.d("dsaadas", actor.actorId.toString())
                 }
-            }
         )
         Column {
             Text(
@@ -431,7 +429,14 @@ private fun GallerySection(
     Column(
         modifier = modifier
     ) {
-        StepTitle(title = "Галерея", count = count, modifier = modifier)
+        StepTitle(
+            title = "Галерея",
+            countOrOther = count.toString(),
+            modifier = modifier,
+            onTitleClick = {
+
+            }
+        )
         LazyRow(
             modifier = Modifier
                 .fillMaxWidth(),
@@ -444,93 +449,52 @@ private fun GallerySection(
     }
 }
 
-
-@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun GalleryCard(
     galleryImage: GalleryImage,
     modifier: Modifier = Modifier
 ) {
-    GlideSubcomposition(
-        model = galleryImage.imageUrl,
-        modifier = modifier
+    FetchedImage(
+        linkToImage = galleryImage.imageUrl,
+        modifierForParent = modifier
             .width(192.dp)
             .height(108.dp)
-            .clip(RoundedCornerShape(8.dp))
-            .clickable {},
-        content = {
-            when (state) {
-                is RequestState.Failure -> ErrorItem(modifier = Modifier.fillMaxSize())
-                is RequestState.Loading -> LoadingItem(modifier = Modifier.fillMaxSize())
-                is RequestState.Success -> Image(
-                    painter = painter,
-                    contentDescription = "",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.size(width = 192.dp, height = 108.dp)
-                )
-            }
-        }
+            .clip(RoundedCornerShape(8.dp)),
+        modifierForImage = Modifier.size(width = 192.dp, height = 108.dp)
     )
 }
 
 @Composable
-private fun SimilarMoviesSection(
+fun RelatedMoviesSection(
     onMovieClick: (Movie) -> Unit,
-    count: Int,
-    similarMovies: List<Movie>,
+    countOrAll: String,
+    relatedMovies: List<Movie>,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier){
-        StepTitle(title = "Похожие фильмы", count = count, modifier = modifier)
+    Column(modifier = modifier) {
+        StepTitle(
+            title = "Похожие фильмы",
+            countOrOther = countOrAll,
+            modifier = modifier,
+            onTitleClick = {
+
+            }
+        )
         LazyRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier
                 .fillMaxWidth()
         ) {
-            similarMovies.forEach { similarMovie ->
-                item { MovieItem(
-                    movie = similarMovie,
-                    onMovieClick = onMovieClick,
-                    modifier = Modifier.padding(bottom = 56.dp)
-                ) }
+            relatedMovies.forEach { similarMovie ->
+                item {
+                    MovieItem(
+                        movie = similarMovie,
+                        onMovieClick = onMovieClick,
+                        modifier = Modifier.padding(bottom = 56.dp)
+                    )
+                }
             }
         }
     }
 }
 
-@Composable
-private fun ErrorItem(modifier: Modifier) {
-    Text(text = "Ошибка", modifier = modifier)
-}
-
-@Composable
-private fun LoadingItem(modifier: Modifier) {
-    CircularProgressIndicator(modifier = modifier)
-}
-
-@Composable
-private fun LoadingScreen(
-    modifier: Modifier = Modifier
-) {
-    Log.d("dsadasdasasdas", "Loading Screen")
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = modifier.fillMaxSize()
-    ) {
-        CircularProgressIndicator()
-    }
-}
-
-@Composable
-private fun ErrorScreen(
-    errorMessage: String,
-    modifier: Modifier = Modifier
-) {
-    Log.d("dsadasdasasdas", "ErrorScreen: $errorMessage")
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = modifier.fillMaxSize()
-    ) {
-        Text(text = errorMessage, color = Color.Red)
-    }
-}

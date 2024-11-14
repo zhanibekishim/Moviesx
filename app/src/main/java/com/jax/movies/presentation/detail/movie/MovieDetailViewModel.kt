@@ -3,10 +3,10 @@ package com.jax.movies.presentation.detail.movie
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jax.movies.domain.entity.Actor
-import com.jax.movies.domain.entity.ActorType
-import com.jax.movies.domain.entity.GalleryImage
-import com.jax.movies.domain.entity.Movie
+import com.jax.movies.domain.entity.films.Actor
+import com.jax.movies.domain.entity.films.ActorType
+import com.jax.movies.domain.entity.films.GalleryImage
+import com.jax.movies.domain.entity.home.Movie
 import com.jax.movies.domain.usecase.GetActorsUseCaseImpl
 import com.jax.movies.domain.usecase.GetDetailMovieUseCaseImpl
 import com.jax.movies.domain.usecase.GetGalleriesUseCaseImpl
@@ -121,14 +121,14 @@ class MovieDetailViewModel : ViewModel() {
     }
     private fun getFilmCrew(actors: List<Actor>): List<Actor> {
         return actors.filter { actor ->
-            when (actor.professionKey) {
+            when (actor.profession) {
                 ActorType.DIRECTOR.name,
                 ActorType.WRITE.name,
                 ActorType.PRODUCER.name,
                 ActorType.OPERATOR.name,
                 ActorType.DESIGN.name,
                 ActorType.VOICE_DIRECTOR.name,
-                ActorType.PRODUCER_USSR.name-> true
+                ActorType.PRODUCER_USSR.name -> true
                 else -> false
             }
         }

@@ -1,4 +1,4 @@
-package com.jax.movies.domain.entity
+package com.jax.movies.domain.entity.films
 
 enum class ActorType {
     WRITE,

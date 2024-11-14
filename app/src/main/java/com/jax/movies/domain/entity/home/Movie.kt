@@ -1,4 +1,4 @@
-package com.jax.movies.domain.entity
+package com.jax.movies.domain.entity.home
 
 import android.os.Build
 import android.os.Bundle

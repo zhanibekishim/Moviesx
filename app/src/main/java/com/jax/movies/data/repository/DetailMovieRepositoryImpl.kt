@@ -4,12 +4,13 @@ import android.util.Log
 import com.jax.movies.data.mapper.FilmsMapper
 import com.jax.movies.data.mapper.MoviesMapper
 import com.jax.movies.data.remote.api.MoviesApiFactory
-import com.jax.movies.domain.entity.Actor
-import com.jax.movies.domain.entity.GalleryImage
-import com.jax.movies.domain.entity.Movie
+import com.jax.movies.domain.entity.films.Actor
+import com.jax.movies.domain.entity.films.GalleryImage
+import com.jax.movies.domain.entity.home.Movie
 import com.jax.movies.domain.repository.DetailMovieRepository
 import com.jax.movies.utils.Resource
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 
 class DetailMovieRepositoryImpl : DetailMovieRepository {
@@ -66,7 +67,38 @@ class DetailMovieRepositoryImpl : DetailMovieRepository {
             }
         }
     }
+
+    override suspend fun getActorDetailInfo(actorId: Long): Flow<Resource<Actor>> {
+        return flow {
+            val response = apiService.getActorDetailInfo(actorId)
+            if (response.isSuccessful) {
+                response.body()?.let { body ->
+                    val movies = body.films.mapNotNull { filmDto ->
+                        val detailResponse = apiService.getDetailMovie(filmDto.filmId)
+                        if (detailResponse.isSuccessful) {
+                            detailResponse.body()?.let { movieMapper.detailDtoToEntity(it) }
+                        } else null
+                    }
+                    emit(Resource.Success(filmMapper.actorDetailInfoToActor(body, movies)))
+                } ?: emit(Resource.Error(Exception("Response body is null")))
+            } else {
+                emit(Resource.Error(Exception("Error: ${response.code()} - ${response.message()}")))
+            }
+        }.catch {
+            emit(Resource.Error(it))
+        }
+    }
 }
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -1,6 +1,6 @@
 package com.jax.movies.domain.usecase
 
-import com.jax.movies.domain.entity.Movie
+import com.jax.movies.domain.entity.home.Movie
 import com.jax.movies.utils.Resource
 import kotlinx.coroutines.flow.Flow
 
