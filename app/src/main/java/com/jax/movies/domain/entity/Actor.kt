@@ -4,6 +4,7 @@ data class Actor(
     val actorId: Long,
     val nameRu: String,
     val nameEn: String,
+    val posterUrl: String,
     val description: String,
     val professionText: String,
     val professionKey: String,

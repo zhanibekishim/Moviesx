@@ -1,10 +1,12 @@
 package com.jax.movies.data.repository
 
+import android.util.Log
 import com.jax.movies.data.mapper.FilmsMapper
+import com.jax.movies.data.mapper.MoviesMapper
 import com.jax.movies.data.remote.api.MoviesApiFactory
 import com.jax.movies.domain.entity.Actor
 import com.jax.movies.domain.entity.GalleryImage
-import com.jax.movies.domain.entity.SimilarMovie
+import com.jax.movies.domain.entity.Movie
 import com.jax.movies.domain.repository.DetailMovieRepository
 import com.jax.movies.utils.Resource
 import kotlinx.coroutines.flow.Flow
@@ -13,14 +15,15 @@ import kotlinx.coroutines.flow.flow
 class DetailMovieRepositoryImpl : DetailMovieRepository {
 
     private val apiService = MoviesApiFactory.apiService
-    private val mapper = FilmsMapper()
+    private val filmMapper = FilmsMapper()
+    private val movieMapper = MoviesMapper()
 
     override suspend fun getActors(filmId: Long): Flow<Resource<List<Actor>>> {
         return flow {
             val response = apiService.getActors(filmId)
             if (response.isSuccessful) {
                 response.body()?.let {
-                    emit(Resource.Success(mapper.actorsDtoToEntity(it.actors)))
+                    emit(Resource.Success(filmMapper.actorsDtoToEntity(it)))
                 } ?: emit(Resource.Error(Exception("Response body is null")))
             } else {
                 emit(Resource.Error(Exception("Error: ${response.code()} - ${response.message()}")))
@@ -33,7 +36,7 @@ class DetailMovieRepositoryImpl : DetailMovieRepository {
             val response = apiService.getGallery(filmId)
             if (response.isSuccessful) {
                 response.body()?.let {
-                    emit(Resource.Success(mapper.galleriesDtoToEntity(it.items)))
+                    emit(Resource.Success(filmMapper.galleriesDtoToEntity(it.items)))
                 } ?: emit(Resource.Error(Exception("Response body is null")))
             } else {
                 emit(Resource.Error(Exception("Error: ${response.code()} - ${response.message()}")))
@@ -41,16 +44,29 @@ class DetailMovieRepositoryImpl : DetailMovieRepository {
         }
     }
 
-    override suspend fun getSimilarFilms(filmId: Long): Flow<Resource<List<SimilarMovie>>> {
+    override suspend fun getSimilarFilms(filmId: Long): Flow<Resource<List<Movie>>> {
         return flow {
             val response = apiService.getSimilarFilms(filmId)
-            if (response.isSuccessful) {
-                response.body()?.let {
-                    emit(Resource.Success(mapper.similarFilmsDtoToEntity(it.films)))
-                } ?: emit(Resource.Error(Exception("Response body is null")))
+            val filmIdList = response.body()?.films?.map { it.id } ?: emptyList()
+            Log.d("asddsadsa", filmIdList.toString())
+
+            val movies = filmIdList.mapNotNull {
+                val movieResponse = apiService.getDetailMovie(it)
+                if (movieResponse.isSuccessful) movieResponse.body() else null
+            }
+
+            val finalMovies = movies.map { movie ->
+                movieMapper.detailDtoToEntity(movie)
+            }
+
+            if (finalMovies.isNotEmpty()) {
+                emit(Resource.Success(finalMovies))
             } else {
-                emit(Resource.Error(Exception("Error: ${response.code()} - ${response.message()}")))
+                emit(Resource.Error(Exception("No similar movies found")))
             }
         }
     }
 }
+
+
+

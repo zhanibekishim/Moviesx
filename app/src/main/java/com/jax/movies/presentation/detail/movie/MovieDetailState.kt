@@ -3,7 +3,6 @@ package com.jax.movies.presentation.detail.movie
 import com.jax.movies.domain.entity.Actor
 import com.jax.movies.domain.entity.GalleryImage
 import com.jax.movies.domain.entity.Movie
-import com.jax.movies.domain.entity.SimilarMovie
 
 sealed class MovieDetailState {
     data object Initial : MovieDetailState()
@@ -13,6 +12,7 @@ sealed class MovieDetailState {
         val movie: Movie,
         val gallery: List<GalleryImage>,
         val actors: List<Actor>,
-        val similarMovies: List<SimilarMovie>
+        val filmCrew: List<Actor>,
+        val similarMovies: List<Movie>
     ) : MovieDetailState()
 }

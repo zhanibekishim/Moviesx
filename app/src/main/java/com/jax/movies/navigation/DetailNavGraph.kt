@@ -33,7 +33,16 @@ fun NavGraphBuilder.detailsScreen(
                 }
             } ?: throw IllegalStateException("Movie is missing")
 
-            MovieContent(movie)
+            MovieContent(
+                movie = movie,
+                onBackClicked = {},
+                onLikeClicked = {},
+                onFavouriteClicked = {},
+                onShareClicked = {},
+                onBlindEyeClicked = {},
+                onMoreClicked = {},
+                onMovieClick = {}
+            )
         }
 
 

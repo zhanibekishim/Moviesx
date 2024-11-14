@@ -9,10 +9,10 @@ import com.jax.movies.domain.entity.SimilarMovie
 
 class FilmsMapper {
 
-    fun actorsDtoToEntity(actorsDto: List<ActorDto>): List<Actor> {
-        return actorsDto.map { actorDto ->
+    fun actorsDtoToEntity(actorsDto: List<ActorDto>?): List<Actor> {
+        return actorsDto?.map { actorDto ->
             actorDtoToEntity(actorDto)
-        }
+        } ?: emptyList()
     }
 
     private fun actorDtoToEntity(actorDto: ActorDto): Actor {
@@ -23,25 +23,26 @@ class FilmsMapper {
             description = actorDto.description ?: "",
             professionText = actorDto.professionText,
             professionKey = actorDto.professionKey,
+            posterUrl = actorDto.posterUrl
         )
     }
 
-    fun galleriesDtoToEntity(galleries: List<GalleryImageContainerDto>): List<GalleryImage> {
-        return galleries.map { galleryImageDto ->
+    fun galleriesDtoToEntity(galleries: List<GalleryImageContainerDto>?): List<GalleryImage> {
+        return galleries?.map { galleryImageDto ->
             galleryImageToEntity(galleryImageDto)
-        }
+        } ?: emptyList()
     }
 
     private fun galleryImageToEntity(galleryImageDto: GalleryImageContainerDto): GalleryImage {
         return GalleryImage(
-            imageUrl = galleryImageDto.imageUrl
+            imageUrl = galleryImageDto.imageUrl ?: ""
         )
     }
 
-    fun similarFilmsDtoToEntity(similarFilmsDto: List<SimilarMovieDto>): List<SimilarMovie> {
-        return similarFilmsDto.map { similarMovieDto ->
+    fun similarFilmsDtoToEntity(similarFilmsDto: List<SimilarMovieDto>?): List<SimilarMovie> {
+        return similarFilmsDto?.map { similarMovieDto ->
             similarFilmDtoToEntity(similarMovieDto)
-        }
+        } ?: emptyList()
     }
 
     private fun similarFilmDtoToEntity(similarMovieDto: SimilarMovieDto): SimilarMovie {

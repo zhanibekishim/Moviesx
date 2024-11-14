@@ -1,11 +1,12 @@
 package com.jax.movies.presentation.detail.movie
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jax.movies.domain.entity.Actor
+import com.jax.movies.domain.entity.ActorType
 import com.jax.movies.domain.entity.GalleryImage
 import com.jax.movies.domain.entity.Movie
-import com.jax.movies.domain.entity.SimilarMovie
 import com.jax.movies.domain.usecase.GetActorsUseCaseImpl
 import com.jax.movies.domain.usecase.GetDetailMovieUseCaseImpl
 import com.jax.movies.domain.usecase.GetGalleriesUseCaseImpl
@@ -19,7 +20,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
-@Suppress("NAME_SHADOWING")
 class MovieDetailViewModel : ViewModel() {
     private val getDetailMovieUseCaseImpl = GetDetailMovieUseCaseImpl()
     private val getActorsUseCaseImpl = GetActorsUseCaseImpl()
@@ -32,33 +32,22 @@ class MovieDetailViewModel : ViewModel() {
     fun fetchDetailInfo(movie: Movie) {
         _state.value = MovieDetailState.Loading
         val movieDeferred: Deferred<Movie> = viewModelScope.async {
-            var movie = Movie(
-                id = -1,
-                name = "",
-                year = 0,
-                posterUrl = "",
-                ratingKp = 0.0,
-                slogan = "",
-                shortDescription = "",
-                description = "",
-                lengthMovie = "",
-                ageLimit = "",
-                genres = emptyList(),
-                countries = emptyList()
-            )
+            var finalMovie = movie
             getDetailMovieUseCaseImpl(movie.id).first { result ->
                 when (result) {
                     is Resource.Error -> {
                         _state.value = MovieDetailState.Error(result.message.toString())
                         return@first true
                     }
+
                     is Resource.Success -> {
-                        movie = result.data
+                        finalMovie = result.data
                         return@first true
                     }
                 }
             }
-            movie
+            Log.d("dsadsadas",finalMovie.toString())
+            finalMovie
         }
 
         val actorsDeferred: Deferred<List<Actor>> = viewModelScope.async {
@@ -69,12 +58,14 @@ class MovieDetailViewModel : ViewModel() {
                         _state.value = MovieDetailState.Error(result.message.toString())
                         return@first true
                     }
+
                     is Resource.Success -> {
                         actorsList = result.data
                         return@first true
                     }
                 }
             }
+            Log.d("dsadsadas",actorsList.toString())
             actorsList
         }
         val galleriesDeferred = viewModelScope.async {
@@ -85,41 +76,76 @@ class MovieDetailViewModel : ViewModel() {
                         _state.value = MovieDetailState.Error(result.message.toString())
                         return@first true
                     }
+
                     is Resource.Success -> {
                         galleriesList = result.data
                         return@first true
                     }
                 }
             }
+            Log.d("dsadsadas",galleriesList.toString())
             galleriesList
         }
         val similarMoviesDeferred = viewModelScope.async {
-            var similarMoviesList: List<SimilarMovie> = emptyList()
+            var similarMoviesList: List<Movie> = emptyList()
             getSimilarMoviesUseCaseImpl(movie.id).first { result ->
                 when (result) {
                     is Resource.Error -> {
                         _state.value = MovieDetailState.Error(result.message.toString())
                         return@first true
                     }
+
                     is Resource.Success -> {
                         similarMoviesList = result.data
                         return@first true
                     }
                 }
             }
+            Log.d("dsadsadas",similarMoviesList.toString())
             similarMoviesList
         }
         viewModelScope.launch {
-            val movie = movieDeferred.await()
+            val finalMovie = movieDeferred.await()
             val actorsList = actorsDeferred.await()
             val galleriesList = galleriesDeferred.await()
             val similarMoviesList = similarMoviesDeferred.await()
+            val filmCrew = getFilmCrew(actorsList)
             _state.value = MovieDetailState.Success(
-                movie = movie,
+                movie = finalMovie,
                 actors = actorsList,
+                filmCrew = filmCrew,
                 gallery = galleriesList,
                 similarMovies = similarMoviesList
             )
         }
     }
+    private fun getFilmCrew(actors: List<Actor>): List<Actor> {
+        return actors.filter { actor ->
+            when (actor.professionKey) {
+                ActorType.DIRECTOR.name,
+                ActorType.WRITE.name,
+                ActorType.PRODUCER.name,
+                ActorType.OPERATOR.name,
+                ActorType.DESIGN.name,
+                ActorType.VOICE_DIRECTOR.name,
+                ActorType.PRODUCER_USSR.name-> true
+                else -> false
+            }
+        }
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

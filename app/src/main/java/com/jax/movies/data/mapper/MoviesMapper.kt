@@ -30,17 +30,17 @@ class MoviesMapper {
     fun detailDtoToEntity(detailDto: DetailResponseDto): Movie {
         return Movie(
             id = detailDto.id,
-            name = detailDto.name,
+            name = detailDto.name?:"",
             year = detailDto.year,
             genres = dtoGenresToEntity(detailDto.genres),
             countries = dtoCountriesToEntity(detailDto.countries),
-            posterUrl = detailDto.posterUrl,
-            ageLimit = detailDto.ageLimit,
-            slogan = detailDto.slogan,
+            posterUrl = detailDto.posterUrl?:"",
+            ageLimit = detailDto.ageLimit+"+",
+            slogan = detailDto.slogan?:"",
             ratingKp = detailDto.ratingKp,
-            description = detailDto.description,
-            shortDescription = detailDto.shortDescription,
-            lengthMovie = detailDto.duration
+            description = detailDto.description?:"",
+            shortDescription = detailDto.shortDescription?:"",
+            lengthMovie = detailDto.duration.convertMinutesToAccepted()
         )
     }
 
@@ -54,5 +54,11 @@ class MoviesMapper {
         return countries.map {
             CountryNameContainer(it.country)
         }
+    }
+
+    private fun Long.convertMinutesToAccepted(): String {
+        val hours = this / 60
+        val minutes = this % 60
+        return "$hours hour${if (hours != 1L) "s" else ""} ${minutes} minute${if (minutes != 1L) "s" else ""}"
     }
 }

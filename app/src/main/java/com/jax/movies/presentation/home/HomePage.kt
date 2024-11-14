@@ -287,10 +287,9 @@ fun MovieItem(
 }
 
 @Composable
-private fun LoadingItem(
+fun LoadingItem(
     modifier: Modifier = Modifier
 ) {
-
     Box(
         modifier = modifier,
         contentAlignment = Alignment.Center
@@ -300,7 +299,7 @@ private fun LoadingItem(
 }
 
 @Composable
-private fun ErrorItem(
+fun ErrorItem(
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -310,7 +309,6 @@ private fun ErrorItem(
         Text(text = "Something went wrong")
     }
 }
-
 
 @Composable
 private fun ShimmerLoadingItems(
