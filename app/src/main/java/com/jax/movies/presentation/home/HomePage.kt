@@ -7,7 +7,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -42,6 +44,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -219,21 +222,45 @@ private fun LazyRowItem(
 @Composable
 fun MovieItem(
     movie: Movie,
+    vertically: Boolean = true,
+    ratingPosition: Alignment = Alignment.TopEnd,
     onMovieClick: (Movie) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(
+
+    val layout: @Composable (modifier: Modifier, content: @Composable () -> Unit) -> Unit =
+        if (vertically) {
+            { mod, content ->
+                Column(
+                    modifier = mod,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    content = { content() })
+            }
+        } else {
+            { mod, content ->
+                Row(
+                    modifier = mod,
+                    horizontalArrangement = Arrangement.SpaceAround,
+                    verticalAlignment = Alignment.CenterVertically,
+                    content = { content() }
+                )
+            }
+        }
+
+    layout(
         modifier = modifier
-            .wrapContentHeight()
-            .width(150.dp)
-            .padding(8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(8.dp)
+            .then(
+                if (vertically) Modifier
+                    .wrapContentHeight()
+                    .width(150.dp) else Modifier.fillMaxWidth()
+            )
     ) {
         Box(
             modifier = Modifier
                 .size(150.dp)
                 .clickable { onMovieClick(movie) },
-            contentAlignment = Alignment.TopEnd
+            contentAlignment = ratingPosition
         ) {
             FetchedImage(
                 linkToImage = movie.posterUrl,
@@ -258,27 +285,30 @@ fun MovieItem(
                 }
             }
         }
+
         Spacer(Modifier.height(8.dp))
 
-        Text(
-            text = movie.name.takeIf { it.isNotEmpty() } ?: "No Name",
-            fontSize = 14.sp,
-            overflow = TextOverflow.Ellipsis,
-            maxLines = 1
-        )
-        Text(
-            text = movie.genres.firstOrNull()?.toString() ?: "No Genre",
-            fontSize = 12.sp,
-            overflow = TextOverflow.Ellipsis,
-            maxLines = 1
-        )
+        Column{
+            Text(
+                text = movie.name.takeIf { it.isNotEmpty() } ?: "No Name",
+                fontSize = 14.sp,
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 1
+            )
+            Text(
+                text = movie.genres.firstOrNull()?.genre.toString(),
+                fontSize = 12.sp,
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 1
+            )
+        }
     }
 }
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun FetchedImage(
-    linkToImage:String,
+    linkToImage: String,
     modifierForParent: Modifier = Modifier,
     modifierForImage: Modifier = Modifier
 ) {

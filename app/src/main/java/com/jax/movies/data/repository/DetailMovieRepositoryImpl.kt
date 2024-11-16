@@ -5,6 +5,7 @@ import com.jax.movies.data.mapper.FilmsMapper
 import com.jax.movies.data.mapper.MoviesMapper
 import com.jax.movies.data.remote.api.MoviesApiFactory
 import com.jax.movies.domain.entity.films.Actor
+import com.jax.movies.domain.entity.films.ActorType
 import com.jax.movies.domain.entity.films.GalleryImage
 import com.jax.movies.domain.entity.home.Movie
 import com.jax.movies.domain.repository.DetailMovieRepository
@@ -73,13 +74,31 @@ class DetailMovieRepositoryImpl : DetailMovieRepository {
             val response = apiService.getActorDetailInfo(actorId)
             if (response.isSuccessful) {
                 response.body()?.let { body ->
-                    val movies = body.films.mapNotNull { filmDto ->
+                    val resultMap = mutableMapOf<ActorType, MutableList<Movie>>()
+
+                    body.films.take(5).forEach { filmDto ->
                         val detailResponse = apiService.getDetailMovie(filmDto.filmId)
                         if (detailResponse.isSuccessful) {
-                            detailResponse.body()?.let { movieMapper.detailDtoToEntity(it) }
-                        } else null
+                            val movie = detailResponse.body()?.let { movieMapper.detailDtoToEntity(it) }
+                            if (movie != null) {
+
+                                val actorType = filmMapper.professionsToList( filmDto.professionKey)
+
+                                actorType.forEach { type ->
+                                    resultMap.getOrPut(type) { mutableListOf() }.add(movie)
+                                }
+                            }
+                        }
                     }
-                    emit(Resource.Success(filmMapper.actorDetailInfoToActor(body, movies)))
+                    Log.d("sdadasdasdsasaasdasd",resultMap.toString())
+
+
+                    if (resultMap.isNotEmpty()) {
+                        Log.d("sdadasdasdsasadasdasdasda",filmMapper.actorDetailInfoToActor(body, resultMap).toString())
+                        emit(Resource.Success(filmMapper.actorDetailInfoToActor(body, resultMap)))
+                    } else {
+                        emit(Resource.Error(Exception("Movies list is empty")))
+                    }
                 } ?: emit(Resource.Error(Exception("Response body is null")))
             } else {
                 emit(Resource.Error(Exception("Error: ${response.code()} - ${response.message()}")))

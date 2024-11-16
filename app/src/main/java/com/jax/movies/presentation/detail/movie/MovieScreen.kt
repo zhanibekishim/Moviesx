@@ -51,9 +51,10 @@ import com.jax.movies.presentation.home.MovieItem
 
 @Composable
 fun MovieContent(
+    onGalleryClick: (Movie) -> Unit,
     onActorClick: (Actor) -> Unit,
     onMovieClick: (Movie) -> Unit,
-    onBackClicked: () -> Unit,
+    onBackClicked: (Movie) -> Unit,
     onLikeClicked: () -> Unit,
     onFavouriteClicked: () -> Unit,
     onShareClicked: () -> Unit,
@@ -71,6 +72,7 @@ fun MovieContent(
         is MovieDetailState.Success -> {
             MainContent(
                 movie = currentState.movie,
+                onGalleryClick = { onGalleryClick(movie) },
                 onActorClick = onActorClick,
                 onMovieClick = onMovieClick,
                 onBackClicked = onBackClicked,
@@ -95,9 +97,10 @@ fun MovieContent(
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 private fun MainContent(
+    onGalleryClick: () -> Unit,
     onActorClick: (Actor) -> Unit,
     onMovieClick: (Movie) -> Unit,
-    onBackClicked: () -> Unit,
+    onBackClicked: (Movie) -> Unit,
     onLikeClicked: () -> Unit,
     onFavouriteClicked: () -> Unit,
     onShareClicked: () -> Unit,
@@ -110,12 +113,14 @@ private fun MainContent(
     similarMovies: List<Movie>,
     modifier: Modifier = Modifier
 ) {
+    val actorsId = actors.map { it.actorId }
+    Log.d("dasdasdsa", actorsId.toString())
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {},
                 navigationIcon = {
-                    IconButton(onClick = { onBackClicked() }) {
+                    IconButton(onClick = { onBackClicked(movie) }) {
                         Icon(
                             painter = painterResource(id = R.drawable.icon_back),
                             contentDescription = "back"
@@ -188,6 +193,7 @@ private fun MainContent(
                 GallerySection(
                     count = galleries.size,
                     galleries = galleries,
+                    onGalleryClick =  onGalleryClick,
                     modifier = Modifier.padding(horizontal = 26.dp)
                 )
             }
@@ -312,34 +318,46 @@ private fun MainDescriptionWithSubDescription(
 fun StepTitle(
     onTitleClick: () -> Unit,
     title: String,
+    subTitle:String? = null,
     countOrOther: String,
     modifier: Modifier = Modifier
 ) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier,
-    ) {
-        Text(
-            text = title,
-            fontWeight = FontWeight.W600,
-            fontSize = 18.sp,
-            modifier = Modifier.weight(1f)
-        )
-        Text(
-            text = countOrOther,
-            fontWeight = FontWeight.W600,
-            fontSize = 14.sp,
-            color = Color(0xFF3D3BFF)
+   Column {
+       Row(
+           verticalAlignment = Alignment.CenterVertically,
+           modifier = modifier,
+       ) {
+           Text(
+               text = title,
+               fontWeight = FontWeight.W600,
+               fontSize = 18.sp,
+               modifier = Modifier.weight(1f)
+           )
+           Text(
+               text = countOrOther,
+               fontWeight = FontWeight.W600,
+               fontSize = 14.sp,
+               color = Color(0xFF3D3BFF)
 
-        )
-        IconButton(onClick = onTitleClick) {
-            Icon(
-                painter = painterResource(id = R.drawable.arrow_right),
-                contentDescription = "see all",
-                tint = Color(0xFF3D3BFF)
-            )
-        }
-    }
+           )
+           IconButton(onClick = onTitleClick) {
+               Icon(
+                   painter = painterResource(id = R.drawable.arrow_right),
+                   contentDescription = "see all",
+                   tint = Color(0xFF3D3BFF)
+               )
+           }
+       }
+       if(subTitle?.isNotEmpty() == true){
+           Text(
+               text = subTitle,
+               fontWeight = FontWeight.W400,
+               fontSize = 12.sp,
+               color = Color(0xFFB5B5C9),
+               modifier = Modifier.weight(1f)
+           )
+       }
+   }
 }
 
 @Composable
@@ -369,7 +387,7 @@ private fun ActorsSection(
                 ActorItem(
                     actor = actor,
                     onActorClick = onActorClick,
-                    modifier = Modifier.size(width = 207.dp, height = 68.dp)
+                    modifierForParent = Modifier.size(width = 207.dp, height = 68.dp)
                 )
             }
         }
@@ -380,16 +398,17 @@ private fun ActorsSection(
 fun ActorItem(
     onActorClick: (Actor) -> Unit,
     actor: Actor,
-    modifier: Modifier = Modifier
+    modifierForParent: Modifier = Modifier,
+    modifierForImage: Modifier = Modifier
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = modifier
+        modifier = modifierForParent
     ) {
         FetchedImage(
             linkToImage = actor.posterUrl,
-            modifierForParent = Modifier
+            modifierForParent = modifierForImage
                 .width(49.dp)
                 .height(68.dp)
                 .clickable {
@@ -422,20 +441,19 @@ fun ActorItem(
 
 @Composable
 private fun GallerySection(
+    onGalleryClick: () -> Unit,
     count: Int,
     galleries: List<GalleryImage>,
     modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier
-    ) {
+    ){
         StepTitle(
             title = "Галерея",
             countOrOther = count.toString(),
             modifier = modifier,
-            onTitleClick = {
-
-            }
+            onTitleClick = onGalleryClick
         )
         LazyRow(
             modifier = Modifier
@@ -443,7 +461,9 @@ private fun GallerySection(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             galleries.forEach { galleryImage ->
-                item { GalleryCard(galleryImage = galleryImage) }
+                item {
+                    GalleryCard(  galleryImage = galleryImage )
+                }
             }
         }
     }

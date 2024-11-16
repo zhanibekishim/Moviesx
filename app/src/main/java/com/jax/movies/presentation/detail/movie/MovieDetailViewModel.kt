@@ -27,7 +27,7 @@ class MovieDetailViewModel : ViewModel() {
     private val getSimilarMoviesUseCaseImpl = GetSimilarMoviesUseCaseImpl()
 
     private val _state = MutableStateFlow<MovieDetailState>(MovieDetailState.Initial)
-    val state: StateFlow<MovieDetailState> get() = _state.asStateFlow()
+    val state: StateFlow<MovieDetailState> = _state.asStateFlow()
 
     fun fetchDetailInfo(movie: Movie) {
         _state.value = MovieDetailState.Loading

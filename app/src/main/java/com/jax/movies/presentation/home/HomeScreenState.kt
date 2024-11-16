@@ -2,7 +2,6 @@ package com.jax.movies.presentation.home
 
 import com.jax.movies.domain.entity.home.Movie
 
-
 /*
 data class HomeScreenState(
     val moviesList: List<MoviesState>
@@ -28,7 +27,6 @@ data class HomeScreenState(
         data class Success(val movies: List<Movie>) : MoviesState
     }
 }
-
 
 /*
 data class HomeScreenState(

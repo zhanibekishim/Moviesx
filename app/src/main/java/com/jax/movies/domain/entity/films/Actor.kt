@@ -17,9 +17,10 @@ data class Actor(
     val nameEn: String,
     val posterUrl: String,
     val description: String,
-    val professionKeys: List<String>,
+    val professionKeys: List<ActorType>,
     val profession: String,
-    val movies: List<Movie>
+    val movies: List<Movie>,
+    val allMovies: Map<ActorType, List<Movie>>,
 ) : Parcelable {
     companion object {
         val navType: NavType<Actor> = object : NavType<Actor>(isNullableAllowed = false) {
