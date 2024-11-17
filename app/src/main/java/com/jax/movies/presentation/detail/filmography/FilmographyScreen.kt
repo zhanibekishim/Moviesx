@@ -1,6 +1,5 @@
 package com.jax.movies.presentation.detail.filmography
 
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,28 +27,23 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jax.movies.R
 import com.jax.movies.domain.entity.films.Actor
 import com.jax.movies.domain.entity.films.ActorType
 import com.jax.movies.domain.entity.home.Movie
 import com.jax.movies.presentation.common.MyTopAppBar
 import com.jax.movies.presentation.detail.movies.LoadingScreen
-import com.jax.movies.presentation.home.ErrorScreen
-import com.jax.movies.presentation.home.MovieItem
+import com.jax.movies.presentation.home.main.ErrorScreen
+import com.jax.movies.presentation.home.main.MovieItem
 
 @Composable
 fun FilmographyScreen(
-    onClickBack: () -> Unit,
-    onMovieClick: (Movie) -> Unit,
+    filmographyViewModel: FilmographyViewModel,
     actor: Actor,
     modifier: Modifier = Modifier,
 ) {
-    val viewModel: FilmographyViewModel = viewModel(
-        factory = FilmographyViewModel.FilmographyViewModelFactory(actor)
-    )
 
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val state by filmographyViewModel.state.collectAsStateWithLifecycle()
 
     when (val currentState = state) {
         is FilmographyScreenState.Initial -> {}
@@ -56,16 +51,24 @@ fun FilmographyScreen(
         is FilmographyScreenState.Error -> ErrorScreen(currentState.message)
         is FilmographyScreenState.Success -> {
             FilmographyContent(
-                onClickBack = onClickBack,
-                onMovieClick = onMovieClick,
-                onFilmographyClick = { selectedType ->
-                    viewModel.getMoviesByFilmographyType(selectedType)
+                onClickBack = {
+                    filmographyViewModel.handleIntent(FilmographyScreenIntent.OnClickBack)
+                },
+                onMovieClick = {
+                    filmographyViewModel.handleIntent(FilmographyScreenIntent.OnMovieClick(it))
+                },
+                onFilmographyClick = {
+                    filmographyViewModel.handleAction(FilmographyScreenAction.FetchMovies(it))
                 },
                 movies = currentState.movies,
-                actorTypes = viewModel.actorTypes,
+                actorTypes = filmographyViewModel.actorTypes,
                 modifier = modifier
             )
         }
+    }
+
+    LaunchedEffect(Unit) {
+        filmographyViewModel.handleAction(FilmographyScreenAction.FetchFilmography(actor))
     }
 }
 
@@ -93,13 +96,13 @@ private fun FilmographyContent(
         ) {
             item {
                 FilmographyTitle(
-                    onFilmographyClick = {actorType->
+                    onFilmographyClick = { actorType ->
                         onFilmographyClick(actorType)
                     },
                     actorTypes = actorTypes
                 )
             }
-            items(movies) {movie->
+            items(movies) { movie ->
                 MovieItem(
                     movie = movie,
                     onMovieClick = onMovieClick,
@@ -115,7 +118,7 @@ private fun FilmographyContent(
 @Composable
 private fun FilmographyTitle(
     onFilmographyClick: (ActorType) -> Unit,
-    actorTypes:Map<ActorType, List<Movie>>,
+    actorTypes: Map<ActorType, List<Movie>>,
     modifier: Modifier = Modifier,
 ) {
     var currentType by remember {
@@ -124,7 +127,7 @@ private fun FilmographyTitle(
 
     Row(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = modifier
+        modifier = modifier.padding(start = 26.dp)
     ) {
         actorTypes.forEach { (type, count) ->
             TypeWithCount(
@@ -173,7 +176,7 @@ private fun TypeWithCount(
             modifier = Modifier.align(Alignment.Center)
         ) {
             Text(
-                text = type.name,
+                text = type.toPlayRole(),
                 color = textColor,
                 fontSize = 10.sp
             )
@@ -187,6 +190,22 @@ private fun TypeWithCount(
     }
 }
 
+private fun ActorType.toPlayRole(): String {
+    return when(this){
+        ActorType.WRITE -> "Играет писателя"
+        ActorType.OPERATOR -> "Играет оператора"
+        ActorType.EDITOR -> "Играет эдитора"
+        ActorType.COMPOSER -> "Играет компоузера"
+        ActorType.PRODUCER_USSR -> "Играет  юсср"
+        ActorType.TRANSLATOR -> "Играет переводчика"
+        ActorType.DIRECTOR -> { "Играет директора"}
+        ActorType.DESIGN -> { "Играет дизайнера"}
+        ActorType.PRODUCER -> { "Играет продюсера"}
+        ActorType.ACTOR -> { "Играет саму себя"}
+        ActorType.VOICE_DIRECTOR -> { "Играет войс продюсера"}
+        ActorType.UNKNOWN -> { "Неизвестный роль"}
+    }
+}
 
 
 

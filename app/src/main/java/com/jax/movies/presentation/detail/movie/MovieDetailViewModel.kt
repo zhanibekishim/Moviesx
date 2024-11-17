@@ -14,10 +14,12 @@ import com.jax.movies.domain.usecase.GetSimilarMoviesUseCaseImpl
 import com.jax.movies.utils.Resource
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 class MovieDetailViewModel : ViewModel() {
@@ -29,7 +31,69 @@ class MovieDetailViewModel : ViewModel() {
     private val _state = MutableStateFlow<MovieDetailState>(MovieDetailState.Initial)
     val state: StateFlow<MovieDetailState> = _state.asStateFlow()
 
-    fun fetchDetailInfo(movie: Movie) {
+    private val _movieNavigationChannel = Channel<MovieScreenIntent>()
+    val movieNavigationChannel = _movieNavigationChannel.receiveAsFlow()
+
+    fun handleIntent(intent: MovieScreenIntent){
+        when(intent){
+            is MovieScreenIntent.OnActorClick -> {
+                viewModelScope.launch {
+                    _movieNavigationChannel.send(MovieScreenIntent.OnActorClick(intent.actor))
+                }
+            }
+            is MovieScreenIntent.OnBlindEyeClick -> {
+                viewModelScope.launch {
+                    _movieNavigationChannel.send(MovieScreenIntent.OnBlindEyeClick)
+                }
+            }
+            is MovieScreenIntent.OnFavouriteClick -> {
+                viewModelScope.launch {
+                    _movieNavigationChannel.send(MovieScreenIntent.OnFavouriteClick)
+                }
+            }
+            is MovieScreenIntent.OnGalleryClick -> {
+                viewModelScope.launch {
+                    _movieNavigationChannel.send(MovieScreenIntent.OnGalleryClick(intent.movie))
+                }
+            }
+            is MovieScreenIntent.OnLickClick -> {
+                viewModelScope.launch {
+                    _movieNavigationChannel.send(MovieScreenIntent.OnLickClick)
+                }
+            }
+            is MovieScreenIntent.OnMoreClick -> {
+                viewModelScope.launch {
+                    _movieNavigationChannel.send(MovieScreenIntent.OnMoreClick)
+                }
+            }
+            is MovieScreenIntent.OnMovieClick -> {
+                viewModelScope.launch {
+                    _movieNavigationChannel.send(MovieScreenIntent.OnMovieClick(intent.movie))
+                }
+            }
+            is MovieScreenIntent.OnShareClick -> {
+                viewModelScope.launch {
+                    _movieNavigationChannel.send(MovieScreenIntent.OnShareClick)
+                }
+            }
+
+            is MovieScreenIntent.OnBackClicked -> {
+                viewModelScope.launch {
+                    _movieNavigationChannel.send(MovieScreenIntent.OnBackClicked(intent.movie))
+                }
+            }
+            is MovieScreenIntent.Default -> {}
+        }
+    }
+
+    fun handleAction(action: MovieScreenAction){
+        when(action){
+            is MovieScreenAction.FetchMovieDetailInfo ->{
+                fetchDetailInfo(action.movie)
+            }
+        }
+    }
+    private fun fetchDetailInfo(movie: Movie) {
         _state.value = MovieDetailState.Loading
         val movieDeferred: Deferred<Movie> = viewModelScope.async {
             var finalMovie = movie

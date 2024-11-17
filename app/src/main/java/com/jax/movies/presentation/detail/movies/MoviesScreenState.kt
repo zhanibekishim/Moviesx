@@ -1,7 +1,7 @@
 package com.jax.movies.presentation.detail.movies
 
 import com.jax.movies.domain.entity.home.Movie
-import com.jax.movies.presentation.home.MoviesType
+import com.jax.movies.domain.entity.home.MoviesType
 
 sealed class MoviesScreenState {
     data object Initial : MoviesScreenState()

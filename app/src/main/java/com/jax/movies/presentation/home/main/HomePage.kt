@@ -1,4 +1,4 @@
-package com.jax.movies.presentation.home
+package com.jax.movies.presentation.home.main
 
 import android.util.Log
 import androidx.compose.foundation.Image
@@ -7,7 +7,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -44,26 +43,23 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideSubcomposition
 import com.bumptech.glide.integration.compose.RequestState
 import com.jax.movies.R
 import com.jax.movies.domain.entity.home.Movie
+import com.jax.movies.domain.entity.home.MoviesType
 import com.valentinilk.shimmer.shimmer
 
 @Composable
 fun HomePage(
-    onListClick: (MoviesType) -> Unit,
-    onMovieClick: (Movie) -> Unit,
+    homeViewModel: HomeViewModel,
     paddingValues: PaddingValues,
     modifier: Modifier = Modifier
 ) {
-    val homeViewModel: HomeViewModel = viewModel()
     val state = homeViewModel.homeScreenState.collectAsStateWithLifecycle()
 
     Column(
@@ -86,32 +82,48 @@ fun HomePage(
             title = "Top 250 Movies",
             moviesState = state.value.top250MoviesState,
             moviesType = MoviesType.TOP_250_MOVIES,
-            onListClick = onListClick,
-            onMovieClick = onMovieClick
+            onListClick = {
+                homeViewModel.handleIntent(HomeScreenIntent.OnMovieTypeClick(it))
+            },
+            onMovieClick = {
+                homeViewModel.handleIntent(HomeScreenIntent.OnMovieClick(it))
+            }
         )
 
         HandleMovieList(
             title = "Popular Movies",
             moviesState = state.value.popularMoviesState,
             moviesType = MoviesType.TOP_POPULAR_MOVIES,
-            onListClick = onListClick,
-            onMovieClick = onMovieClick
+            onListClick = {
+                homeViewModel.handleIntent(HomeScreenIntent.OnMovieTypeClick(it))
+            },
+            onMovieClick = {
+                homeViewModel.handleIntent(HomeScreenIntent.OnMovieClick(it))
+            }
         )
 
         HandleMovieList(
             title = "Comics Theme",
             moviesState = state.value.comicsMoviesState,
             moviesType = MoviesType.COMICS_THEME,
-            onListClick = onListClick,
-            onMovieClick = onMovieClick
+            onListClick = {
+                homeViewModel.handleIntent(HomeScreenIntent.OnMovieTypeClick(it))
+            },
+            onMovieClick = {
+                homeViewModel.handleIntent(HomeScreenIntent.OnMovieClick(it))
+            }
         )
 
         HandleMovieList(
             title = "Premiers",
             moviesState = state.value.premiersMoviesState,
             moviesType = MoviesType.PREMIERS,
-            onListClick = onListClick,
-            onMovieClick = onMovieClick
+            onListClick = {
+                homeViewModel.handleIntent(HomeScreenIntent.OnMovieTypeClick(it))
+            },
+            onMovieClick = {
+                homeViewModel.handleIntent(HomeScreenIntent.OnMovieClick(it))
+            }
         )
     }
 }

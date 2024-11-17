@@ -1,4 +1,4 @@
-package com.jax.movies.presentation.home
+package com.jax.movies.presentation.home.main
 
 import com.jax.movies.domain.entity.home.Movie
 

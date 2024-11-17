@@ -10,16 +10,24 @@ import androidx.navigation.navigation
 import com.google.gson.Gson
 import com.jax.movies.domain.entity.films.Actor
 import com.jax.movies.domain.entity.home.Movie
+import com.jax.movies.domain.entity.home.MoviesType
 import com.jax.movies.presentation.detail.actor.ActorDetailScreen
+import com.jax.movies.presentation.detail.actor.ActorDetailViewModel
 import com.jax.movies.presentation.detail.filmography.FilmographyScreen
+import com.jax.movies.presentation.detail.filmography.FilmographyViewModel
 import com.jax.movies.presentation.detail.gallery.GalleryScreen
+import com.jax.movies.presentation.detail.gallery.GalleryViewModel
 import com.jax.movies.presentation.detail.movie.MovieContent
+import com.jax.movies.presentation.detail.movie.MovieDetailViewModel
 import com.jax.movies.presentation.detail.movies.MoviesDetailScreen
-import com.jax.movies.presentation.home.BottomScreenItem
-import com.jax.movies.presentation.home.MoviesType
+import com.jax.movies.presentation.detail.movies.MoviesViewModel
 
-fun NavGraphBuilder.detailsScreen(
-    navigationState: NavigationState
+fun NavGraphBuilder.detailScreen(
+    movieDetailViewModel: MovieDetailViewModel,
+    actorViewModel: ActorDetailViewModel,
+    filmographyViewModel: FilmographyViewModel,
+    galleryViewModel: GalleryViewModel,
+    moviesViewModel: MoviesViewModel
 ) {
     navigation(
         route = GRAPH.DETAILS_GRAPH,
@@ -40,25 +48,7 @@ fun NavGraphBuilder.detailsScreen(
 
             MovieContent(
                 movie = movie,
-                onBackClicked = {
-                    /*navigationState.navigateTo(Details.MoviesScreen.route) */
-                    navigationState.navHostController.popBackStack()
-                },
-                onLikeClicked = {},
-                onFavouriteClicked = {},
-                onShareClicked = {},
-                onBlindEyeClicked = {},
-                onMoreClicked = {},
-                onMovieClick = {
-                    navigationState.navigateToMovie(it)
-                },
-                onActorClick = {
-                    navigationState.navigateTo(Details.ActorsScreen.getRouteWithArgs(it))
-                },
-                onGalleryClick = {
-                    Log.d("sdadasdas", it.id.toString())
-                    navigationState.navigateTo(Details.GalleryScreen.getRouteWithArgs(it))
-                }
+                movieDetailViewModel = movieDetailViewModel
             )
         }
 
@@ -68,12 +58,7 @@ fun NavGraphBuilder.detailsScreen(
             val type = Gson().fromJson(movieType, MoviesType::class.java)
             MoviesDetailScreen(
                 type = type,
-                onMovieClick = {
-                    navigationState.navigateToMovie(it)
-                },
-                onClickBack = {
-                    navigationState.navigateTo(BottomScreenItem.HomeScreen.route)
-                }
+                moviesViewModel = moviesViewModel
             )
         }
 
@@ -90,12 +75,7 @@ fun NavGraphBuilder.detailsScreen(
                 }
             } ?: throw IllegalStateException("Actor is missing")
             ActorDetailScreen(
-                onMovieClick = {
-                    navigationState.navigateToMovie(it)
-                },
-                onFilmographyClick = {
-                    navigationState.navigateTo(Details.Filmography.getRouteWithArgs(it))
-                },
+                actorDetailViewModel = actorViewModel,
                 actor = actor
             )
         }
@@ -113,12 +93,7 @@ fun NavGraphBuilder.detailsScreen(
                     it.getParcelable(Details.GALLERY_IMAGE_PARAMETER)
                 }
             } ?: throw IllegalStateException("Movie is missing")
-            GalleryScreen(
-                movie = movie,
-                onClickBack = {
-                    navigationState.navHostController.popBackStack()
-                }
-            )
+            GalleryScreen(movie = movie, galleryViewModel = galleryViewModel)
         }
         composable(
             route = Details.Filmography.route,
@@ -132,15 +107,7 @@ fun NavGraphBuilder.detailsScreen(
                     it.getParcelable(Details.FILMOGRAPHY_PARAMETER)
                 }
             } ?: throw IllegalStateException("Actor is missing")
-            FilmographyScreen(
-                actor = actor,
-                onClickBack = {
-                    navigationState.navHostController.popBackStack()
-                },
-                onMovieClick = {
-                    navigationState.navigateToMovie(it)
-                },
-            )
+            FilmographyScreen(actor = actor, filmographyViewModel = filmographyViewModel)
         }
     }
 }

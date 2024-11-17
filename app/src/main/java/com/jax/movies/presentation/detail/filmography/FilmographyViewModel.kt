@@ -2,33 +2,60 @@ package com.jax.movies.presentation.detail.filmography
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.jax.movies.domain.entity.films.Actor
 import com.jax.movies.domain.entity.films.ActorType
 import com.jax.movies.domain.entity.home.Movie
 import com.jax.movies.domain.usecase.GetActorDetailInfoUseCaseImpl
 import com.jax.movies.utils.Resource
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
-class FilmographyViewModel(
-    private val actor: Actor
-) : ViewModel() {
+class FilmographyViewModel : ViewModel() {
 
     private val getActorDetailInfoUseCase = GetActorDetailInfoUseCaseImpl()
 
     var actorTypes: Map<ActorType, List<Movie>> = emptyMap()
     private val _state = MutableStateFlow<FilmographyScreenState>(FilmographyScreenState.Initial)
     val state = _state.asStateFlow()
+    private val _filmographyNavigationChannel = Channel<FilmographyScreenIntent>()
+    val filmographyNavigationChannel = _filmographyNavigationChannel.receiveAsFlow()
 
-    init {
+  /*  init {
         fetchFilmography()
         Log.d("akumaaaaaaaaaaaaaaaaaaaaa", actor.toString())
-    }
+    }*/
 
-    private fun fetchFilmography() {
+    fun handleIntent(intent: FilmographyScreenIntent){
+        when(intent){
+            is FilmographyScreenIntent.Default -> {}
+            is FilmographyScreenIntent.OnClickBack -> {
+                viewModelScope.launch {
+                    _filmographyNavigationChannel.send(FilmographyScreenIntent.OnClickBack)
+                }
+            }
+            is FilmographyScreenIntent.OnMovieClick -> {
+                viewModelScope.launch {
+                    _filmographyNavigationChannel.send(FilmographyScreenIntent.OnMovieClick(intent.movie))
+                }
+            }
+        }
+    }
+    fun handleAction(action: FilmographyScreenAction) {
+       when(action){
+           is FilmographyScreenAction.FetchFilmography -> {
+               fetchFilmography(action.actor)
+           }
+
+           is FilmographyScreenAction.FetchMovies -> {
+               getMoviesByFilmographyType(action.actorType)
+           }
+       }
+    }
+    private fun fetchFilmography(actor: Actor) {
         _state.value = FilmographyScreenState.Loading
         viewModelScope.launch {
             getActorDetailInfoUseCase(actor.actorId).collect { response ->
@@ -61,12 +88,12 @@ class FilmographyViewModel(
         }
     }
 
-    fun getMoviesByFilmographyType(actorType: ActorType) {
+    private fun getMoviesByFilmographyType(actorType: ActorType) {
         val movies = actorTypes[actorType]?.toList() ?: emptyList()
         _state.value = FilmographyScreenState.Success(movies)
     }
 
-    class FilmographyViewModelFactory(
+ /*   class FilmographyViewModelFactory(
         private val actor: Actor
     ) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -75,5 +102,5 @@ class FilmographyViewModel(
             }
             throw IllegalArgumentException("Unknown ViewModel class")
         }
-    }
+    }*/
 }

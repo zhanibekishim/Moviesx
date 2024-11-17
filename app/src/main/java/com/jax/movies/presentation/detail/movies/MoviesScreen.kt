@@ -35,22 +35,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jax.movies.R
 import com.jax.movies.domain.entity.home.Movie
-import com.jax.movies.presentation.home.ErrorScreen
-import com.jax.movies.presentation.home.MovieItem
-import com.jax.movies.presentation.home.MoviesType
+import com.jax.movies.domain.entity.home.MoviesType
+import com.jax.movies.presentation.home.main.ErrorScreen
+import com.jax.movies.presentation.home.main.MovieItem
 
 @Composable
 fun MoviesDetailScreen(
-    type: MoviesType,
-    onMovieClick: (Movie) -> Unit,
-    onClickBack: () -> Unit,
+    moviesViewModel: MoviesViewModel,
+    type: MoviesType
 ) {
-
-    val viewModel: MoviesViewModel = viewModel()
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val state by moviesViewModel.state.collectAsStateWithLifecycle()
 
     when (val currentState = state) {
         is MoviesScreenState.Initial -> {}
@@ -60,13 +56,17 @@ fun MoviesDetailScreen(
             MainContent(
                 movies = currentState.movies,
                 moviesType = type,
-                onMovieClick = onMovieClick,
-                onClickBack = onClickBack
+                onMovieClick = {
+                    moviesViewModel.handleIntent(MoviesScreenIntent.OnMovieClick(it))
+                },
+                onClickBack = {
+                    moviesViewModel.handleIntent(MoviesScreenIntent.OnClickBack)
+                }
             )
         }
     }
     LaunchedEffect(key1 = type) {
-        viewModel.fetchMoviesDetail(type)
+        moviesViewModel.handleAction(MoviesScreenAction.FetchMoviesDetailInfo(type))
     }
 }
 

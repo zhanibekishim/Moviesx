@@ -39,32 +39,23 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jax.movies.R
 import com.jax.movies.domain.entity.films.Actor
 import com.jax.movies.domain.entity.films.GalleryImage
 import com.jax.movies.domain.entity.home.Movie
+import com.jax.movies.presentation.common.MyTopAppBar
 import com.jax.movies.presentation.detail.movies.LoadingScreen
-import com.jax.movies.presentation.home.ErrorScreen
-import com.jax.movies.presentation.home.FetchedImage
-import com.jax.movies.presentation.home.MovieItem
+import com.jax.movies.presentation.home.main.ErrorScreen
+import com.jax.movies.presentation.home.main.FetchedImage
+import com.jax.movies.presentation.home.main.MovieItem
 
 @Composable
 fun MovieContent(
-    onGalleryClick: (Movie) -> Unit,
-    onActorClick: (Actor) -> Unit,
-    onMovieClick: (Movie) -> Unit,
-    onBackClicked: (Movie) -> Unit,
-    onLikeClicked: () -> Unit,
-    onFavouriteClicked: () -> Unit,
-    onShareClicked: () -> Unit,
-    onBlindEyeClicked: () -> Unit,
-    onMoreClicked: () -> Unit,
+    movieDetailViewModel: MovieDetailViewModel,
     movie: Movie
 ) {
     Log.d("dasdddddddddd", movie.id.toString())
-    val viewModel: MovieDetailViewModel = viewModel()
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val state by movieDetailViewModel.state.collectAsStateWithLifecycle()
     when (val currentState = state) {
         is MovieDetailState.Initial -> {}
         is MovieDetailState.Loading -> LoadingScreen()
@@ -72,15 +63,33 @@ fun MovieContent(
         is MovieDetailState.Success -> {
             MainContent(
                 movie = currentState.movie,
-                onGalleryClick = { onGalleryClick(movie) },
-                onActorClick = onActorClick,
-                onMovieClick = onMovieClick,
-                onBackClicked = onBackClicked,
-                onLikeClicked = onLikeClicked,
-                onFavouriteClicked = onFavouriteClicked,
-                onShareClicked = onShareClicked,
-                onBlindEyeClicked = onBlindEyeClicked,
-                onMoreClicked = onMoreClicked,
+                onGalleryClick = {
+                    movieDetailViewModel.handleIntent(MovieScreenIntent.OnGalleryClick(movie))
+                },
+                onActorClick = {
+                    movieDetailViewModel.handleIntent(MovieScreenIntent.OnActorClick(it))
+                },
+                onMovieClick = {
+                    movieDetailViewModel.handleIntent(MovieScreenIntent.OnMovieClick(it))
+                },
+                onBackClicked = {
+                    movieDetailViewModel.handleIntent(MovieScreenIntent.OnBackClicked(it))
+                },
+                onLikeClicked = {
+                    movieDetailViewModel.handleIntent(MovieScreenIntent.OnLickClick)
+                },
+                onFavouriteClicked = {
+                    movieDetailViewModel.handleIntent(MovieScreenIntent.OnFavouriteClick)
+                },
+                onShareClicked = {
+                    movieDetailViewModel.handleIntent(MovieScreenIntent.OnShareClick)
+                },
+                onBlindEyeClicked = {
+                    movieDetailViewModel.handleIntent(MovieScreenIntent.OnBlindEyeClick)
+                },
+                onMoreClicked = {
+                    movieDetailViewModel.handleIntent(MovieScreenIntent.OnMoreClick)
+                },
                 galleries = currentState.gallery,
                 actors = currentState.actors,
                 filmCrew = currentState.filmCrew,
@@ -89,7 +98,7 @@ fun MovieContent(
         }
     }
     LaunchedEffect(key1 = movie) {
-        viewModel.fetchDetailInfo(movie)
+        movieDetailViewModel.handleAction(MovieScreenAction.FetchMovieDetailInfo(movie))
     }
 }
 
@@ -97,7 +106,7 @@ fun MovieContent(
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 private fun MainContent(
-    onGalleryClick: () -> Unit,
+    onGalleryClick: (Movie) -> Unit,
     onActorClick: (Actor) -> Unit,
     onMovieClick: (Movie) -> Unit,
     onBackClicked: (Movie) -> Unit,
@@ -115,20 +124,15 @@ private fun MainContent(
 ) {
     val actorsId = actors.map { it.actorId }
     Log.d("dasdasdsa", actorsId.toString())
+
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {},
-                navigationIcon = {
-                    IconButton(onClick = { onBackClicked(movie) }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.icon_back),
-                            contentDescription = "back"
-                        )
-                    }
-                }
-            )
-        }
+            MyTopAppBar(
+                onNavClick = {onBackClicked(movie) },
+                navIcon =R.drawable.icon_back,
+                title = "")
+        },
+        modifier = Modifier.padding(bottom = 40.dp)
     ) {
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(40.dp),
@@ -193,7 +197,7 @@ private fun MainContent(
                 GallerySection(
                     count = galleries.size,
                     galleries = galleries,
-                    onGalleryClick =  onGalleryClick,
+                    onGalleryClick = { onGalleryClick(movie) },
                     modifier = Modifier.padding(horizontal = 26.dp)
                 )
             }
@@ -318,46 +322,46 @@ private fun MainDescriptionWithSubDescription(
 fun StepTitle(
     onTitleClick: () -> Unit,
     title: String,
-    subTitle:String? = null,
+    subTitle: String? = null,
     countOrOther: String,
     modifier: Modifier = Modifier
 ) {
-   Column {
-       Row(
-           verticalAlignment = Alignment.CenterVertically,
-           modifier = modifier,
-       ) {
-           Text(
-               text = title,
-               fontWeight = FontWeight.W600,
-               fontSize = 18.sp,
-               modifier = Modifier.weight(1f)
-           )
-           Text(
-               text = countOrOther,
-               fontWeight = FontWeight.W600,
-               fontSize = 14.sp,
-               color = Color(0xFF3D3BFF)
+    Column {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = modifier,
+        ) {
+            Text(
+                text = title,
+                fontWeight = FontWeight.W600,
+                fontSize = 18.sp,
+                modifier = Modifier.weight(1f)
+            )
+            Text(
+                text = countOrOther,
+                fontWeight = FontWeight.W600,
+                fontSize = 14.sp,
+                color = Color(0xFF3D3BFF)
 
-           )
-           IconButton(onClick = onTitleClick) {
-               Icon(
-                   painter = painterResource(id = R.drawable.arrow_right),
-                   contentDescription = "see all",
-                   tint = Color(0xFF3D3BFF)
-               )
-           }
-       }
-       if(subTitle?.isNotEmpty() == true){
-           Text(
-               text = subTitle,
-               fontWeight = FontWeight.W400,
-               fontSize = 12.sp,
-               color = Color(0xFFB5B5C9),
-               modifier = Modifier.weight(1f)
-           )
-       }
-   }
+            )
+            IconButton(onClick = onTitleClick) {
+                Icon(
+                    painter = painterResource(id = R.drawable.arrow_right),
+                    contentDescription = "see all",
+                    tint = Color(0xFF3D3BFF)
+                )
+            }
+        }
+        if (subTitle?.isNotEmpty() == true) {
+            Text(
+                text = subTitle,
+                fontWeight = FontWeight.W400,
+                fontSize = 12.sp,
+                color = Color(0xFFB5B5C9),
+                modifier = Modifier.weight(1f)
+            )
+        }
+    }
 }
 
 @Composable
@@ -448,7 +452,7 @@ private fun GallerySection(
 ) {
     Column(
         modifier = modifier
-    ){
+    ) {
         StepTitle(
             title = "Галерея",
             countOrOther = count.toString(),
@@ -462,7 +466,7 @@ private fun GallerySection(
         ) {
             galleries.forEach { galleryImage ->
                 item {
-                    GalleryCard(  galleryImage = galleryImage )
+                    GalleryCard(galleryImage = galleryImage)
                 }
             }
         }
@@ -486,6 +490,7 @@ fun GalleryCard(
 
 @Composable
 fun RelatedMoviesSection(
+    title: String = "Похожие фильмы",
     onMovieClick: (Movie) -> Unit,
     countOrAll: String,
     relatedMovies: List<Movie>,
@@ -493,7 +498,7 @@ fun RelatedMoviesSection(
 ) {
     Column(modifier = modifier) {
         StepTitle(
-            title = "Похожие фильмы",
+            title = title,
             countOrOther = countOrAll,
             modifier = modifier,
             onTitleClick = {

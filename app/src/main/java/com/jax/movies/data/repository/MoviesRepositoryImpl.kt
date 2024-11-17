@@ -4,7 +4,7 @@ import com.jax.movies.data.mapper.MoviesMapper
 import com.jax.movies.data.remote.api.MoviesApiFactory
 import com.jax.movies.domain.entity.home.Movie
 import com.jax.movies.domain.repository.MoviesRepository
-import com.jax.movies.presentation.home.MoviesType
+import com.jax.movies.domain.entity.home.MoviesType
 import com.jax.movies.utils.Resource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

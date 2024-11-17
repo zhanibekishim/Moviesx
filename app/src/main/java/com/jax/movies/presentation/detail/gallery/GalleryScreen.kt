@@ -1,44 +1,59 @@
 package com.jax.movies.presentation.detail.gallery
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jax.movies.R
 import com.jax.movies.domain.entity.films.GalleryImage
 import com.jax.movies.domain.entity.home.Movie
 import com.jax.movies.presentation.common.MyTopAppBar
 import com.jax.movies.presentation.detail.movies.LoadingScreen
-import com.jax.movies.presentation.home.ErrorScreen
-import com.jax.movies.presentation.home.FetchedImage
+import com.jax.movies.presentation.home.main.ErrorScreen
+import com.jax.movies.presentation.home.main.FetchedImage
 
 @Composable
 fun GalleryScreen(
-    onClickBack: () -> Unit,
+    galleryViewModel: GalleryViewModel,
     movie: Movie
 ) {
-    val viewModel: GalleryViewModel = viewModel()
-    val state = viewModel.state.collectAsStateWithLifecycle()
+    val state = galleryViewModel.state.collectAsStateWithLifecycle()
     when (val currentState = state.value) {
         is GalleryScreenState.Initial -> {}
         is GalleryScreenState.Loading -> LoadingScreen()
         is GalleryScreenState.Error -> ErrorScreen(currentState.message)
         is GalleryScreenState.Success -> GalleryImages(
             galleries = currentState.galleries,
-            onClickBack = onClickBack
+            onClickBack = {
+                galleryViewModel.handleIntent(GalleryScreenIntent.OnClickBack)
+            }
         )
     }
     LaunchedEffect(movie) {
-        viewModel.fetchGalleries(movie.id)
+        galleryViewModel.handleAction(GalleryScreenAction.FetchGalleries(movie))
     }
 }
 
@@ -71,42 +86,68 @@ fun GalleryImages(
     }
 }
 
-/*@Composable
-fun TestImages(
-    modifier: Modifier = Modifier
-) {
-    val galleries = listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20)
+@Preview
+@Composable
+fun RepeatingGrid() {
+    val items = listOf(
+        "Doug", "Ernie", "Fred", "George",
+        "Doug", "Ernie", "Fred", "George",
+        "Doug", "Ernie", "Fred", "George"
+    )
+    val chunked = remember {
+        mutableIntStateOf(2)
+    }
     LazyVerticalGrid(
-        columns = GridCells.Adaptive(146.dp),
-        modifier = modifier,
-        contentPadding = PaddingValues(8.dp),
+        columns = GridCells.Fixed(2),
+        modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        itemsIndexed(galleries) { index, _ ->
-            if (index % 3 != 0) {
-                BoxTest(
+        itemsIndexed(items.chunked(2)) {index, group ->
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+
+                Box(
                     modifier = Modifier
-                        .width(146.dp)
-                        .height(82.dp)
-                )
-            } else {
-                BoxTest(
-                    modifier = Modifier
-                        .width(308.dp)
-                        .height(173.dp)
-                )
+                        .fillMaxWidth()
+                        .height(80.dp)
+                        .border(1.dp, Color.Black)
+                ) {
+                    Text(
+                        text = group[0],
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
+
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    group.drop(1).forEach { item ->
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .aspectRatio(1f)
+                                .border(1.dp, Color.Black)
+                        ) {
+                            Text(
+                                text = item,
+                                modifier = Modifier.align(Alignment.Center)
+                            )
+                        }
+                    }
+                }
             }
         }
     }
 }
 
-@Composable
-private fun BoxTest(
-    modifier: Modifier
-) {
-    Box(modifier = modifier)
-}*/
+
+
+
 
 
 

@@ -1,4 +1,4 @@
-package com.jax.movies.presentation.home
+package com.jax.movies.domain.entity.home
 
 enum class MoviesType {
     TOP_250_MOVIES,

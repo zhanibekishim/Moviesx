@@ -1,4 +1,4 @@
-package com.jax.movies.presentation.home
+package com.jax.movies.presentation.common
 
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.size
@@ -19,7 +19,7 @@ import com.jax.movies.ui.theme.Blue1
 @Composable
 fun BottomNavigationBar(
     navController: NavHostController,
-   onSearchClick: () -> Unit,
+    onSearchClick: () -> Unit,
     onProfileClick: () -> Unit,
     onHomeClick: () -> Unit
 ) {
@@ -44,9 +44,11 @@ fun BottomNavigationBar(
                         is BottomScreenItem.HomeScreen -> {
                             onHomeClick()
                         }
+
                         is BottomScreenItem.SearchScreen -> {
                             onSearchClick()
                         }
+
                         is BottomScreenItem.ProfileScreen -> {
                             onProfileClick()
                         }
