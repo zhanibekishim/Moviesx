@@ -14,6 +14,7 @@ import com.jax.movies.domain.usecase.GetSimilarMoviesUseCaseImpl
 import com.jax.movies.utils.Resource
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -31,7 +32,7 @@ class MovieDetailViewModel : ViewModel() {
     private val _state = MutableStateFlow<MovieDetailState>(MovieDetailState.Initial)
     val state: StateFlow<MovieDetailState> = _state.asStateFlow()
 
-    private val _movieNavigationChannel = Channel<MovieScreenIntent>()
+    private val _movieNavigationChannel = Channel<MovieScreenIntent>(capacity = Channel.CONFLATED)
     val movieNavigationChannel = _movieNavigationChannel.receiveAsFlow()
 
     fun handleIntent(intent: MovieScreenIntent){
@@ -90,6 +91,7 @@ class MovieDetailViewModel : ViewModel() {
         when(action){
             is MovieScreenAction.FetchMovieDetailInfo ->{
                 fetchDetailInfo(action.movie)
+                Log.d("dsdasdasdasdasssssssssssssssssssssssssssssssssssssssss",action.movie.id.toString())
             }
         }
     }
@@ -97,6 +99,7 @@ class MovieDetailViewModel : ViewModel() {
         _state.value = MovieDetailState.Loading
         val movieDeferred: Deferred<Movie> = viewModelScope.async {
             var finalMovie = movie
+            Log.d("dsdasdasdasdasssssssssssssssssssssssssssssssssssssssss",movie.id.toString())
             getDetailMovieUseCaseImpl(movie.id).first { result ->
                 when (result) {
                     is Resource.Error -> {
@@ -106,6 +109,7 @@ class MovieDetailViewModel : ViewModel() {
 
                     is Resource.Success -> {
                         finalMovie = result.data
+                        finalMovie = finalMovie.copy(id = movie.id)
                         return@first true
                     }
                 }

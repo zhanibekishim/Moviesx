@@ -1,10 +1,10 @@
-package com.jax.movies.presentation.home.main
+package com.jax.movies.presentation.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jax.movies.domain.entity.home.MoviesType
 import com.jax.movies.domain.usecase.GetMovieCollectionUseCaseImpl
-import com.jax.movies.presentation.detail.movies.MoviesScreenIntent
 import com.jax.movies.utils.Resource
 import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
@@ -23,7 +23,7 @@ class HomeViewModel : ViewModel() {
         MutableStateFlow(HomeScreenState())
     val homeScreenState: StateFlow<HomeScreenState> = _homeScreenState.asStateFlow()
 
-    private val _homeNavigationChannel = Channel<HomeScreenIntent>(Channel.UNLIMITED)
+    private val _homeNavigationChannel = Channel<HomeScreenIntent>(capacity = Channel.CONFLATED)
     val homeNavigationChannel = _homeNavigationChannel.receiveAsFlow()
 
     init {

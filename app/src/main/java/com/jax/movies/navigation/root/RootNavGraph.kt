@@ -1,8 +1,9 @@
-package com.jax.movies.navigation
+package com.jax.movies.navigation.root
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.jax.movies.navigation.main.MainPages
 
 @Composable
 fun RootNavGraph() {
@@ -19,9 +20,3 @@ fun RootNavGraph() {
     }
 }
 
-object GRAPH {
-    const val ROOT = "root"
-    const val ON_BOARDING_SCREEN = "onBoarding"
-    const val MAIN_GRAPH = "main"
-    const val DETAILS_GRAPH = "details"
-}

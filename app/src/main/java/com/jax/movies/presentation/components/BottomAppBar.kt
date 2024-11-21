@@ -1,4 +1,4 @@
-package com.jax.movies.presentation.common
+package com.jax.movies.presentation.components
 
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.size
@@ -11,17 +11,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
+import com.jax.movies.navigation.main.BottomScreenItem
 import com.jax.movies.ui.theme.Blue1
 
 
 @Composable
 fun BottomNavigationBar(
-    navController: NavHostController,
     onSearchClick: () -> Unit,
     onProfileClick: () -> Unit,
-    onHomeClick: () -> Unit
+    onHomeClick: () -> Unit,
+    currentRoute: String?,
 ) {
 
     val listItems2 = listOf(
@@ -33,8 +32,6 @@ fun BottomNavigationBar(
     NavigationBar(
         containerColor = Color.White
     ) {
-        val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
-
         listItems2.forEach { item ->
             AddItem(
                 item = item,

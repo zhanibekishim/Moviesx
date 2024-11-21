@@ -27,9 +27,9 @@ class MoviesMapper {
         )
     }
 
-    fun detailDtoToEntity(detailDto: DetailResponseDto): Movie {
+    fun detailDtoToEntity(detailDto: DetailResponseDto,id:Long? = null): Movie {
         return Movie(
-            id = detailDto.id,
+            id = id?:detailDto.id,
             name = detailDto.name?:"",
             year = detailDto.year,
             genres = dtoGenresToEntity(detailDto.genres),

@@ -2,7 +2,6 @@ package com.jax.movies.presentation.detail.movie
 
 import android.annotation.SuppressLint
 import android.util.Log
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -20,12 +18,10 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -43,18 +39,18 @@ import com.jax.movies.R
 import com.jax.movies.domain.entity.films.Actor
 import com.jax.movies.domain.entity.films.GalleryImage
 import com.jax.movies.domain.entity.home.Movie
-import com.jax.movies.presentation.common.MyTopAppBar
-import com.jax.movies.presentation.detail.movies.LoadingScreen
-import com.jax.movies.presentation.home.main.ErrorScreen
-import com.jax.movies.presentation.home.main.FetchedImage
-import com.jax.movies.presentation.home.main.MovieItem
+import com.jax.movies.presentation.components.ActorItem
+import com.jax.movies.presentation.components.ErrorScreen
+import com.jax.movies.presentation.components.FetchedImage
+import com.jax.movies.presentation.components.LoadingScreen
+import com.jax.movies.presentation.components.MyTopAppBar
+import com.jax.movies.presentation.components.RelatedMoviesSection
 
 @Composable
 fun MovieContent(
     movieDetailViewModel: MovieDetailViewModel,
     movie: Movie
 ) {
-    Log.d("dasdddddddddd", movie.id.toString())
     val state by movieDetailViewModel.state.collectAsStateWithLifecycle()
     when (val currentState = state) {
         is MovieDetailState.Initial -> {}
@@ -64,7 +60,7 @@ fun MovieContent(
             MainContent(
                 movie = currentState.movie,
                 onGalleryClick = {
-                    movieDetailViewModel.handleIntent(MovieScreenIntent.OnGalleryClick(movie))
+                    movieDetailViewModel.handleIntent(MovieScreenIntent.OnGalleryClick(it))
                 },
                 onActorClick = {
                     movieDetailViewModel.handleIntent(MovieScreenIntent.OnActorClick(it))
@@ -102,7 +98,6 @@ fun MovieContent(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 private fun MainContent(
@@ -399,51 +394,6 @@ private fun ActorsSection(
 }
 
 @Composable
-fun ActorItem(
-    onActorClick: (Actor) -> Unit,
-    actor: Actor,
-    modifierForParent: Modifier = Modifier,
-    modifierForImage: Modifier = Modifier
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = modifierForParent
-    ) {
-        FetchedImage(
-            linkToImage = actor.posterUrl,
-            modifierForParent = modifierForImage
-                .width(49.dp)
-                .height(68.dp)
-                .clickable {
-                    onActorClick(actor)
-                    Log.d("dsaadas", actor.actorId.toString())
-                }
-        )
-        Column {
-            Text(
-                text = actor.nameRu,
-                fontWeight = FontWeight.W400,
-                fontSize = 16.sp,
-                color = Color(0xFF272727),
-                overflow = TextOverflow.Ellipsis,
-                lineHeight = 13.2.sp,
-                modifier = Modifier.sizeIn(maxWidth = 126.dp)
-            )
-            Text(
-                text = actor.nameEn,
-                fontWeight = FontWeight.W400,
-                fontSize = 14.sp,
-                color = Color(0xFFB5B5C9),
-                overflow = TextOverflow.Ellipsis,
-                lineHeight = 13.2.sp,
-                modifier = Modifier.sizeIn(maxWidth = 126.dp)
-            )
-        }
-    }
-}
-
-@Composable
 private fun GallerySection(
     onGalleryClick: () -> Unit,
     count: Int,
@@ -474,7 +424,7 @@ private fun GallerySection(
 }
 
 @Composable
-fun GalleryCard(
+private fun GalleryCard(
     galleryImage: GalleryImage,
     modifier: Modifier = Modifier
 ) {
@@ -488,38 +438,4 @@ fun GalleryCard(
     )
 }
 
-@Composable
-fun RelatedMoviesSection(
-    title: String = "Похожие фильмы",
-    onMovieClick: (Movie) -> Unit,
-    countOrAll: String,
-    relatedMovies: List<Movie>,
-    modifier: Modifier = Modifier
-) {
-    Column(modifier = modifier) {
-        StepTitle(
-            title = title,
-            countOrOther = countOrAll,
-            modifier = modifier,
-            onTitleClick = {
-
-            }
-        )
-        LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            relatedMovies.forEach { similarMovie ->
-                item {
-                    MovieItem(
-                        movie = similarMovie,
-                        onMovieClick = onMovieClick,
-                        modifier = Modifier.padding(bottom = 56.dp)
-                    )
-                }
-            }
-        }
-    }
-}
 

@@ -57,8 +57,8 @@ class DetailMovieRepositoryImpl : DetailMovieRepository {
                 if (movieResponse.isSuccessful) movieResponse.body() else null
             }
 
-            val finalMovies = movies.map { movie ->
-                movieMapper.detailDtoToEntity(movie)
+            val finalMovies = movies.mapIndexed { index,movie ->
+                movieMapper.detailDtoToEntity(movie,filmIdList[index])
             }
 
             if (finalMovies.isNotEmpty()) {

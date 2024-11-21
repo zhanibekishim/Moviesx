@@ -1,4 +1,4 @@
-package com.jax.movies.navigation
+package com.jax.movies.navigation.root
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.navigation.NavGraphBuilder

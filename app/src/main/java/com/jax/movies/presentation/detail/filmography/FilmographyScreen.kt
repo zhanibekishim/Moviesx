@@ -31,10 +31,12 @@ import com.jax.movies.R
 import com.jax.movies.domain.entity.films.Actor
 import com.jax.movies.domain.entity.films.ActorType
 import com.jax.movies.domain.entity.home.Movie
-import com.jax.movies.presentation.common.MyTopAppBar
-import com.jax.movies.presentation.detail.movies.LoadingScreen
-import com.jax.movies.presentation.home.main.ErrorScreen
-import com.jax.movies.presentation.home.main.MovieItem
+import com.jax.movies.presentation.components.ErrorScreen
+import com.jax.movies.presentation.components.LoadingScreen
+import com.jax.movies.presentation.components.MovieItem
+import com.jax.movies.presentation.components.MyTopAppBar
+import com.jax.movies.utils.checkRealCount
+import com.jax.movies.utils.toPlayRole
 
 @Composable
 fun FilmographyScreen(
@@ -108,7 +110,7 @@ private fun FilmographyContent(
                     onMovieClick = onMovieClick,
                     ratingPosition = Alignment.TopStart,
                     vertically = false,
-                    modifier = Modifier.padding(26.dp)
+                    modifier = Modifier.padding(start = 26.dp)
                 )
             }
         }
@@ -132,7 +134,7 @@ private fun FilmographyTitle(
         actorTypes.forEach { (type, count) ->
             TypeWithCount(
                 type = type,
-                count = count.size,
+                count = count.checkRealCount(),
                 isSelected = currentType == type,
                 isSelectedTextColor = Color.White,
                 unSelectedTextColor = Color.Black,
@@ -190,22 +192,6 @@ private fun TypeWithCount(
     }
 }
 
-private fun ActorType.toPlayRole(): String {
-    return when(this){
-        ActorType.WRITE -> "Играет писателя"
-        ActorType.OPERATOR -> "Играет оператора"
-        ActorType.EDITOR -> "Играет эдитора"
-        ActorType.COMPOSER -> "Играет компоузера"
-        ActorType.PRODUCER_USSR -> "Играет  юсср"
-        ActorType.TRANSLATOR -> "Играет переводчика"
-        ActorType.DIRECTOR -> { "Играет директора"}
-        ActorType.DESIGN -> { "Играет дизайнера"}
-        ActorType.PRODUCER -> { "Играет продюсера"}
-        ActorType.ACTOR -> { "Играет саму себя"}
-        ActorType.VOICE_DIRECTOR -> { "Играет войс продюсера"}
-        ActorType.UNKNOWN -> { "Неизвестный роль"}
-    }
-}
 
 
 

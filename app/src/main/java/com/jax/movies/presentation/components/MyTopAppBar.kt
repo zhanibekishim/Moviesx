@@ -1,4 +1,4 @@
-package com.jax.movies.presentation.common
+package com.jax.movies.presentation.components
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding

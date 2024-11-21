@@ -14,12 +14,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jax.movies.R
 import com.jax.movies.domain.entity.films.Actor
 import com.jax.movies.domain.entity.home.Movie
-import com.jax.movies.presentation.common.MyTopAppBar
-import com.jax.movies.presentation.detail.movie.ActorItem
-import com.jax.movies.presentation.detail.movie.RelatedMoviesSection
+import com.jax.movies.presentation.components.ActorItem
+import com.jax.movies.presentation.components.ErrorScreen
+import com.jax.movies.presentation.components.LoadingScreen
+import com.jax.movies.presentation.components.MyTopAppBar
+import com.jax.movies.presentation.components.RelatedMoviesSection
 import com.jax.movies.presentation.detail.movie.StepTitle
-import com.jax.movies.presentation.detail.movies.LoadingScreen
-import com.jax.movies.presentation.home.main.ErrorScreen
 
 @Composable
 fun ActorDetailScreen(
@@ -38,12 +38,12 @@ fun ActorDetailScreen(
                 actorDetailViewModel.handleIntent(ActorScreenIntent.OnFilmographyClick(it))
             },
             onMovieClick = {
-                actorDetailViewModel.handleIntent(ActorScreenIntent.OnMovieClick(it))
+                actorDetailViewModel.handleIntent(ActorScreenIntent.OnMovieClick(it,actor))
             },
             onClickBack = {
                 actorDetailViewModel.handleIntent(ActorScreenIntent.OnClickBack)
             },
-            moviesWithActor = currentState.actor.movies,
+            moviesWithActor = currentState.actor.allMovies.values.flatten(),
             modifier = modifier
         )
     }
@@ -87,7 +87,7 @@ private fun MainContent(
                 moviesWithActor = moviesWithActor
             )
             ActorFilmographySection(
-                countFilms = actor.movies.size,
+                countFilms = moviesWithActor.size,
                 onFilmographyClick = { onFilmographyClick(actor) }
             )
         }

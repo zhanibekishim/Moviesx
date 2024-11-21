@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
-import com.jax.movies.navigation.RootNavGraph
+import com.jax.movies.navigation.root.RootNavGraph
 import com.jax.movies.ui.theme.MoviesTheme
 
 class MainActivity : ComponentActivity() {

@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
@@ -34,7 +35,7 @@ class ActorDetailViewModel : ViewModel() {
             }
             is ActorScreenIntent.OnMovieClick -> {
                 viewModelScope.launch {
-                    _actorNavigationChannel.send(ActorScreenIntent.OnMovieClick(intent.movie))
+                    _actorNavigationChannel.send(ActorScreenIntent.OnMovieClick(intent.movie,intent.actor))
                 }
             }
 
@@ -50,6 +51,7 @@ class ActorDetailViewModel : ViewModel() {
             is ActorScreenAction.FetchActorDetailInfo -> fetchDetailInfo(action.actor)
         }
     }
+
     private fun fetchDetailInfo(actor: Actor) {
         _state.value = ActorDetailState.Loading
         viewModelScope.launch {

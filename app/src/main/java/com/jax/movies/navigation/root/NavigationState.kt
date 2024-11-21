@@ -1,4 +1,4 @@
-package com.jax.movies.navigation
+package com.jax.movies.navigation.root
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -8,6 +8,7 @@ import androidx.navigation.compose.rememberNavController
 import com.jax.movies.domain.entity.films.Actor
 import com.jax.movies.domain.entity.home.Movie
 import com.jax.movies.domain.entity.home.MoviesType
+import com.jax.movies.navigation.detail.Details
 
 class NavigationState(
     val navHostController: NavHostController
@@ -32,16 +33,13 @@ class NavigationState(
 
     fun navigateToMovieDetailScreen(movie: Movie, backRoute: String? = null) {
         navHostController.navigate(Details.MovieScreen.getRouteWithArgs(movie)) {
-            popUpTo(navHostController.graph.findStartDestination().id) {
-                saveState = true
+            if (backRoute != null) {
+                popUpTo(backRoute) {
+                    saveState = true
+                }
             }
-            /*  if (backRoute != null) {
-                  popUpTo(backRoute){
-                      saveState = true
-                  }
-              }*/
+            if(backRoute != null) restoreState = true
             launchSingleTop = true
-            restoreState = true
         }
     }
 
