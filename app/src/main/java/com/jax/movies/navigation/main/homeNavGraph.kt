@@ -1,6 +1,5 @@
 package com.jax.movies.navigation.main
 
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -12,8 +11,7 @@ import com.jax.movies.presentation.home.HomeScreenIntent
 import com.jax.movies.presentation.home.HomeViewModel
 
 fun NavGraphBuilder.homeNavGraph(
-    navigationState: NavigationState,
-    paddingValues: PaddingValues
+    navigationState: NavigationState
 ) {
     composable(BottomScreenItem.HomeScreen.route) {
         val homeViewModel: HomeViewModel = viewModel()
@@ -32,8 +30,16 @@ fun NavGraphBuilder.homeNavGraph(
                 is HomeScreenIntent.OnMovieTypeClick -> {
                     navigationState.navigateToMoviesScreen(currentState.movieType)
                 }
+
+                is HomeScreenIntent.OnProfileScreenClick -> {
+                    navigationState.navigateTo(BottomScreenItem.ProfileScreen.route)
+                }
+                is HomeScreenIntent.OnSearchScreenClick -> {
+                    navigationState.navigateTo(BottomScreenItem.SearchScreen.route)
+                }
             }
         }
-        HomePage(paddingValues = paddingValues, homeViewModel = homeViewModel)
+        val currentRoute = navigationState.navHostController.currentBackStackEntry?.destination?.route.toString()
+        HomePage(homeViewModel = homeViewModel, currentRoute = currentRoute)
     }
 }

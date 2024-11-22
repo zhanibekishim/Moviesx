@@ -10,7 +10,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.jax.movies.domain.entity.home.Movie
 import com.jax.movies.navigation.root.NavigationState
-import com.jax.movies.navigation.main.BottomScreenItem
 import com.jax.movies.presentation.detail.movie.MovieContent
 import com.jax.movies.presentation.detail.movie.MovieDetailViewModel
 import com.jax.movies.presentation.detail.movie.MovieScreenIntent
@@ -22,7 +21,7 @@ fun NavGraphBuilder.movieDetailGraph(
         route = Details.MovieScreen.route,
         arguments = listOf(navArgument(Details.MOVIE_PARAMETER) { type = Movie.navType })
     ) { backStackEntry ->
-
+        val movie = backStackEntry.getMovie()
         val movieViewModel: MovieDetailViewModel = viewModel()
         val movieDetailIntent =
             movieViewModel.movieNavigationChannel.collectAsStateWithLifecycle(MovieScreenIntent.Default)
@@ -42,8 +41,8 @@ fun NavGraphBuilder.movieDetailGraph(
 
                 is MovieScreenIntent.OnMovieClick -> {
                     navigationState.navigateToMovieDetailScreen(
-                        movie = currentIntent.movie,
-                        backRoute = BottomScreenItem.HomeScreen.route
+                        movie = currentIntent.toMovie,
+                        backRoute = Details.MovieScreen.getRouteWithArgs(currentIntent.fromMovie)
                     )
                 }
 
@@ -55,7 +54,6 @@ fun NavGraphBuilder.movieDetailGraph(
                 is MovieScreenIntent.OnShareClick -> {}
             }
         }
-        val movie = backStackEntry.getMovie()
         MovieContent(
             movie = movie,
             movieDetailViewModel = movieViewModel

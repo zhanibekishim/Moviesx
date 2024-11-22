@@ -66,7 +66,10 @@ fun MovieContent(
                     movieDetailViewModel.handleIntent(MovieScreenIntent.OnActorClick(it))
                 },
                 onMovieClick = {
-                    movieDetailViewModel.handleIntent(MovieScreenIntent.OnMovieClick(it))
+                    movieDetailViewModel.handleIntent(MovieScreenIntent.OnMovieClick(
+                        fromMovie = movie,
+                        toMovie = it
+                    ))
                 },
                 onBackClicked = {
                     movieDetailViewModel.handleIntent(MovieScreenIntent.OnBackClicked(it))
@@ -126,8 +129,7 @@ private fun MainContent(
                 onNavClick = {onBackClicked(movie) },
                 navIcon =R.drawable.icon_back,
                 title = "")
-        },
-        modifier = Modifier.padding(bottom = 40.dp)
+        }
     ) {
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(40.dp),

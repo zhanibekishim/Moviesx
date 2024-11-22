@@ -1,10 +1,12 @@
 package com.jax.movies.data.repository
 
+import android.content.Context
 import com.jax.movies.data.mapper.MoviesMapper
 import com.jax.movies.data.remote.api.MoviesApiFactory
+import com.jax.movies.data.store.OnBoardingSettingStore
 import com.jax.movies.domain.entity.home.Movie
-import com.jax.movies.domain.repository.MoviesRepository
 import com.jax.movies.domain.entity.home.MoviesType
+import com.jax.movies.domain.repository.MoviesRepository
 import com.jax.movies.utils.Resource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -15,14 +17,18 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.retry
 import kotlinx.coroutines.flow.stateIn
 
-class MoviesRepositoryImpl : MoviesRepository {
+class MoviesRepositoryImpl(
+    private val context: Context
+) : MoviesRepository {
 
     private val apiService = MoviesApiFactory.apiService
     private val mapper = MoviesMapper()
     private val scope = CoroutineScope(Dispatchers.Main.immediate + SupervisorJob())
+    private val onBoardingSettingStore = OnBoardingSettingStore(context)
 
     override suspend fun getMovieCollection(type: MoviesType): StateFlow<Resource<List<Movie>>> =
         flow {
@@ -68,6 +74,13 @@ class MoviesRepositoryImpl : MoviesRepository {
         }
     ).catch {
         emit(Resource.Error(it))
+    }
+
+    override suspend fun getIsEnteredBeforeValue(): Flow<Resource<Boolean>> =
+        onBoardingSettingStore.isEnteredFlow.map { Resource.Success(it) }
+
+    override suspend fun updateIsEntered(isEntered: Boolean) {
+        onBoardingSettingStore.updateIsEntered(isEntered)
     }
 
 

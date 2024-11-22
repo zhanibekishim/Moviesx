@@ -1,6 +1,5 @@
 package com.jax.movies.presentation.home
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jax.movies.domain.entity.home.MoviesType
@@ -91,6 +90,16 @@ class HomeViewModel : ViewModel() {
             is HomeScreenIntent.OnMovieTypeClick -> {
                 viewModelScope.launch {
                     _homeNavigationChannel.send(HomeScreenIntent.OnMovieTypeClick(intent.movieType))
+                }
+            }
+            is HomeScreenIntent.OnProfileScreenClick -> {
+                viewModelScope.launch {
+                    _homeNavigationChannel.send(HomeScreenIntent.OnProfileScreenClick)
+                }
+            }
+            is HomeScreenIntent.OnSearchScreenClick -> {
+                viewModelScope.launch {
+                    _homeNavigationChannel.send(HomeScreenIntent.OnSearchScreenClick)
                 }
             }
             HomeScreenIntent.Default -> {}

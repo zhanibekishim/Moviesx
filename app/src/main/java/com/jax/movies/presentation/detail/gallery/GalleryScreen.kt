@@ -63,7 +63,7 @@ private fun GalleryImages(
         }
     ) { padding ->
         LazyColumn(
-            modifier = modifier.padding(padding).padding(bottom = 100.dp),
+            modifier = modifier.padding(padding),
             contentPadding = PaddingValues(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally

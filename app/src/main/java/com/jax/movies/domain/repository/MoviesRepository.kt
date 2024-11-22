@@ -9,4 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 interface MoviesRepository {
     suspend fun getMovieCollection(type: MoviesType): StateFlow<Resource<List<Movie>>>
     suspend fun getDetailInfo(movieId: Long): Flow<Resource<Movie>>
+
+    suspend fun getIsEnteredBeforeValue(): Flow<Resource<Boolean>>
+    suspend fun updateIsEntered(isEntered: Boolean)
 }

@@ -33,13 +33,15 @@ class NavigationState(
 
     fun navigateToMovieDetailScreen(movie: Movie, backRoute: String? = null) {
         navHostController.navigate(Details.MovieScreen.getRouteWithArgs(movie)) {
-            if (backRoute != null) {
-                popUpTo(backRoute) {
-                    saveState = true
+            /*if(backRoute != Details.MovieScreen.route){
+                if (backRoute != null) {
+                    popUpTo(backRoute) {
+                        saveState = true
+                    }
                 }
             }
             if(backRoute != null) restoreState = true
-            launchSingleTop = true
+            launchSingleTop = true*/
         }
     }
 

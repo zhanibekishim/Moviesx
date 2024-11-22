@@ -1,9 +1,19 @@
 package com.jax.movies.presentation.onboarding
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
@@ -11,24 +21,55 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.jax.movies.ui.theme.MoviesTheme
+import com.jax.movies.presentation.components.ErrorScreen
+import com.jax.movies.presentation.onboarding.OnBoardingPageItem.Companion.onboardingPages
 import kotlinx.coroutines.launch
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @ExperimentalFoundationApi
 @Composable
-fun OnBoardingScreen(onFinish: () -> Unit) {
+fun OnBoardingScreen(
+    viewModel: OnBoardingViewModel
+) {
+    val state = viewModel.screenState
+    when (val currentState = state.value) {
+        is OnBoardingScreenState.Initial -> {
+
+        }
+
+        is OnBoardingScreenState.Error -> {
+            ErrorScreen(currentState.message)
+        }
+
+        is OnBoardingScreenState.Success -> {
+            OnBoardingMainContent(
+                onFinishedClick = {
+                    viewModel.handleIntent(OnBoardingScreenIntent.OnFinishClicked)
+                }
+            )
+        }
+    }
+    LaunchedEffect(viewModel) {
+        viewModel.handleAction(OnBoardingScreenAction.GetIsEnteredBeforeAction)
+    }
+
+}
+
+@Composable
+private fun OnBoardingMainContent(
+    onFinishedClick: () -> Unit
+) {
     val pagerState = rememberPagerState { onboardingPages.size }
     val coroutineScope = rememberCoroutineScope()
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -51,7 +92,7 @@ fun OnBoardingScreen(onFinish: () -> Unit) {
                         if (pagerState.currentPage < onboardingPages.size - 1) {
                             pagerState.animateScrollToPage(pagerState.currentPage + 1)
                         } else {
-                            onFinish()
+                            onFinishedClick()
                         }
                     }
                 },
@@ -80,7 +121,9 @@ fun OnBoardingScreen(onFinish: () -> Unit) {
 }
 
 @Composable
-fun OnBoardingPageContent(page: OnBoardingPage) {
+private fun OnBoardingPageContent(
+    page: OnBoardingPageItem
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth(),
@@ -100,8 +143,11 @@ fun OnBoardingPageContent(page: OnBoardingPage) {
         )
     }
 }
+
 @Composable
-fun DotsIndicator(totalDots: Int, selectedIndex: Int) {
+fun DotsIndicator(
+    totalDots: Int, selectedIndex: Int
+) {
     Row(
         modifier = Modifier.padding(bottom = 90.dp)
     ) {
@@ -114,14 +160,5 @@ fun DotsIndicator(totalDots: Int, selectedIndex: Int) {
                     .background(color = color, shape = CircleShape)
             )
         }
-    }
-}
-
-@ExperimentalFoundationApi
-@Preview(showBackground = true)
-@Composable
-fun OnBoardingPreview() {
-    MoviesTheme {
-        OnBoardingScreen(onFinish = {})
     }
 }

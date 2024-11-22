@@ -6,7 +6,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,6 +20,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -40,6 +40,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jax.movies.R
 import com.jax.movies.domain.entity.home.Movie
 import com.jax.movies.domain.entity.home.MoviesType
+import com.jax.movies.navigation.main.BottomScreenItem
+import com.jax.movies.presentation.components.BottomNavigationBar
 import com.jax.movies.presentation.components.ErrorScreen
 import com.jax.movies.presentation.components.MovieItem
 import com.valentinilk.shimmer.shimmer
@@ -47,74 +49,88 @@ import com.valentinilk.shimmer.shimmer
 @Composable
 fun HomePage(
     homeViewModel: HomeViewModel,
-    paddingValues: PaddingValues,
+    currentRoute: String = BottomScreenItem.HomeScreen.route,
     modifier: Modifier = Modifier
 ) {
     val state = homeViewModel.homeScreenState.collectAsStateWithLifecycle()
+    Scaffold(
+        bottomBar = {
+            BottomNavigationBar(
+                currentRoute = currentRoute ,
+                onHomeClick = {},
+                onProfileClick = {
+                    homeViewModel.handleIntent(HomeScreenIntent.OnSearchScreenClick)
+                },
+                onSearchClick = {
+                    homeViewModel.handleIntent(HomeScreenIntent.OnProfileScreenClick)
+                },
+            )
+        }
+    ) { innerPadding->
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .statusBarsPadding()
+                .padding(innerPadding)
+                .verticalScroll(rememberScrollState())
+        ) {
+            Image(
+                painter = painterResource(R.drawable.vector),
+                contentDescription = null,
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(vertical = 16.dp)
+            )
+            Spacer(Modifier.height(24.dp))
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .statusBarsPadding()
-            .padding(paddingValues)
-            .verticalScroll(rememberScrollState())
-    ) {
-        Image(
-            painter = painterResource(R.drawable.vector),
-            contentDescription = null,
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(vertical = 16.dp)
-        )
-        Spacer(Modifier.height(24.dp))
+            HandleMovieList(
+                title = "Top 250 Movies",
+                moviesState = state.value.top250MoviesState,
+                moviesType = MoviesType.TOP_250_MOVIES,
+                onListClick = {
+                    homeViewModel.handleIntent(HomeScreenIntent.OnMovieTypeClick(it))
+                },
+                onMovieClick = {
+                    homeViewModel.handleIntent(HomeScreenIntent.OnMovieClick(it))
+                }
+            )
 
-        HandleMovieList(
-            title = "Top 250 Movies",
-            moviesState = state.value.top250MoviesState,
-            moviesType = MoviesType.TOP_250_MOVIES,
-            onListClick = {
-                homeViewModel.handleIntent(HomeScreenIntent.OnMovieTypeClick(it))
-            },
-            onMovieClick = {
-                homeViewModel.handleIntent(HomeScreenIntent.OnMovieClick(it))
-            }
-        )
+            HandleMovieList(
+                title = "Popular Movies",
+                moviesState = state.value.popularMoviesState,
+                moviesType = MoviesType.TOP_POPULAR_MOVIES,
+                onListClick = {
+                    homeViewModel.handleIntent(HomeScreenIntent.OnMovieTypeClick(it))
+                },
+                onMovieClick = {
+                    homeViewModel.handleIntent(HomeScreenIntent.OnMovieClick(it))
+                }
+            )
 
-        HandleMovieList(
-            title = "Popular Movies",
-            moviesState = state.value.popularMoviesState,
-            moviesType = MoviesType.TOP_POPULAR_MOVIES,
-            onListClick = {
-                homeViewModel.handleIntent(HomeScreenIntent.OnMovieTypeClick(it))
-            },
-            onMovieClick = {
-                homeViewModel.handleIntent(HomeScreenIntent.OnMovieClick(it))
-            }
-        )
+            HandleMovieList(
+                title = "Comics Theme",
+                moviesState = state.value.comicsMoviesState,
+                moviesType = MoviesType.COMICS_THEME,
+                onListClick = {
+                    homeViewModel.handleIntent(HomeScreenIntent.OnMovieTypeClick(it))
+                },
+                onMovieClick = {
+                    homeViewModel.handleIntent(HomeScreenIntent.OnMovieClick(it))
+                }
+            )
 
-        HandleMovieList(
-            title = "Comics Theme",
-            moviesState = state.value.comicsMoviesState,
-            moviesType = MoviesType.COMICS_THEME,
-            onListClick = {
-                homeViewModel.handleIntent(HomeScreenIntent.OnMovieTypeClick(it))
-            },
-            onMovieClick = {
-                homeViewModel.handleIntent(HomeScreenIntent.OnMovieClick(it))
-            }
-        )
-
-        HandleMovieList(
-            title = "Premiers",
-            moviesState = state.value.premiersMoviesState,
-            moviesType = MoviesType.PREMIERS,
-            onListClick = {
-                homeViewModel.handleIntent(HomeScreenIntent.OnMovieTypeClick(it))
-            },
-            onMovieClick = {
-                homeViewModel.handleIntent(HomeScreenIntent.OnMovieClick(it))
-            }
-        )
+            HandleMovieList(
+                title = "Premiers",
+                moviesState = state.value.premiersMoviesState,
+                moviesType = MoviesType.PREMIERS,
+                onListClick = {
+                    homeViewModel.handleIntent(HomeScreenIntent.OnMovieTypeClick(it))
+                },
+                onMovieClick = {
+                    homeViewModel.handleIntent(HomeScreenIntent.OnMovieClick(it))
+                }
+            )
+        }
     }
 }
 

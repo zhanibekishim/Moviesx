@@ -69,7 +69,10 @@ class MovieDetailViewModel : ViewModel() {
             }
             is MovieScreenIntent.OnMovieClick -> {
                 viewModelScope.launch {
-                    _movieNavigationChannel.send(MovieScreenIntent.OnMovieClick(intent.movie))
+                    _movieNavigationChannel.send(MovieScreenIntent.OnMovieClick(
+                        fromMovie = intent.fromMovie,
+                        toMovie = intent.toMovie
+                    ))
                 }
             }
             is MovieScreenIntent.OnShareClick -> {
