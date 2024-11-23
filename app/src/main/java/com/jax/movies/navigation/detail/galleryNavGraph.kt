@@ -1,18 +1,22 @@
 package com.jax.movies.navigation.detail
 
+import android.app.Activity
 import android.os.Build
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.jax.movies.di.ViewModelModule
 import com.jax.movies.domain.entity.home.Movie
 import com.jax.movies.navigation.root.NavigationState
 import com.jax.movies.presentation.detail.gallery.GalleryScreen
 import com.jax.movies.presentation.detail.gallery.GalleryScreenIntent
 import com.jax.movies.presentation.detail.gallery.GalleryViewModel
+import dagger.hilt.android.EntryPointAccessors
 
 fun NavGraphBuilder.galleryNavGraph(
    navigationState: NavigationState
@@ -23,7 +27,16 @@ fun NavGraphBuilder.galleryNavGraph(
             type = Movie.navType
         })
     ) { navBackStackEntry ->
-        val galleryViewModel: GalleryViewModel = viewModel()
+        val movie = navBackStackEntry.getMovie()
+        val factory = EntryPointAccessors.fromActivity(
+            activity = LocalContext.current as Activity,
+            entryPoint = ViewModelModule::class.java
+        ).galleryViewModelFactoryProvider()
+
+        val galleryViewModel:GalleryViewModel = viewModel(
+            factory = GalleryViewModel.provideGalleryViewModel(movie,factory)
+        )
+
         val galleriesIntent =
             galleryViewModel.galleryNavigationChannel.collectAsStateWithLifecycle(
                 GalleryScreenIntent.Default)
@@ -35,7 +48,6 @@ fun NavGraphBuilder.galleryNavGraph(
                 }
             }
         }
-        val movie = navBackStackEntry.getMovie()
         GalleryScreen(movie = movie, galleryViewModel = galleryViewModel)
     }
 }

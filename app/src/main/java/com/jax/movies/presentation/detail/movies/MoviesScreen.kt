@@ -40,10 +40,10 @@ import com.jax.movies.presentation.components.MovieItem
 
 @Composable
 fun MoviesDetailScreen(
-    moviesViewModel: MoviesViewModel,
+    moviesDetailViewModel: MoviesDetailViewModel,
     type: MoviesType
 ) {
-    val state by moviesViewModel.state.collectAsStateWithLifecycle()
+    val state by moviesDetailViewModel.state.collectAsStateWithLifecycle()
 
     when (val currentState = state) {
         is MoviesScreenState.Initial -> {}
@@ -54,16 +54,16 @@ fun MoviesDetailScreen(
                 movies = currentState.movies,
                 moviesType = type,
                 onMovieClick = {
-                    moviesViewModel.handleIntent(MoviesScreenIntent.OnMovieClick(it))
+                    moviesDetailViewModel.handleIntent(MoviesScreenIntent.OnMovieClick(it))
                 },
                 onClickBack = {
-                    moviesViewModel.handleIntent(MoviesScreenIntent.OnClickBack)
+                    moviesDetailViewModel.handleIntent(MoviesScreenIntent.OnClickBack)
                 }
             )
         }
     }
     LaunchedEffect(key1 = type) {
-        moviesViewModel.handleAction(MoviesScreenAction.FetchMoviesDetailInfo(type))
+        moviesDetailViewModel.handleAction(MoviesScreenAction.FetchMoviesDetailInfo(type))
     }
 }
 

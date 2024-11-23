@@ -3,7 +3,7 @@ package com.jax.movies.data.repository
 import android.util.Log
 import com.jax.movies.data.mapper.FilmsMapper
 import com.jax.movies.data.mapper.MoviesMapper
-import com.jax.movies.data.remote.api.MoviesApiFactory
+import com.jax.movies.data.remote.api.MoviesApiService
 import com.jax.movies.domain.entity.films.Actor
 import com.jax.movies.domain.entity.films.ActorType
 import com.jax.movies.domain.entity.films.GalleryImage
@@ -13,12 +13,13 @@ import com.jax.movies.utils.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import javax.inject.Inject
 
-class DetailMovieRepositoryImpl : DetailMovieRepository {
-
-    private val apiService = MoviesApiFactory.apiService
-    private val filmMapper = FilmsMapper()
-    private val movieMapper = MoviesMapper()
+class DetailMovieRepositoryImpl @Inject constructor(
+    private val apiService: MoviesApiService,
+    private val filmMapper: FilmsMapper,
+    private val movieMapper: MoviesMapper,
+) : DetailMovieRepository {
 
     override suspend fun getActors(filmId: Long): Flow<Resource<List<Actor>>> {
         return flow {
@@ -57,8 +58,8 @@ class DetailMovieRepositoryImpl : DetailMovieRepository {
                 if (movieResponse.isSuccessful) movieResponse.body() else null
             }
 
-            val finalMovies = movies.mapIndexed { index,movie ->
-                movieMapper.detailDtoToEntity(movie,filmIdList[index])
+            val finalMovies = movies.mapIndexed { index, movie ->
+                movieMapper.detailDtoToEntity(movie, filmIdList[index])
             }
 
             if (finalMovies.isNotEmpty()) {
@@ -79,10 +80,11 @@ class DetailMovieRepositoryImpl : DetailMovieRepository {
                     body.films.take(5).forEach { filmDto ->
                         val detailResponse = apiService.getDetailMovie(filmDto.filmId)
                         if (detailResponse.isSuccessful) {
-                            val movie = detailResponse.body()?.let { movieMapper.detailDtoToEntity(it) }
+                            val movie =
+                                detailResponse.body()?.let { movieMapper.detailDtoToEntity(it) }
                             if (movie != null) {
 
-                                val actorType = filmMapper.professionsToList( filmDto.professionKey)
+                                val actorType = filmMapper.professionsToList(filmDto.professionKey)
 
                                 actorType.forEach { type ->
                                     resultMap.getOrPut(type) { mutableListOf() }.add(movie)
@@ -90,11 +92,14 @@ class DetailMovieRepositoryImpl : DetailMovieRepository {
                             }
                         }
                     }
-                    Log.d("sdadasdasdsasaasdasd",resultMap.toString())
+                    Log.d("sdadasdasdsasaasdasd", resultMap.toString())
 
 
                     if (resultMap.isNotEmpty()) {
-                        Log.d("sdadasdasdsasadasdasdasda",filmMapper.actorDetailInfoToActor(body, resultMap).toString())
+                        Log.d(
+                            "sdadasdasdsasadasdasdasda",
+                            filmMapper.actorDetailInfoToActor(body, resultMap).toString()
+                        )
                         emit(Resource.Success(filmMapper.actorDetailInfoToActor(body, resultMap)))
                     } else {
                         emit(Resource.Error(Exception("Movies list is empty")))

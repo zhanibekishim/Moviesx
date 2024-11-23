@@ -1,18 +1,22 @@
 package com.jax.movies.navigation.detail
 
+import android.app.Activity
 import android.os.Build
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.jax.movies.di.ViewModelModule
 import com.jax.movies.domain.entity.films.Actor
 import com.jax.movies.navigation.root.NavigationState
 import com.jax.movies.presentation.detail.filmography.FilmographyScreen
 import com.jax.movies.presentation.detail.filmography.FilmographyScreenIntent
 import com.jax.movies.presentation.detail.filmography.FilmographyViewModel
+import dagger.hilt.android.EntryPointAccessors
 
 fun NavGraphBuilder.filmographyNavGraph(
     navigationState: NavigationState,
@@ -21,7 +25,16 @@ fun NavGraphBuilder.filmographyNavGraph(
         route = Details.Filmography.route,
         arguments = listOf(navArgument(Details.FILMOGRAPHY_PARAMETER) { type = Actor.navType })
     ) { navBackStackEntry ->
-        val filmographyViewModel: FilmographyViewModel = viewModel()
+        val actor = navBackStackEntry.getActor()
+        val factory = EntryPointAccessors.fromActivity(
+            activity = LocalContext.current as Activity,
+            entryPoint = ViewModelModule::class.java
+        ).filmographyViewModelFactoryProvider()
+
+        val filmographyViewModel:FilmographyViewModel = viewModel(
+            factory = FilmographyViewModel.provideFilmographyViewModel(actor,factory)
+        )
+
         val filmographyIntent =
             filmographyViewModel.filmographyNavigationChannel.collectAsStateWithLifecycle(
                 FilmographyScreenIntent.Default
@@ -41,7 +54,6 @@ fun NavGraphBuilder.filmographyNavGraph(
                 }
             }
         }
-        val actor = navBackStackEntry.getActor()
         FilmographyScreen(actor = actor, filmographyViewModel = filmographyViewModel)
     }
 }

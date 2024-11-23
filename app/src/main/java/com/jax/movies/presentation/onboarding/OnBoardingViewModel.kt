@@ -4,15 +4,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jax.movies.domain.usecase.GetIsEnteredBeforeValueUseCaseImpl
 import com.jax.movies.utils.Resource
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class OnBoardingViewModel : ViewModel() {
-
-    private val getIsEnteredBeforeValueUseCase = GetIsEnteredBeforeValueUseCaseImpl()
+@HiltViewModel
+class OnBoardingViewModel @Inject constructor(
+    private val getIsEnteredBeforeValueUseCase: GetIsEnteredBeforeValueUseCaseImpl
+) : ViewModel() {
     private val _onBoardingNavigationChannel = Channel<OnBoardingScreenIntent>()
     val onBoardingNavigationChannel = _onBoardingNavigationChannel.receiveAsFlow()
 
@@ -48,9 +51,4 @@ class OnBoardingViewModel : ViewModel() {
     }
 }
 
-sealed class OnBoardingScreenState {
-    data object Initial : OnBoardingScreenState()
-    data class Success(val value: Boolean) : OnBoardingScreenState()
-    data class Error(val message: String) : OnBoardingScreenState()
-}
 

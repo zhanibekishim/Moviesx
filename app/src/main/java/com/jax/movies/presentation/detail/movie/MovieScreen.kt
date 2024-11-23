@@ -66,10 +66,12 @@ fun MovieContent(
                     movieDetailViewModel.handleIntent(MovieScreenIntent.OnActorClick(it))
                 },
                 onMovieClick = {
-                    movieDetailViewModel.handleIntent(MovieScreenIntent.OnMovieClick(
-                        fromMovie = movie,
-                        toMovie = it
-                    ))
+                    movieDetailViewModel.handleIntent(
+                        MovieScreenIntent.OnMovieClick(
+                            fromMovie = movie,
+                            toMovie = it
+                        )
+                    )
                 },
                 onBackClicked = {
                     movieDetailViewModel.handleIntent(MovieScreenIntent.OnBackClicked(it))
@@ -126,9 +128,10 @@ private fun MainContent(
     Scaffold(
         topBar = {
             MyTopAppBar(
-                onNavClick = {onBackClicked(movie) },
-                navIcon =R.drawable.icon_back,
-                title = "")
+                onNavClick = { onBackClicked(movie) },
+                navIcon = R.drawable.icon_back,
+                title = ""
+            )
         }
     ) {
         LazyColumn(

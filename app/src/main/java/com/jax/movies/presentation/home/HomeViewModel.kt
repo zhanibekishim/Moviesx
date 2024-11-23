@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.jax.movies.domain.entity.home.MoviesType
 import com.jax.movies.domain.usecase.GetMovieCollectionUseCaseImpl
 import com.jax.movies.utils.Resource
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
@@ -14,10 +15,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class HomeViewModel : ViewModel() {
-
-    private val getMovieCollectionUseCase = GetMovieCollectionUseCaseImpl()
+@HiltViewModel
+class HomeViewModel @Inject constructor(
+    private val getMovieCollectionUseCase: GetMovieCollectionUseCaseImpl
+) : ViewModel() {
     private val _homeScreenState: MutableStateFlow<HomeScreenState> =
         MutableStateFlow(HomeScreenState())
     val homeScreenState: StateFlow<HomeScreenState> = _homeScreenState.asStateFlow()

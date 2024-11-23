@@ -40,7 +40,7 @@ import kotlinx.coroutines.launch
 fun OnBoardingScreen(
     viewModel: OnBoardingViewModel
 ) {
-    val state = viewModel.screenState
+    /*val state = viewModel.screenState
     when (val currentState = state.value) {
         is OnBoardingScreenState.Initial -> {
 
@@ -60,8 +60,12 @@ fun OnBoardingScreen(
     }
     LaunchedEffect(viewModel) {
         viewModel.handleAction(OnBoardingScreenAction.GetIsEnteredBeforeAction)
-    }
-
+    }*/
+    OnBoardingMainContent(
+        onFinishedClick = {
+            viewModel.handleIntent(OnBoardingScreenIntent.OnFinishClicked)
+        }
+    )
 }
 
 @Composable

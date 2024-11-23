@@ -2,6 +2,7 @@ package com.jax.movies.presentation.detail.movie
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.jax.movies.domain.entity.films.Actor
 import com.jax.movies.domain.entity.films.ActorType
@@ -12,9 +13,11 @@ import com.jax.movies.domain.usecase.GetDetailMovieUseCaseImpl
 import com.jax.movies.domain.usecase.GetGalleriesUseCaseImpl
 import com.jax.movies.domain.usecase.GetSimilarMoviesUseCaseImpl
 import com.jax.movies.utils.Resource
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
-import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,11 +26,14 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
-class MovieDetailViewModel : ViewModel() {
-    private val getDetailMovieUseCaseImpl = GetDetailMovieUseCaseImpl()
-    private val getActorsUseCaseImpl = GetActorsUseCaseImpl()
-    private val getGalleriesUseCaseImpl = GetGalleriesUseCaseImpl()
-    private val getSimilarMoviesUseCaseImpl = GetSimilarMoviesUseCaseImpl()
+@Suppress("UNCHECKED_CAST")
+class MovieDetailViewModel @AssistedInject constructor(
+    @Assisted private val movie: Movie,
+    private val getDetailMovieUseCaseImpl: GetDetailMovieUseCaseImpl,
+    private val getActorsUseCaseImpl: GetActorsUseCaseImpl,
+    private val getGalleriesUseCaseImpl: GetGalleriesUseCaseImpl,
+    private val getSimilarMoviesUseCaseImpl: GetSimilarMoviesUseCaseImpl
+) : ViewModel() {
 
     private val _state = MutableStateFlow<MovieDetailState>(MovieDetailState.Initial)
     val state: StateFlow<MovieDetailState> = _state.asStateFlow()
@@ -35,46 +41,55 @@ class MovieDetailViewModel : ViewModel() {
     private val _movieNavigationChannel = Channel<MovieScreenIntent>(capacity = Channel.CONFLATED)
     val movieNavigationChannel = _movieNavigationChannel.receiveAsFlow()
 
-    fun handleIntent(intent: MovieScreenIntent){
-        when(intent){
+    fun handleIntent(intent: MovieScreenIntent) {
+        when (intent) {
             is MovieScreenIntent.OnActorClick -> {
                 viewModelScope.launch {
                     _movieNavigationChannel.send(MovieScreenIntent.OnActorClick(intent.actor))
                 }
             }
+
             is MovieScreenIntent.OnBlindEyeClick -> {
                 viewModelScope.launch {
                     _movieNavigationChannel.send(MovieScreenIntent.OnBlindEyeClick)
                 }
             }
+
             is MovieScreenIntent.OnFavouriteClick -> {
                 viewModelScope.launch {
                     _movieNavigationChannel.send(MovieScreenIntent.OnFavouriteClick)
                 }
             }
+
             is MovieScreenIntent.OnGalleryClick -> {
                 viewModelScope.launch {
                     _movieNavigationChannel.send(MovieScreenIntent.OnGalleryClick(intent.movie))
                 }
             }
+
             is MovieScreenIntent.OnLickClick -> {
                 viewModelScope.launch {
                     _movieNavigationChannel.send(MovieScreenIntent.OnLickClick)
                 }
             }
+
             is MovieScreenIntent.OnMoreClick -> {
                 viewModelScope.launch {
                     _movieNavigationChannel.send(MovieScreenIntent.OnMoreClick)
                 }
             }
+
             is MovieScreenIntent.OnMovieClick -> {
                 viewModelScope.launch {
-                    _movieNavigationChannel.send(MovieScreenIntent.OnMovieClick(
-                        fromMovie = intent.fromMovie,
-                        toMovie = intent.toMovie
-                    ))
+                    _movieNavigationChannel.send(
+                        MovieScreenIntent.OnMovieClick(
+                            fromMovie = intent.fromMovie,
+                            toMovie = intent.toMovie
+                        )
+                    )
                 }
             }
+
             is MovieScreenIntent.OnShareClick -> {
                 viewModelScope.launch {
                     _movieNavigationChannel.send(MovieScreenIntent.OnShareClick)
@@ -86,23 +101,24 @@ class MovieDetailViewModel : ViewModel() {
                     _movieNavigationChannel.send(MovieScreenIntent.OnBackClicked(intent.movie))
                 }
             }
+
             is MovieScreenIntent.Default -> {}
         }
     }
 
-    fun handleAction(action: MovieScreenAction){
-        when(action){
-            is MovieScreenAction.FetchMovieDetailInfo ->{
+    fun handleAction(action: MovieScreenAction) {
+        when (action) {
+            is MovieScreenAction.FetchMovieDetailInfo -> {
                 fetchDetailInfo(action.movie)
-                Log.d("dsdasdasdasdasssssssssssssssssssssssssssssssssssssssss",action.movie.id.toString())
             }
         }
     }
-    private fun fetchDetailInfo(movie: Movie) {
+
+    private fun fetchDetailInfo(moviet: Movie) {
         _state.value = MovieDetailState.Loading
         val movieDeferred: Deferred<Movie> = viewModelScope.async {
             var finalMovie = movie
-            Log.d("dsdasdasdasdasssssssssssssssssssssssssssssssssssssssss",movie.id.toString())
+            Log.d("dsdasdasdasdasssssssssssssssssssssssssssssssssssssssss", movie.id.toString())
             getDetailMovieUseCaseImpl(movie.id).first { result ->
                 when (result) {
                     is Resource.Error -> {
@@ -117,7 +133,7 @@ class MovieDetailViewModel : ViewModel() {
                     }
                 }
             }
-            Log.d("dsadsadas",finalMovie.toString())
+            Log.d("dsadsadas", finalMovie.toString())
             finalMovie
         }
 
@@ -136,7 +152,7 @@ class MovieDetailViewModel : ViewModel() {
                     }
                 }
             }
-            Log.d("dsadsadas",actorsList.toString())
+            Log.d("dsadsadas", actorsList.toString())
             actorsList
         }
         val galleriesDeferred = viewModelScope.async {
@@ -154,7 +170,7 @@ class MovieDetailViewModel : ViewModel() {
                     }
                 }
             }
-            Log.d("dsadsadas",galleriesList.toString())
+            Log.d("dsadsadas", galleriesList.toString())
             galleriesList
         }
         val similarMoviesDeferred = viewModelScope.async {
@@ -172,7 +188,7 @@ class MovieDetailViewModel : ViewModel() {
                     }
                 }
             }
-            Log.d("dsadsadas",similarMoviesList.toString())
+            Log.d("dsadsadas", similarMoviesList.toString())
             similarMoviesList
         }
         viewModelScope.launch {
@@ -190,6 +206,7 @@ class MovieDetailViewModel : ViewModel() {
             )
         }
     }
+
     private fun getFilmCrew(actors: List<Actor>): List<Actor> {
         return actors.filter { actor ->
             when (actor.profession) {
@@ -200,7 +217,24 @@ class MovieDetailViewModel : ViewModel() {
                 ActorType.DESIGN.name,
                 ActorType.VOICE_DIRECTOR.name,
                 ActorType.PRODUCER_USSR.name -> true
+
                 else -> false
+            }
+        }
+    }
+
+    @AssistedFactory
+    interface MovieDetailFactory {
+        fun create(movie: Movie): MovieDetailViewModel
+    }
+
+    companion object {
+        fun provideMovieDetailFactory(
+            movie: Movie,
+            factory: MovieDetailFactory
+        ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return factory.create(movie) as T
             }
         }
     }

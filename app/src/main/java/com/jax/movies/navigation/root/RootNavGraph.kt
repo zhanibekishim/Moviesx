@@ -13,7 +13,7 @@ fun RootNavGraph() {
         route = GRAPH.ROOT,
         startDestination = GRAPH.ON_BOARDING_SCREEN,
     ) {
-        onBoardingScreen(navigationState)
+        onBoardingScreen(navigationState=navigationState )
         composable(route = GRAPH.MAIN_GRAPH) { MainNavGraph() }
     }
 }

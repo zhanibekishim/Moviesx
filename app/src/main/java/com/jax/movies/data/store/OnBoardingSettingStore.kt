@@ -4,10 +4,12 @@ import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
-class OnBoardingSettingStore(
-    private val context: Context
+class OnBoardingSettingStore @Inject constructor(
+    @ApplicationContext private val context: Context
 ) {
     val Context.dataStore by preferencesDataStore(OnBoardingSettingFileName)
 

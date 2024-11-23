@@ -2,8 +2,8 @@ package com.jax.movies.navigation.root
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.runtime.LaunchedEffect
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.jax.movies.presentation.onboarding.OnBoardingScreen
@@ -14,8 +14,8 @@ import com.jax.movies.presentation.onboarding.OnBoardingViewModel
 fun NavGraphBuilder.onBoardingScreen(
     navigationState: NavigationState
 ) {
-    composable(route = GRAPH.ON_BOARDING_SCREEN) {
-        val onBoardingViewModel: OnBoardingViewModel = viewModel()
+    composable(route = GRAPH.ON_BOARDING_SCREEN) {backStackEntry->
+        val onBoardingViewModel = hiltViewModel<OnBoardingViewModel>()
         val currentIntent = onBoardingViewModel.onBoardingNavigationChannel
             .collectAsStateWithLifecycle(OnBoardingScreenIntent.Default)
         LaunchedEffect(currentIntent.value) {

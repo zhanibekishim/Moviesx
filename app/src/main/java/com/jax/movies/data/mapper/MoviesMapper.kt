@@ -7,8 +7,9 @@ import com.jax.movies.data.remote.model.home.MovieDto
 import com.jax.movies.domain.entity.home.CountryNameContainer
 import com.jax.movies.domain.entity.home.GenreNameContainer
 import com.jax.movies.domain.entity.home.Movie
+import javax.inject.Inject
 
-class MoviesMapper {
+class MoviesMapper @Inject constructor() {
 
     fun movieDtoToEntity(movieDto: MovieDto): Movie {
         return Movie(

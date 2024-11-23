@@ -1,8 +1,8 @@
 package com.jax.movies.navigation.main
 
 import androidx.compose.runtime.LaunchedEffect
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.jax.movies.navigation.root.NavigationState
@@ -14,7 +14,7 @@ fun NavGraphBuilder.homeNavGraph(
     navigationState: NavigationState
 ) {
     composable(BottomScreenItem.HomeScreen.route) {
-        val homeViewModel: HomeViewModel = viewModel()
+        val homeViewModel = hiltViewModel<HomeViewModel>()
         val homeScreenIntent =
             homeViewModel.homeNavigationChannel.collectAsStateWithLifecycle(HomeScreenIntent.Default)
         LaunchedEffect(homeScreenIntent.value) {

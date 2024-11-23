@@ -1,18 +1,22 @@
 package com.jax.movies.navigation.detail
 
+import android.app.Activity
 import android.os.Build
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.jax.movies.di.ViewModelModule
 import com.jax.movies.domain.entity.films.Actor
 import com.jax.movies.navigation.root.NavigationState
 import com.jax.movies.presentation.detail.actor.ActorDetailScreen
 import com.jax.movies.presentation.detail.actor.ActorDetailViewModel
 import com.jax.movies.presentation.detail.actor.ActorScreenIntent
+import dagger.hilt.android.EntryPointAccessors
 
 fun NavGraphBuilder.actorNavGraph(
     navigationState: NavigationState,
@@ -23,7 +27,13 @@ fun NavGraphBuilder.actorNavGraph(
     ) { backStackEntry ->
 
         val actor = backStackEntry.getActor()
-        val actorViewModel: ActorDetailViewModel = viewModel()
+        val factory = EntryPointAccessors.fromActivity(
+            activity = LocalContext.current as Activity,
+            entryPoint = ViewModelModule::class.java
+        ).actorDetailViewModelFactoryProvider()
+        val actorViewModel: ActorDetailViewModel = viewModel(
+            factory = ActorDetailViewModel.provideActorDetailViewModelFactory(actor, factory)
+        )
         val actorDetailIntent =
             actorViewModel.actorNavigationChannel.collectAsStateWithLifecycle(ActorScreenIntent.Default)
 

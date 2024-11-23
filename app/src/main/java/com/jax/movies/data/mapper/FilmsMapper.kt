@@ -10,9 +10,9 @@ import com.jax.movies.domain.entity.films.ActorType
 import com.jax.movies.domain.entity.films.Film
 import com.jax.movies.domain.entity.films.GalleryImage
 import com.jax.movies.domain.entity.home.Movie
-import java.util.Locale
+import javax.inject.Inject
 
-class FilmsMapper {
+class FilmsMapper @Inject constructor(){
 
     fun actorsDtoToEntity(actorsDto: List<ActorDto>?): List<Actor> {
         return actorsDto?.map {
