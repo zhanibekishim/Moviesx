@@ -13,9 +13,9 @@ import androidx.navigation.navArgument
 import com.jax.movies.di.ViewModelModule
 import com.jax.movies.domain.entity.films.Actor
 import com.jax.movies.navigation.root.NavigationState
-import com.jax.movies.presentation.detail.filmography.FilmographyScreen
-import com.jax.movies.presentation.detail.filmography.FilmographyScreenIntent
-import com.jax.movies.presentation.detail.filmography.FilmographyViewModel
+import com.jax.movies.presentation.home.filmography.FilmographyScreen
+import com.jax.movies.presentation.home.filmography.FilmographyScreenIntent
+import com.jax.movies.presentation.home.filmography.FilmographyViewModel
 import dagger.hilt.android.EntryPointAccessors
 
 fun NavGraphBuilder.filmographyNavGraph(

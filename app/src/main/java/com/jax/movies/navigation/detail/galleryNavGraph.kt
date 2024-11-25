@@ -13,9 +13,9 @@ import androidx.navigation.navArgument
 import com.jax.movies.di.ViewModelModule
 import com.jax.movies.domain.entity.home.Movie
 import com.jax.movies.navigation.root.NavigationState
-import com.jax.movies.presentation.detail.gallery.GalleryScreen
-import com.jax.movies.presentation.detail.gallery.GalleryScreenIntent
-import com.jax.movies.presentation.detail.gallery.GalleryViewModel
+import com.jax.movies.presentation.home.gallery.GalleryScreen
+import com.jax.movies.presentation.home.gallery.GalleryScreenIntent
+import com.jax.movies.presentation.home.gallery.GalleryViewModel
 import dagger.hilt.android.EntryPointAccessors
 
 fun NavGraphBuilder.galleryNavGraph(

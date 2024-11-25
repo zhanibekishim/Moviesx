@@ -6,9 +6,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.jax.movies.navigation.root.NavigationState
-import com.jax.movies.presentation.home.HomePage
-import com.jax.movies.presentation.home.HomeScreenIntent
-import com.jax.movies.presentation.home.HomeViewModel
+import com.jax.movies.presentation.home.main.HomePage
+import com.jax.movies.presentation.home.main.HomeScreenIntent
+import com.jax.movies.presentation.home.main.HomeViewModel
 
 fun NavGraphBuilder.homeNavGraph(
     navigationState: NavigationState

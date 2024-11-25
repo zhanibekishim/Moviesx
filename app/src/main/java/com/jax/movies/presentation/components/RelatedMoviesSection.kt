@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.jax.movies.domain.entity.home.Movie
-import com.jax.movies.presentation.detail.movie.StepTitle
+import com.jax.movies.presentation.home.movie.StepTitle
 
 @Composable
 fun RelatedMoviesSection(

@@ -1,10 +1,10 @@
 package com.jax.movies.di
 
-import com.jax.movies.presentation.detail.actor.ActorDetailViewModel
-import com.jax.movies.presentation.detail.filmography.FilmographyViewModel
-import com.jax.movies.presentation.detail.gallery.GalleryViewModel
-import com.jax.movies.presentation.detail.movie.MovieDetailViewModel
-import com.jax.movies.presentation.detail.movies.MoviesDetailViewModel
+import com.jax.movies.presentation.home.actor.ActorDetailViewModel
+import com.jax.movies.presentation.home.filmography.FilmographyViewModel
+import com.jax.movies.presentation.home.gallery.GalleryViewModel
+import com.jax.movies.presentation.home.movie.MovieDetailViewModel
+import com.jax.movies.presentation.home.movies.MoviesDetailViewModel
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityComponent

@@ -12,7 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.jax.movies.navigation.main.BottomScreenItem
-import com.jax.movies.ui.theme.Blue1
+import com.jax.movies.presentation.theme.Blue1
 
 
 @Composable

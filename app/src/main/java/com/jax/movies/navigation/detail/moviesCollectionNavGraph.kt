@@ -12,9 +12,9 @@ import com.google.gson.Gson
 import com.jax.movies.di.ViewModelModule
 import com.jax.movies.domain.entity.home.MoviesType
 import com.jax.movies.navigation.root.NavigationState
-import com.jax.movies.presentation.detail.movies.MoviesDetailScreen
-import com.jax.movies.presentation.detail.movies.MoviesDetailViewModel
-import com.jax.movies.presentation.detail.movies.MoviesScreenIntent
+import com.jax.movies.presentation.home.movies.MoviesDetailScreen
+import com.jax.movies.presentation.home.movies.MoviesDetailViewModel
+import com.jax.movies.presentation.home.movies.MoviesScreenIntent
 import dagger.hilt.android.EntryPointAccessors
 
 fun NavGraphBuilder.moviesCollectionNavGraph(
