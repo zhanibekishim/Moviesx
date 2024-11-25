@@ -7,6 +7,7 @@ import com.jax.movies.data.remote.model.films.GalleryResponse
 import com.jax.movies.data.remote.model.films.SimilarFilmsResponse
 import com.jax.movies.data.remote.model.home.DetailResponseDto
 import com.jax.movies.data.remote.model.home.MoviesResponseDto
+import com.jax.movies.data.remote.model.search.SearchResponseDto
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -63,6 +64,12 @@ interface MoviesApiService {
         @Header("X-API-KEY") apiKey: String = BuildConfig.API_KEY
     ): Response<ActorDetailInfoResponse>
 
+    @GET("v2.1/films/search-by-keyword")
+    suspend fun searchByQuery(
+        @Query("keyword") query: String,
+        @Query("page") page: Int = DEFAULT_PAGE,
+        @Header("X-API-KEY") apiKey: String = BuildConfig.API_KEY
+    ):Response<SearchResponseDto>
     private companion object {
         const val GALLERY_TYPE = "STILL"
         const val DEFAULT_PAGE = 1

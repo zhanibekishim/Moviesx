@@ -1,4 +1,4 @@
-package com.jax.movies.presentation.home
+package com.jax.movies
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
