@@ -22,15 +22,15 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            /*MoviesTheme {
+            MoviesTheme {
                 Box(modifier = Modifier.fillMaxSize()) { RootNavGraph() }
-            }*/
-            lifecycleScope.launch {
+            }
+           /* lifecycleScope.launch {
                 val responseDto = MoviesApiFactory.apiService.searchByQuery("s")
                 if (responseDto.isSuccessful) {
                     Log.d("dsadasdsadsadasdsa", "onCreate: ${responseDto.body()?.films}")
                 }
-            }
+            }*/
         }
     }
 }

@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import java.util.Objects
 
 @Suppress("UNCHECKED_CAST")
 class ActorDetailViewModel @AssistedInject constructor(
@@ -93,8 +94,10 @@ class ActorDetailViewModel @AssistedInject constructor(
                 return factory.create(actor) as T
             }
         }
+
     }
 }
+
 
 
 
