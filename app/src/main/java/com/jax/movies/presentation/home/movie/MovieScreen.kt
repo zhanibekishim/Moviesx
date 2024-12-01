@@ -45,6 +45,7 @@ import com.jax.movies.presentation.components.FetchedImage
 import com.jax.movies.presentation.components.LoadingScreen
 import com.jax.movies.presentation.components.MyTopAppBar
 import com.jax.movies.presentation.components.RelatedMoviesSection
+import com.jax.movies.presentation.components.StepTitle
 
 @Composable
 fun MovieContent(
@@ -60,27 +61,27 @@ fun MovieContent(
             MainContent(
                 movie = currentState.movie,
                 onGalleryClick = {
-                    movieDetailViewModel.handleIntent(MovieScreenIntent.OnGalleryClick(it))
+                    movieDetailViewModel.handleIntent(MovieScreenIntent.MovieScreenNavigationIntent.OnGalleryClick(it))
                 },
                 onActorClick = {
-                    movieDetailViewModel.handleIntent(MovieScreenIntent.OnActorClick(it))
+                    movieDetailViewModel.handleIntent(MovieScreenIntent.MovieScreenNavigationIntent.OnActorClick(it))
                 },
                 onMovieClick = {
                     movieDetailViewModel.handleIntent(
-                        MovieScreenIntent.OnMovieClick(
+                        MovieScreenIntent.MovieScreenNavigationIntent.OnMovieClick(
                             fromMovie = movie,
                             toMovie = it
                         )
                     )
                 },
                 onBackClicked = {
-                    movieDetailViewModel.handleIntent(MovieScreenIntent.OnBackClicked(it))
+                    movieDetailViewModel.handleIntent(MovieScreenIntent.MovieScreenNavigationIntent.OnBackClicked(it))
                 },
                 onLikeClicked = {
-                    movieDetailViewModel.handleIntent(MovieScreenIntent.OnLickClick)
+                    movieDetailViewModel.handleIntent(MovieScreenIntent.OnLickClick(it))
                 },
                 onFavouriteClicked = {
-                    movieDetailViewModel.handleIntent(MovieScreenIntent.OnFavouriteClick)
+                    movieDetailViewModel.handleIntent(MovieScreenIntent.OnFavouriteClick(it))
                 },
                 onShareClicked = {
                     movieDetailViewModel.handleIntent(MovieScreenIntent.OnShareClick)
@@ -110,8 +111,8 @@ private fun MainContent(
     onActorClick: (Actor) -> Unit,
     onMovieClick: (Movie) -> Unit,
     onBackClicked: (Movie) -> Unit,
-    onLikeClicked: () -> Unit,
-    onFavouriteClicked: () -> Unit,
+    onLikeClicked: (Movie) -> Unit,
+    onFavouriteClicked: (Movie) -> Unit,
     onShareClicked: () -> Unit,
     onBlindEyeClicked: () -> Unit,
     onMoreClicked: () -> Unit,
@@ -217,8 +218,8 @@ private fun MainContent(
 @Composable
 private fun TitleSection(
     movie: Movie,
-    onLikeClicked: () -> Unit,
-    onFavouriteClicked: () -> Unit,
+    onLikeClicked: (Movie) -> Unit,
+    onFavouriteClicked: (Movie) -> Unit,
     onShareClicked: () -> Unit,
     onBlindEyeClicked: () -> Unit,
     onMoreClicked: () -> Unit,
@@ -249,14 +250,14 @@ private fun TitleSection(
             Text(text = "${movie.lengthMovie} ${movie.ageLimit}")
         }
         Row {
-            IconButton(onClick = onLikeClicked) {
+            IconButton(onClick = {onLikeClicked(movie)}) {
                 Icon(
                     painter = painterResource(id = R.drawable.icon_liked),
                     contentDescription = "",
                     tint = Color.White
                 )
             }
-            IconButton(onClick = onFavouriteClicked) {
+            IconButton(onClick = {onFavouriteClicked(movie)}) {
                 Icon(
                     painter = painterResource(id = R.drawable.icon_favourite),
                     contentDescription = "",
@@ -315,52 +316,6 @@ private fun MainDescriptionWithSubDescription(
             maxLines = 5,
             overflow = TextOverflow.Ellipsis
         )
-    }
-}
-
-@Composable
-fun StepTitle(
-    onTitleClick: () -> Unit,
-    title: String,
-    subTitle: String? = null,
-    countOrOther: String,
-    modifier: Modifier = Modifier
-) {
-    Column {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = modifier,
-        ) {
-            Text(
-                text = title,
-                fontWeight = FontWeight.W600,
-                fontSize = 18.sp,
-                modifier = Modifier.weight(1f)
-            )
-            Text(
-                text = countOrOther,
-                fontWeight = FontWeight.W600,
-                fontSize = 14.sp,
-                color = Color(0xFF3D3BFF)
-
-            )
-            IconButton(onClick = onTitleClick) {
-                Icon(
-                    painter = painterResource(id = R.drawable.arrow_right),
-                    contentDescription = "see all",
-                    tint = Color(0xFF3D3BFF)
-                )
-            }
-        }
-        if (subTitle?.isNotEmpty() == true) {
-            Text(
-                text = subTitle,
-                fontWeight = FontWeight.W400,
-                fontSize = 12.sp,
-                color = Color(0xFFB5B5C9),
-                modifier = Modifier.weight(1f)
-            )
-        }
     }
 }
 

@@ -19,7 +19,8 @@ import com.jax.movies.presentation.components.ErrorScreen
 import com.jax.movies.presentation.components.LoadingScreen
 import com.jax.movies.presentation.components.MyTopAppBar
 import com.jax.movies.presentation.components.RelatedMoviesSection
-import com.jax.movies.presentation.home.movie.StepTitle
+import com.jax.movies.presentation.components.StepTitle
+
 
 @Composable
 fun ActorDetailScreen(

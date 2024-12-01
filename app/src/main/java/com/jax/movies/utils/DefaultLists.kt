@@ -2,6 +2,7 @@ package com.jax.movies.utils
 
 import com.jax.movies.R
 import com.jax.movies.presentation.profile.CollectionItem
+import com.jax.movies.presentation.search.setting.FilterType
 
 object DefaultLists {
     val yearsList = listOf(
@@ -45,10 +46,10 @@ object DefaultLists {
         "Рейтинг",
     )
     val defaultFilterTypes = listOf(
-        "Страна" to "Россия",
-        "Жанр" to "Комедия",
-        "Год" to "с 1998 до 2017",
-        "Рейтинг" to "любой"
+        FilterType.COUNTRY to "Россия",
+        FilterType.GENRE to "Комедия",
+        FilterType.YEAR to "с 1998 до 2017",
+        FilterType.RATING to "любой"
     )
     val defaultCollectionTypes = listOf(
         CollectionItem(

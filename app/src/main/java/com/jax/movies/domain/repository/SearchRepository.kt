@@ -5,5 +5,5 @@ import com.jax.movies.utils.Resource
 import kotlinx.coroutines.flow.Flow
 
 interface SearchRepository {
-    suspend fun searchQuery(query:String): Flow<Resource<Movie>>
+    suspend fun searchQuery(query:String): Flow<Resource<List<Movie>>>
 }

@@ -1,5 +1,6 @@
 package com.jax.movies.navigation.root
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -9,6 +10,7 @@ import com.jax.movies.domain.entity.films.Actor
 import com.jax.movies.domain.entity.home.Movie
 import com.jax.movies.domain.entity.home.MoviesType
 import com.jax.movies.navigation.detail.Details
+import com.jax.movies.navigation.search.SearchGraph
 
 class NavigationState(
     val navHostController: NavHostController
@@ -83,6 +85,10 @@ class NavigationState(
             launchSingleTop = true
             restoreState = true
         }
+    }
+    fun backToSettings(){
+        Log.d("TAG", "backToSettings:runned ")
+        navHostController.popBackStack(SearchGraph.SearchSetting.route,true)
     }
 }
 

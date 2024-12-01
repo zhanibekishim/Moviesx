@@ -19,7 +19,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jax.movies.domain.entity.films.Actor
 
-
 @Composable
 fun ActorItem(
     onActorClick: (Actor) -> Unit,

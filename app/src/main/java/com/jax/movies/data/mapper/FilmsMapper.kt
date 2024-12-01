@@ -1,18 +1,18 @@
 package com.jax.movies.data.mapper
 
 import android.util.Log
+import com.jax.movies.data.local.model.FavouriteMovie
+import com.jax.movies.data.local.model.SeenMovie
 import com.jax.movies.data.remote.model.films.ActorDetailInfoResponse
 import com.jax.movies.data.remote.model.films.ActorDto
-import com.jax.movies.data.remote.model.films.FilmDto
 import com.jax.movies.data.remote.model.films.GalleryImageContainerDto
 import com.jax.movies.domain.entity.films.Actor
 import com.jax.movies.domain.entity.films.ActorType
-import com.jax.movies.domain.entity.films.Film
 import com.jax.movies.domain.entity.films.GalleryImage
 import com.jax.movies.domain.entity.home.Movie
 import javax.inject.Inject
 
-class FilmsMapper @Inject constructor(){
+class FilmsMapper @Inject constructor() {
 
     fun actorsDtoToEntity(actorsDto: List<ActorDto>?): List<Actor> {
         return actorsDto?.map {
@@ -69,9 +69,9 @@ class FilmsMapper @Inject constructor(){
             movies = selectedMovies,
             allMovies = movies
         )
-       /* Log.d("actorssssssssssssssssssssssssssss",actor.toString())*/
-        Log.d("yyyyyyyyyyyyyyyyyyyyyyyy",actor.allMovies.toString())
-        Log.d("lllllllllllllllllllllllllllllllllllllllllll",actor.movies.toString())
+        /* Log.d("actorssssssssssssssssssssssssssss",actor.toString())*/
+        Log.d("yyyyyyyyyyyyyyyyyyyyyyyy", actor.allMovies.toString())
+        Log.d("lllllllllllllllllllllllllllllllllllllllllll", actor.movies.toString())
         return actor
     }
 
@@ -98,16 +98,95 @@ class FilmsMapper @Inject constructor(){
         }
     }
 
+    fun movieEntityToFavourite(movie: Movie): FavouriteMovie {
+        return FavouriteMovie(
+            id = movie.id,
+            name = movie.name,
+            year = movie.year,
+            lengthMovie = movie.lengthMovie,
+            countries = movie.countries,
+            genres = movie.genres,
+            ratingKp = movie.ratingKp,
+            posterUrl = movie.posterUrl,
+            slogan = movie.slogan,
+            shortDescription = movie.shortDescription,
+            description = movie.description,
+            ageLimit = movie.ageLimit
+        )
+    }
 
+    fun movieEntityToSeen(movie: Movie): SeenMovie {
+        return SeenMovie(
+            id = movie.id,
+            name = movie.name,
+            year = movie.year,
+            lengthMovie = movie.lengthMovie,
+            countries = movie.countries,
+            genres = movie.genres,
+            ratingKp = movie.ratingKp,
+            posterUrl = movie.posterUrl,
+            slogan = movie.slogan,
+            shortDescription = movie.shortDescription,
+            description = movie.description,
+            ageLimit = movie.ageLimit
+        )
+    }
 
-    private fun FilmDto.filmDtoToEntity(): Film {
-        return Film(
-            filmId = this.filmId,
-            nameRu = this.nameRu,
-            nameEn = this.nameEn,
-            rating = this.rating,
-            description = this.description,
-            professionKey = this.professionKey,
+    fun favouriteMovieListToMovies(favouriteMovies: List<FavouriteMovie>): List<Movie> {
+        return favouriteMovies.map { favouriteMovieToMovie(it) }
+    }
+
+    private fun favouriteMovieToMovie(favouriteMovie: FavouriteMovie): Movie {
+        return Movie(
+            id = favouriteMovie.id,
+            name = favouriteMovie.name,
+            year = favouriteMovie.year,
+            lengthMovie = favouriteMovie.lengthMovie,
+            countries = favouriteMovie.countries,
+            genres = favouriteMovie.genres,
+            ratingKp = favouriteMovie.ratingKp,
+            posterUrl = favouriteMovie.posterUrl,
+            slogan = favouriteMovie.slogan,
+            shortDescription = favouriteMovie.shortDescription,
+            description = favouriteMovie.description,
+            ageLimit = favouriteMovie.ageLimit
+        )
+    }
+
+    fun seenMovieListToMovies(seenMovies: List<SeenMovie>): List<Movie> {
+        return seenMovies.map { seenMovieToMovie(it) }
+    }
+
+    private fun seenMovieToMovie(seenMovie: SeenMovie): Movie {
+        return Movie(
+            id = seenMovie.id,
+            name = seenMovie.name,
+            year = seenMovie.year,
+            lengthMovie = seenMovie.lengthMovie,
+            countries = seenMovie.countries,
+            genres = seenMovie.genres,
+            ratingKp = seenMovie.ratingKp,
+            posterUrl = seenMovie.posterUrl,
+            slogan = seenMovie.slogan,
+            shortDescription = seenMovie.shortDescription,
+            description = seenMovie.description,
+            ageLimit = seenMovie.ageLimit
         )
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

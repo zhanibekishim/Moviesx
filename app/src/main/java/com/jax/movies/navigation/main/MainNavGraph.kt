@@ -2,12 +2,14 @@ package com.jax.movies.navigation.main
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import com.jax.movies.navigation.detail.detailsScreens
 import com.jax.movies.navigation.root.GRAPH
 import com.jax.movies.navigation.root.rememberNavigationState
-import com.jax.movies.presentation.profile.ProfileScreen
-import com.jax.movies.presentation.search.SearchScreen
+import com.jax.movies.navigation.search.searchCountryNavGraph
+import com.jax.movies.navigation.search.searchGenreNavGraph
+import com.jax.movies.navigation.search.searchNavGraph
+import com.jax.movies.navigation.search.searchPeriodNavGraph
+import com.jax.movies.navigation.search.searchSettingNavGraph
 
 @Composable
 fun MainNavGraph() {
@@ -18,9 +20,13 @@ fun MainNavGraph() {
         startDestination = BottomScreenItem.HomeScreen.route
     ) {
         homeNavGraph(navigationState)
-        composable(BottomScreenItem.SearchScreen.route) { SearchScreen(navigationState) }
-        composable(BottomScreenItem.ProfileScreen.route) { ProfileScreen(navigationState) }
+        searchNavGraph(navigationState)
+        profileNavGraph(navigationState)
         detailsScreens(navigationState)
+        searchSettingNavGraph(navigationState)
+        searchPeriodNavGraph(navigationState)
+        searchGenreNavGraph(navigationState)
+        searchCountryNavGraph(navigationState)
     }
 }
 

@@ -1,6 +1,8 @@
 package com.jax.movies.data.repository
 
 import android.util.Log
+import com.jax.movies.data.local.database.FavouriteMoviesDao
+import com.jax.movies.data.local.database.SeenMoviesDao
 import com.jax.movies.data.mapper.FilmsMapper
 import com.jax.movies.data.mapper.MoviesMapper
 import com.jax.movies.data.remote.api.MoviesApiService
@@ -19,6 +21,8 @@ class DetailMovieRepositoryImpl @Inject constructor(
     private val apiService: MoviesApiService,
     private val filmMapper: FilmsMapper,
     private val movieMapper: MoviesMapper,
+    private val seenMoviesDao: SeenMoviesDao,
+    private val favouriteMoviesDao: FavouriteMoviesDao
 ) : DetailMovieRepository {
 
     override suspend fun getActors(filmId: Long): Flow<Resource<List<Actor>>> {
@@ -111,6 +115,18 @@ class DetailMovieRepositoryImpl @Inject constructor(
         }.catch {
             emit(Resource.Error(it))
         }
+    }
+
+    override suspend fun saveFavouriteMovie(movie: Movie): Boolean {
+        val favouriteMovie = filmMapper.movieEntityToFavourite(movie)
+        val insertedId = favouriteMoviesDao.saveFavouriteMovie(favouriteMovie)
+        return insertedId != -1L
+    }
+
+    override suspend fun saveSeenMovie(movie: Movie): Boolean {
+        val seenMovie = filmMapper.movieEntityToSeen(movie)
+        val insertedId = seenMoviesDao.saveSeenMovie(seenMovie)
+        return insertedId != -1L
     }
 }
 

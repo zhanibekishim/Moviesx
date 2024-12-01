@@ -14,7 +14,7 @@ class MoviesMapper @Inject constructor() {
     fun movieDtoToEntity(movieDto: MovieDto): Movie {
         return Movie(
             id = movieDto.id,
-            name = movieDto.name,
+            name = movieDto.name?: "",
             year = movieDto.year,
             genres = dtoGenresToEntity(movieDto.genres),
             countries = dtoCountriesToEntity(movieDto.countries),

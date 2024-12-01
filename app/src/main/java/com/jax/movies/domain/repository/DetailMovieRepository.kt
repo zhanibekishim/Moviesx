@@ -11,4 +11,7 @@ interface DetailMovieRepository {
     suspend fun getGalleries(filmId: Long): Flow<Resource<List<GalleryImage>>>
     suspend fun getSimilarFilms(filmId: Long): Flow<Resource<List<Movie>>>
     suspend fun getActorDetailInfo(actorId: Long): Flow<Resource<Actor>>
+
+    suspend fun saveFavouriteMovie(movie: Movie): Boolean
+    suspend fun saveSeenMovie(movie: Movie): Boolean
 }

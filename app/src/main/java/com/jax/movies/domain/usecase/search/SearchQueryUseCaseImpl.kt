@@ -10,6 +10,6 @@ class SearchQueryUseCaseImpl @Inject constructor(
     private val repository: SearchRepository
 ) : SearchQueryUseCase {
     override suspend fun invoke(query: String): Flow<Resource<List<Movie>>> {
-        TODO("Not yet implemented")
+        return repository.searchQuery(query)
     }
 }

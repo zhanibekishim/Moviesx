@@ -18,7 +18,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.jax.movies.R
 import com.jax.movies.domain.entity.home.Movie
-import com.jax.movies.presentation.home.movie.StepTitle
 
 @Composable
 fun RelatedMoviesSection(
@@ -52,20 +51,20 @@ fun RelatedMoviesSection(
                         modifier = Modifier.padding(bottom = 56.dp)
                     )
                 }
-                if (deleteMoviesIcon) {
-                    item {
-                       Box(
-                           contentAlignment = Alignment.Center,
-                           modifier = Modifier.background(Color.White).padding(8.dp)
-                       ){
-                           IconButton(onClick = deleteMoviesIconClicked) {
-                               Icon(
-                                   painter = painterResource(id = R.drawable.icon_basket),
-                                   contentDescription = "delete",
-                                   modifier = Modifier.size(20.dp)
-                               )
-                           }
-                       }
+            }
+            if (deleteMoviesIcon) {
+                item {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier.background(Color.White).padding(8.dp)
+                    ){
+                        IconButton(onClick = deleteMoviesIconClicked) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.icon_basket),
+                                contentDescription = "delete",
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
                     }
                 }
             }

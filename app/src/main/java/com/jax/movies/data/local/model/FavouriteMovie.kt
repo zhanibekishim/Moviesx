@@ -2,6 +2,7 @@ package com.jax.movies.data.local.model
 
 import androidx.compose.runtime.Immutable
 import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.jax.movies.domain.entity.home.CountryNameContainer
 import com.jax.movies.domain.entity.home.GenreNameContainer
 import com.jax.movies.utils.Constants.FAVOURITE_MOVIES_TABLE
@@ -9,6 +10,7 @@ import com.jax.movies.utils.Constants.FAVOURITE_MOVIES_TABLE
 @Immutable
 @Entity(tableName = FAVOURITE_MOVIES_TABLE)
 data class FavouriteMovie(
+    @PrimaryKey
     val id: Long,
     val name: String,
     val year: Int,

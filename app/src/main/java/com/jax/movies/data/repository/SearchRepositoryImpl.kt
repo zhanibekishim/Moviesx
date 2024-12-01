@@ -13,13 +13,17 @@ class SearchRepositoryImpl @Inject constructor(
     private val apiService: MoviesApiService,
     private val movieMapper: MoviesMapper
 ) : SearchRepository {
-    override suspend fun searchQuery(query: String): Flow<Resource<Movie>> {
+    override suspend fun searchQuery(query: String): Flow<Resource<List<Movie>>> {
         return flow {
             val response = apiService.searchByQuery(query)
             if (response.isSuccessful) {
-                response.body()?.films?.map {
-                    movieMapper.movieDtoToEntity(it)
-                } ?: emit(Resource.Error(Exception("Response body is null")))
+                val films = response.body()?.films
+                if (films != null) {
+                    val movies = films.map { movieMapper.movieDtoToEntity(it) }
+                    emit(Resource.Success(movies))
+                } else {
+                    emit(Resource.Error(Exception("Response body is null")))
+                }
             } else {
                 emit(Resource.Error(Exception("Error: ${response.code()} - ${response.message()}")))
             }

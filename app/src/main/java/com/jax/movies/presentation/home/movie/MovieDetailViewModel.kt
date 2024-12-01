@@ -12,6 +12,8 @@ import com.jax.movies.domain.usecase.GetActorsUseCaseImpl
 import com.jax.movies.domain.usecase.GetDetailMovieUseCaseImpl
 import com.jax.movies.domain.usecase.GetGalleriesUseCaseImpl
 import com.jax.movies.domain.usecase.GetSimilarMoviesUseCaseImpl
+import com.jax.movies.domain.usecase.movie.SaveFavouriteMovieUseCaseImpl
+import com.jax.movies.domain.usecase.movie.SaveSeenMovieUseCaseImpl
 import com.jax.movies.utils.Resource
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -32,57 +34,44 @@ class MovieDetailViewModel @AssistedInject constructor(
     private val getDetailMovieUseCaseImpl: GetDetailMovieUseCaseImpl,
     private val getActorsUseCaseImpl: GetActorsUseCaseImpl,
     private val getGalleriesUseCaseImpl: GetGalleriesUseCaseImpl,
-    private val getSimilarMoviesUseCaseImpl: GetSimilarMoviesUseCaseImpl
+    private val getSimilarMoviesUseCaseImpl: GetSimilarMoviesUseCaseImpl,
+    private val saveFavouriteMovieUseCase: SaveFavouriteMovieUseCaseImpl,
+    private val saveSeenMovieUseCase: SaveSeenMovieUseCaseImpl
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<MovieDetailState>(MovieDetailState.Initial)
     val state: StateFlow<MovieDetailState> = _state.asStateFlow()
 
-    private val _movieNavigationChannel = Channel<MovieScreenIntent>(capacity = Channel.CONFLATED)
+    private val _movieNavigationChannel =
+        Channel<MovieScreenIntent.MovieScreenNavigationIntent>(capacity = Channel.CONFLATED)
     val movieNavigationChannel = _movieNavigationChannel.receiveAsFlow()
 
     fun handleIntent(intent: MovieScreenIntent) {
         when (intent) {
-            is MovieScreenIntent.OnActorClick -> {
-                viewModelScope.launch {
-                    _movieNavigationChannel.send(MovieScreenIntent.OnActorClick(intent.actor))
-                }
-            }
-
-            is MovieScreenIntent.OnBlindEyeClick -> {
-                viewModelScope.launch {
-                    _movieNavigationChannel.send(MovieScreenIntent.OnBlindEyeClick)
-                }
-            }
-
-            is MovieScreenIntent.OnFavouriteClick -> {
-                viewModelScope.launch {
-                    _movieNavigationChannel.send(MovieScreenIntent.OnFavouriteClick)
-                }
-            }
-
-            is MovieScreenIntent.OnGalleryClick -> {
-                viewModelScope.launch {
-                    _movieNavigationChannel.send(MovieScreenIntent.OnGalleryClick(intent.movie))
-                }
-            }
-
-            is MovieScreenIntent.OnLickClick -> {
-                viewModelScope.launch {
-                    _movieNavigationChannel.send(MovieScreenIntent.OnLickClick)
-                }
-            }
-
-            is MovieScreenIntent.OnMoreClick -> {
-                viewModelScope.launch {
-                    _movieNavigationChannel.send(MovieScreenIntent.OnMoreClick)
-                }
-            }
-
-            is MovieScreenIntent.OnMovieClick -> {
+            is MovieScreenIntent.MovieScreenNavigationIntent.OnActorClick -> {
                 viewModelScope.launch {
                     _movieNavigationChannel.send(
-                        MovieScreenIntent.OnMovieClick(
+                        MovieScreenIntent.MovieScreenNavigationIntent.OnActorClick(
+                            intent.actor
+                        )
+                    )
+                }
+            }
+
+            is MovieScreenIntent.MovieScreenNavigationIntent.OnGalleryClick -> {
+                viewModelScope.launch {
+                    _movieNavigationChannel.send(
+                        MovieScreenIntent.MovieScreenNavigationIntent.OnGalleryClick(
+                            intent.movie
+                        )
+                    )
+                }
+            }
+
+            is MovieScreenIntent.MovieScreenNavigationIntent.OnMovieClick -> {
+                viewModelScope.launch {
+                    _movieNavigationChannel.send(
+                        MovieScreenIntent.MovieScreenNavigationIntent.OnMovieClick(
                             fromMovie = intent.fromMovie,
                             toMovie = intent.toMovie
                         )
@@ -90,19 +79,31 @@ class MovieDetailViewModel @AssistedInject constructor(
                 }
             }
 
-            is MovieScreenIntent.OnShareClick -> {
+            is MovieScreenIntent.MovieScreenNavigationIntent.OnBackClicked -> {
                 viewModelScope.launch {
-                    _movieNavigationChannel.send(MovieScreenIntent.OnShareClick)
+                    _movieNavigationChannel.send(
+                        MovieScreenIntent.MovieScreenNavigationIntent.OnBackClicked(
+                            intent.movie
+                        )
+                    )
                 }
             }
 
-            is MovieScreenIntent.OnBackClicked -> {
+            is MovieScreenIntent.OnFavouriteClick -> {
                 viewModelScope.launch {
-                    _movieNavigationChannel.send(MovieScreenIntent.OnBackClicked(intent.movie))
+                    saveSeenMovieUseCase(intent.movie)
                 }
             }
 
-            is MovieScreenIntent.Default -> {}
+            is MovieScreenIntent.OnLickClick -> {
+                viewModelScope.launch {
+                    saveFavouriteMovieUseCase(intent.movie)
+                }
+            }
+            is MovieScreenIntent.OnMoreClick -> {}
+            is MovieScreenIntent.OnShareClick -> {}
+            is MovieScreenIntent.OnBlindEyeClick -> {}
+            is MovieScreenIntent.MovieScreenNavigationIntent.Default -> {}
         }
     }
 
@@ -114,7 +115,7 @@ class MovieDetailViewModel @AssistedInject constructor(
         }
     }
 
-    private fun fetchDetailInfo(moviet: Movie) {
+    private fun fetchDetailInfo(movieF: Movie) {
         _state.value = MovieDetailState.Loading
         val movieDeferred: Deferred<Movie> = viewModelScope.async {
             var finalMovie = movie

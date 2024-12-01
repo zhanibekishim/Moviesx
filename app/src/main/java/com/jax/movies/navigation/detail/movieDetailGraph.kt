@@ -37,34 +37,36 @@ fun NavGraphBuilder.movieDetailGraph(
         )
 
         val movieDetailIntent =
-            movieViewModel.movieNavigationChannel.collectAsStateWithLifecycle(MovieScreenIntent.Default)
+            movieViewModel.movieNavigationChannel.collectAsStateWithLifecycle(
+                MovieScreenIntent.MovieScreenNavigationIntent.Default
+            )
         LaunchedEffect(movieDetailIntent.value) {
             when (val currentIntent = movieDetailIntent.value) {
-                is MovieScreenIntent.OnActorClick -> {
+                is MovieScreenIntent.MovieScreenNavigationIntent.OnActorClick -> {
                     navigationState.navigateToActorScreen(currentIntent.actor)
                 }
 
-                is MovieScreenIntent.OnBackClicked -> {
+                is MovieScreenIntent.MovieScreenNavigationIntent.OnBackClicked -> {
                     navigationState.navHostController.popBackStack()
                 }
 
-                is MovieScreenIntent.OnGalleryClick -> {
+                is MovieScreenIntent.MovieScreenNavigationIntent.OnGalleryClick -> {
                     navigationState.navigateToGalleryScreen(currentIntent.movie)
                 }
 
-                is MovieScreenIntent.OnMovieClick -> {
+                is MovieScreenIntent.MovieScreenNavigationIntent.OnMovieClick -> {
                     navigationState.navigateToMovieDetailScreen(
                         movie = currentIntent.toMovie,
                         backRoute = Details.MovieScreen.getRouteWithArgs(currentIntent.fromMovie)
                     )
                 }
 
-                is MovieScreenIntent.Default -> {}
-                is MovieScreenIntent.OnBlindEyeClick -> {}
-                is MovieScreenIntent.OnFavouriteClick -> {}
-                is MovieScreenIntent.OnLickClick -> {}
-                is MovieScreenIntent.OnMoreClick -> {}
-                is MovieScreenIntent.OnShareClick -> {}
+                is MovieScreenIntent.MovieScreenNavigationIntent.Default -> {}
+                is MovieScreenIntent.OnBlindEyeClick -> TODO()
+                is MovieScreenIntent.OnFavouriteClick -> TODO()
+                is MovieScreenIntent.OnLickClick -> TODO()
+                is  MovieScreenIntent.OnMoreClick -> TODO()
+                is MovieScreenIntent.OnShareClick -> TODO()
             }
         }
         MovieContent(
