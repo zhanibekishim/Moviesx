@@ -50,9 +50,9 @@ fun MoviesDetailScreen(
         is MoviesScreenState.Loading -> LoadingScreen()
         is MoviesScreenState.Error -> ErrorScreen(currentState.message)
         is MoviesScreenState.Success -> {
-            MainContent(
+            MoviesList(
                 movies = currentState.movies,
-                moviesType = type,
+                moviesType = type.toString(),
                 onMovieClick = {
                     moviesDetailViewModel.handleIntent(MoviesScreenIntent.OnMovieClick(it))
                 },
@@ -68,15 +68,15 @@ fun MoviesDetailScreen(
 }
 
 @Composable
-private fun MainContent(
+fun MoviesList(
     movies: List<Movie>,
-    moviesType: MoviesType,
+    moviesType: String,
     onClickBack: () -> Unit,
     onMovieClick: (Movie) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier.fillMaxSize()) {
-        SearchTopAppBar(onClickBack = { onClickBack() }, text = moviesType.name)
+        SearchTopAppBar(onClickBack = { onClickBack() }, text = moviesType)
         Spacer(modifier = Modifier.height(16.dp))
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),

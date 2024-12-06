@@ -6,4 +6,5 @@ object Constants {
     const val FAVOURITE_MOVIES_TABLE = "FavouriteMoviesTable"
     const val SEEN_MOVIES_TABLE = "SeenMoviesTable"
     const val MOVIE_DATABASE = "MOVIE_DATABASE"
+    const val MOVIE_COLLECTION = "MovieCollectionTable"
 }

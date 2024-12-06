@@ -1,10 +1,13 @@
 package com.jax.movies.presentation.search.setting
 
+import com.jax.movies.domain.entity.home.Country
+import com.jax.movies.domain.entity.home.Genre
+
 sealed interface SearchSettingScreenIntent {
     data class OnRatingChange(val rating: Double) : SearchSettingScreenIntent
-    data class OnCountryChange(val country: String) : SearchSettingScreenIntent
-    data class OnGenreChange(val genre: String) : SearchSettingScreenIntent
-    data class OnPeriodChange(val period: String) : SearchSettingScreenIntent
+    data class OnPeriodChange(val periodFrom: Int,val periodTo: Int) : SearchSettingScreenIntent
+    data class OnCountryChange(val country: Country) : SearchSettingScreenIntent
+    data class OnGenreChange(val genre: Genre) : SearchSettingScreenIntent
     data class OnSortingTypeChoose(val sortingType: SortingType) : SearchSettingScreenIntent
     data class OnShowTypeChoose(val showType: ShowType) : SearchSettingScreenIntent
     data class OnFilterTypeChoose(val filterType: FilterType) : SearchSettingScreenIntent

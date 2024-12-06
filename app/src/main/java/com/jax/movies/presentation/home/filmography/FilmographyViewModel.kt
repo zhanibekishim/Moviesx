@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.jax.movies.domain.entity.films.Actor
 import com.jax.movies.domain.entity.films.ActorType
 import com.jax.movies.domain.entity.home.Movie
-import com.jax.movies.domain.usecase.GetActorDetailInfoUseCaseImpl
+import com.jax.movies.domain.usecase.movie.GetActorDetailInfoUseCaseImpl
 import com.jax.movies.utils.Resource
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory

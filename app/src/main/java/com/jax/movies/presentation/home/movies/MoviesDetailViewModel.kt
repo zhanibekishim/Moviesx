@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.jax.movies.domain.entity.home.MoviesType
-import com.jax.movies.domain.usecase.GetMovieCollectionUseCaseImpl
+import com.jax.movies.domain.usecase.home.GetMovieCollectionUseCaseImpl
 import com.jax.movies.utils.Resource
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory

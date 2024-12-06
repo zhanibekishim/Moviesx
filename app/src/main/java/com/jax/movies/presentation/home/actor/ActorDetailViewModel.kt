@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.jax.movies.domain.entity.films.Actor
-import com.jax.movies.domain.usecase.GetActorDetailInfoUseCaseImpl
+import com.jax.movies.domain.usecase.movie.GetActorDetailInfoUseCaseImpl
 import com.jax.movies.utils.Resource
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -17,7 +17,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import java.util.Objects
 
 @Suppress("UNCHECKED_CAST")
 class ActorDetailViewModel @AssistedInject constructor(

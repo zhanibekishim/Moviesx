@@ -4,7 +4,7 @@ import com.jax.movies.domain.entity.home.Movie
 
 sealed interface SearchScreenState {
     data object Initial : SearchScreenState
-    data object Loading : SearchScreenState
-    data class Error(val message: String) : SearchScreenState
-    data class Success(val movies: List<Movie>) : SearchScreenState
+    data class Loading(val query: String) : SearchScreenState
+    data class Error(val error: String, val query: String) : SearchScreenState
+    data class Success(val movies: List<Movie>, val query: String) : SearchScreenState
 }

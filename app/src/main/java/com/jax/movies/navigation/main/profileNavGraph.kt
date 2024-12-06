@@ -21,22 +21,24 @@ fun NavGraphBuilder.profileNavGraph(
         val currentRoute =
             navigationState.navHostController.currentBackStackEntry?.destination?.route.toString()
         val channel = profileScreenViewModel.profileNavigationChannel.collectAsStateWithLifecycle(
-            ProfileScreenIntent.Default
+            ProfileScreenIntent.Event.Default
         )
         LaunchedEffect(channel.value){
             when (val currentIntent = channel.value) {
-                ProfileScreenIntent.Default -> {}
-                ProfileScreenIntent.OnHomeClick -> {
-                    navigationState.navHostController.navigate(BottomScreenItem.HomeScreen.route)
+                ProfileScreenIntent.Event.Default -> {}
+                ProfileScreenIntent.Event.OnHomeClick -> {
+                    navigationState.navigateTo(BottomScreenItem.HomeScreen.route)
                 }
 
-                ProfileScreenIntent.OnSearchClick -> {
-                    navigationState.navHostController.navigate(SearchGraph.SearchMain.route)
+                ProfileScreenIntent.Event.OnSearchClick -> {
+                    navigationState.navigateTo(SearchGraph.SearchMain.route)
                 }
 
-                is ProfileScreenIntent.OnMovieClick -> {
+                is ProfileScreenIntent.Event.OnMovieClick -> {
                     navigationState.navigateToMovieDetailScreen(currentIntent.movie)
                 }
+
+                is ProfileScreenIntent.Event.OnDeleteClick -> {}
             }
         }
         ProfileScreen(

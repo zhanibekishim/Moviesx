@@ -1,10 +1,14 @@
 package com.jax.movies.data.mapper
 
+import com.jax.movies.data.remote.model.films.CountryDto
+import com.jax.movies.data.remote.model.films.GenreDto
 import com.jax.movies.data.remote.model.home.CountryNameContainerDto
 import com.jax.movies.data.remote.model.home.DetailResponseDto
 import com.jax.movies.data.remote.model.home.GenreNameContainerDto
 import com.jax.movies.data.remote.model.home.MovieDto
+import com.jax.movies.domain.entity.home.Country
 import com.jax.movies.domain.entity.home.CountryNameContainer
+import com.jax.movies.domain.entity.home.Genre
 import com.jax.movies.domain.entity.home.GenreNameContainer
 import com.jax.movies.domain.entity.home.Movie
 import javax.inject.Inject
@@ -14,7 +18,7 @@ class MoviesMapper @Inject constructor() {
     fun movieDtoToEntity(movieDto: MovieDto): Movie {
         return Movie(
             id = movieDto.id,
-            name = movieDto.name?: "",
+            name = movieDto.name ?: "",
             year = movieDto.year,
             genres = dtoGenresToEntity(movieDto.genres),
             countries = dtoCountriesToEntity(movieDto.countries),
@@ -28,19 +32,19 @@ class MoviesMapper @Inject constructor() {
         )
     }
 
-    fun detailDtoToEntity(detailDto: DetailResponseDto,id:Long? = null): Movie {
+    fun detailDtoToEntity(detailDto: DetailResponseDto, id: Long? = null): Movie {
         return Movie(
-            id = id?:detailDto.id,
-            name = detailDto.name?:"",
+            id = id ?: detailDto.id,
+            name = detailDto.name ?: "",
             year = detailDto.year,
             genres = dtoGenresToEntity(detailDto.genres),
             countries = dtoCountriesToEntity(detailDto.countries),
-            posterUrl = detailDto.posterUrl?:"",
-            ageLimit = detailDto.ageLimit+"+",
-            slogan = detailDto.slogan?:"",
+            posterUrl = detailDto.posterUrl ?: "",
+            ageLimit = detailDto.ageLimit + "+",
+            slogan = detailDto.slogan ?: "",
             ratingKp = detailDto.ratingKp,
-            description = detailDto.description?:"",
-            shortDescription = detailDto.shortDescription?:"",
+            description = detailDto.description ?: "",
+            shortDescription = detailDto.shortDescription ?: "",
             lengthMovie = detailDto.duration.convertMinutesToAccepted()
         )
     }
@@ -55,6 +59,20 @@ class MoviesMapper @Inject constructor() {
         return countries.map {
             CountryNameContainer(it.country)
         }
+    }
+
+    fun dtoGenreToEntity(genre: GenreDto): Genre {
+        return Genre(
+            id = genre.id,
+            name = genre.genre
+        )
+    }
+
+    fun dtoCountryToEntity(country: CountryDto): Country {
+        return Country(
+            id = country.id,
+            name = country.country
+        )
     }
 
     private fun Long.convertMinutesToAccepted(): String {

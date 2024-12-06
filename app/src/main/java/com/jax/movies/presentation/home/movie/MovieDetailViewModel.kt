@@ -8,12 +8,21 @@ import com.jax.movies.domain.entity.films.Actor
 import com.jax.movies.domain.entity.films.ActorType
 import com.jax.movies.domain.entity.films.GalleryImage
 import com.jax.movies.domain.entity.home.Movie
-import com.jax.movies.domain.usecase.GetActorsUseCaseImpl
-import com.jax.movies.domain.usecase.GetDetailMovieUseCaseImpl
-import com.jax.movies.domain.usecase.GetGalleriesUseCaseImpl
-import com.jax.movies.domain.usecase.GetSimilarMoviesUseCaseImpl
-import com.jax.movies.domain.usecase.movie.SaveFavouriteMovieUseCaseImpl
-import com.jax.movies.domain.usecase.movie.SaveSeenMovieUseCaseImpl
+import com.jax.movies.domain.usecase.movie.AddNewCollectionUseCaseImpl
+import com.jax.movies.domain.usecase.movie.CheckIsFavouriteUseCaseImpl
+import com.jax.movies.domain.usecase.movie.CheckIsLickedUseCaseImpl
+import com.jax.movies.domain.usecase.movie.DeleteFavouriteMovieUseCaseImpl
+import com.jax.movies.domain.usecase.movie.DeleteSeenMovieUseCaseImpl
+import com.jax.movies.domain.usecase.movie.GetActorsUseCaseImpl
+import com.jax.movies.domain.usecase.movie.GetCollectionUseCaseImpl
+import com.jax.movies.domain.usecase.movie.GetDetailMovieUseCaseImpl
+import com.jax.movies.domain.usecase.movie.GetGalleriesUseCaseImpl
+import com.jax.movies.domain.usecase.movie.GetSimilarMoviesUseCaseImpl
+import com.jax.movies.domain.usecase.profile.GetFavouriteMoviesUseCaseImpl
+import com.jax.movies.domain.usecase.profile.GetSeenMoviesUseCaseImpl
+import com.jax.movies.domain.usecase.profile.SaveFavouriteMovieUseCaseImpl
+import com.jax.movies.domain.usecase.profile.SaveSeenMovieUseCaseImpl
+import com.jax.movies.presentation.components.MovieCollectionItem
 import com.jax.movies.utils.Resource
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -36,7 +45,15 @@ class MovieDetailViewModel @AssistedInject constructor(
     private val getGalleriesUseCaseImpl: GetGalleriesUseCaseImpl,
     private val getSimilarMoviesUseCaseImpl: GetSimilarMoviesUseCaseImpl,
     private val saveFavouriteMovieUseCase: SaveFavouriteMovieUseCaseImpl,
-    private val saveSeenMovieUseCase: SaveSeenMovieUseCaseImpl
+    private val saveSeenMovieUseCase: SaveSeenMovieUseCaseImpl,
+    private val getMovieCollectionUseCase: GetCollectionUseCaseImpl,
+    private val checkIsLickedUseCase: CheckIsLickedUseCaseImpl,
+    private val checkIsFavouriteUseCase: CheckIsFavouriteUseCaseImpl,
+    private val deleteFavouriteMovieUseCase: DeleteFavouriteMovieUseCaseImpl,
+    private val deleteSeenMovieUseCase: DeleteSeenMovieUseCaseImpl,
+    private val getSeenMovieUseCase: GetSeenMoviesUseCaseImpl,
+    private val getFavouriteMoviesUseCase: GetFavouriteMoviesUseCaseImpl,
+    private val onAddNewCollectionUseCase: AddNewCollectionUseCaseImpl,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<MovieDetailState>(MovieDetailState.Initial)
@@ -91,13 +108,44 @@ class MovieDetailViewModel @AssistedInject constructor(
 
             is MovieScreenIntent.OnFavouriteClick -> {
                 viewModelScope.launch {
-                    saveSeenMovieUseCase(intent.movie)
+                    if (intent.isFavourite) {
+                        deleteSeenMovieUseCase(intent.movie)
+                    } else {
+                        saveSeenMovieUseCase(intent.movie)
+                    }
                 }
             }
 
             is MovieScreenIntent.OnLickClick -> {
                 viewModelScope.launch {
-                    saveFavouriteMovieUseCase(intent.movie)
+                    if (intent.isLicked) {
+                        deleteFavouriteMovieUseCase(intent.movie)
+                    } else {
+                        saveFavouriteMovieUseCase(intent.movie)
+                    }
+                }
+            }
+
+            is MovieScreenIntent.OnCheck -> {
+                viewModelScope.launch {
+                    if (intent.movieCollectionItem.name.trim() == "Вам было интересно") {
+                        if (intent.isChecked) {
+                            Log.d("Вам было интересно", "save")
+                            saveSeenMovieUseCase(movie)
+                        } else {
+                            Log.d("Вам было интересно", "delete")
+                            deleteSeenMovieUseCase(movie)
+                        }
+                    } else if (intent.movieCollectionItem.name.trim() == "Посмотрено") {
+                        if (intent.isChecked) saveFavouriteMovieUseCase(intent.movie)
+                        else deleteSeenMovieUseCase(intent.movie)
+                    }
+                }
+            }
+            is MovieScreenIntent.OnNewCollectionAdd -> {
+                viewModelScope.launch {
+                    val item = MovieCollectionItem(id = 0, name = intent.name, count = 0)
+                    onAddNewCollectionUseCase(item)
                 }
             }
             is MovieScreenIntent.OnMoreClick -> {}
@@ -110,12 +158,12 @@ class MovieDetailViewModel @AssistedInject constructor(
     fun handleAction(action: MovieScreenAction) {
         when (action) {
             is MovieScreenAction.FetchMovieDetailInfo -> {
-                fetchDetailInfo(action.movie)
+                fetchDetailInfo()
             }
         }
     }
 
-    private fun fetchDetailInfo(movieF: Movie) {
+    private fun fetchDetailInfo() {
         _state.value = MovieDetailState.Loading
         val movieDeferred: Deferred<Movie> = viewModelScope.async {
             var finalMovie = movie
@@ -192,18 +240,54 @@ class MovieDetailViewModel @AssistedInject constructor(
             Log.d("dsadsadas", similarMoviesList.toString())
             similarMoviesList
         }
+        val collection = viewModelScope.async {
+            var movieCollection: List<MovieCollectionItem> = emptyList()
+            getMovieCollectionUseCase().first { response ->
+                movieCollection = response
+                return@first true
+            }
+            Log.d("dsadsadas", movieCollection.toString())
+            movieCollection
+        }
+
+        val isLicked = viewModelScope.async {
+            var isLicked = false
+            checkIsLickedUseCase(movie.id).first { response ->
+                isLicked = response
+                return@first true
+            }
+            isLicked
+        }
+        val isFavourite = viewModelScope.async {
+            var isFavourite = false
+            checkIsFavouriteUseCase(movie.id).first { response ->
+                isFavourite = response
+                return@first true
+            }
+            isFavourite
+        }
         viewModelScope.launch {
             val finalMovie = movieDeferred.await()
             val actorsList = actorsDeferred.await()
             val galleriesList = galleriesDeferred.await()
             val similarMoviesList = similarMoviesDeferred.await()
             val filmCrew = getFilmCrew(actorsList)
+            val collections = collection.await()
+            val licked: Boolean = isLicked.await()
+            val favourite: Boolean = isFavourite.await()
+            val favItemCount = getFavouriteMoviesUseCase().first().size
+            val seenItemCount = getSeenMovieUseCase().first().size
             _state.value = MovieDetailState.Success(
                 movie = finalMovie,
                 actors = actorsList,
                 filmCrew = filmCrew,
                 gallery = galleriesList,
-                similarMovies = similarMoviesList
+                similarMovies = similarMoviesList,
+                collection = collections,
+                isLicked = licked,
+                isFavourite = favourite,
+                favouriteMovieItemCount = favItemCount,
+                seenMovieItemCount = seenItemCount
             )
         }
     }

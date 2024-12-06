@@ -6,6 +6,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.jax.movies.navigation.root.NavigationState
+import com.jax.movies.navigation.search.SearchGraph
+import com.jax.movies.navigation.search.currentRoute
 import com.jax.movies.presentation.home.main.HomePage
 import com.jax.movies.presentation.home.main.HomeScreenIntent
 import com.jax.movies.presentation.home.main.HomeViewModel
@@ -35,11 +37,10 @@ fun NavGraphBuilder.homeNavGraph(
                     navigationState.navigateTo(BottomScreenItem.ProfileScreen.route)
                 }
                 is HomeScreenIntent.OnSearchScreenClick -> {
-                    navigationState.navigateTo(BottomScreenItem.SearchScreen.route)
+                    navigationState.navigateTo(SearchGraph.SearchMain.route)
                 }
             }
         }
-        val currentRoute = navigationState.navHostController.currentBackStackEntry?.destination?.route.toString()
-        HomePage(homeViewModel = homeViewModel, currentRoute = currentRoute)
+        HomePage(homeViewModel = homeViewModel, currentRoute = navigationState.currentRoute())
     }
 }

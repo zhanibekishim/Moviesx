@@ -2,6 +2,7 @@ package com.jax.movies.data.repository
 
 import android.util.Log
 import com.jax.movies.data.local.database.FavouriteMoviesDao
+import com.jax.movies.data.local.database.MovieCollectionDao
 import com.jax.movies.data.local.database.SeenMoviesDao
 import com.jax.movies.data.mapper.FilmsMapper
 import com.jax.movies.data.mapper.MoviesMapper
@@ -11,6 +12,7 @@ import com.jax.movies.domain.entity.films.ActorType
 import com.jax.movies.domain.entity.films.GalleryImage
 import com.jax.movies.domain.entity.home.Movie
 import com.jax.movies.domain.repository.DetailMovieRepository
+import com.jax.movies.presentation.components.MovieCollectionItem
 import com.jax.movies.utils.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -22,7 +24,8 @@ class DetailMovieRepositoryImpl @Inject constructor(
     private val filmMapper: FilmsMapper,
     private val movieMapper: MoviesMapper,
     private val seenMoviesDao: SeenMoviesDao,
-    private val favouriteMoviesDao: FavouriteMoviesDao
+    private val favouriteMoviesDao: FavouriteMoviesDao,
+    private val movieCollectionDao: MovieCollectionDao
 ) : DetailMovieRepository {
 
     override suspend fun getActors(filmId: Long): Flow<Resource<List<Actor>>> {
@@ -127,6 +130,40 @@ class DetailMovieRepositoryImpl @Inject constructor(
         val seenMovie = filmMapper.movieEntityToSeen(movie)
         val insertedId = seenMoviesDao.saveSeenMovie(seenMovie)
         return insertedId != -1L
+    }
+
+    override suspend fun deleteFavouriteMovie(movie: Movie) {
+        favouriteMoviesDao.deleteFavouriteMovie(filmMapper.movieEntityToFavourite(movie))
+    }
+
+    override suspend fun deleteSeenMovie(movie: Movie) {
+        seenMoviesDao.deleteSeenMovie(filmMapper.movieEntityToSeen(movie))
+    }
+
+    override suspend fun addNewCollection(collectionItem: MovieCollectionItem): Boolean {
+/*        val movieCollection = filmMapper.movieCollectionToDb(collectionItem)
+        val insertedId = movieCollectionDao.insertMovieCollection(movieCollection)
+        return insertedId != -1L*/
+        val movieCollection = filmMapper.movieCollectionToDb(collectionItem)
+        val insertedId = movieCollectionDao.insertMovieCollection(collectionItem)
+        return false
+    }
+
+    override fun getCollection(): Flow<List<MovieCollectionItem>> {
+        return movieCollectionDao.getAllMovieCollections()/*flow {
+            movieCollectionDao.getAllMovieCollections().collect{
+                val collection = it.map { e->filmMapper.movieCollectionDbToEntity(e) }
+                emit(collection)
+            }
+        }*/
+    }
+
+    override fun checkIsLicked(movieId: Long): Flow<Boolean> {
+         return favouriteMoviesDao.exists(movieId)
+    }
+
+    override fun checkIsFavourite(movieId: Long): Flow<Boolean> {
+        return seenMoviesDao.exists(movieId)
     }
 }
 

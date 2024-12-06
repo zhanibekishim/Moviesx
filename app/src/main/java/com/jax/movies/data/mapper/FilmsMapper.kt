@@ -1,7 +1,9 @@
 package com.jax.movies.data.mapper
 
 import android.util.Log
+import com.jax.movies.data.local.database.MovieCollectionDao
 import com.jax.movies.data.local.model.FavouriteMovie
+import com.jax.movies.data.local.model.MovieCollectionItemDb
 import com.jax.movies.data.local.model.SeenMovie
 import com.jax.movies.data.remote.model.films.ActorDetailInfoResponse
 import com.jax.movies.data.remote.model.films.ActorDto
@@ -10,6 +12,7 @@ import com.jax.movies.domain.entity.films.Actor
 import com.jax.movies.domain.entity.films.ActorType
 import com.jax.movies.domain.entity.films.GalleryImage
 import com.jax.movies.domain.entity.home.Movie
+import com.jax.movies.presentation.components.MovieCollectionItem
 import javax.inject.Inject
 
 class FilmsMapper @Inject constructor() {
@@ -171,6 +174,21 @@ class FilmsMapper @Inject constructor() {
             shortDescription = seenMovie.shortDescription,
             description = seenMovie.description,
             ageLimit = seenMovie.ageLimit
+        )
+    }
+
+    fun movieCollectionToDb(movieCollectionItem: MovieCollectionItem): MovieCollectionItemDb {
+        return MovieCollectionItemDb(
+            id = movieCollectionItem.id,
+            name = movieCollectionItem.name,
+            count = movieCollectionItem.count
+        )
+    }
+    fun movieCollectionDbToEntity(movieCollectionItemDb: MovieCollectionItemDb): MovieCollectionItem {
+        return MovieCollectionItem(
+            id = movieCollectionItemDb.id,
+            name = movieCollectionItemDb.name,
+            count = movieCollectionItemDb.count
         )
     }
 }

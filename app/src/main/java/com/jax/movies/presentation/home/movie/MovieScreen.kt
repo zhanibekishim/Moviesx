@@ -1,7 +1,6 @@
 package com.jax.movies.presentation.home.movie
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,11 +19,13 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,8 +44,11 @@ import com.jax.movies.presentation.components.ActorItem
 import com.jax.movies.presentation.components.ErrorScreen
 import com.jax.movies.presentation.components.FetchedImage
 import com.jax.movies.presentation.components.LoadingScreen
+import com.jax.movies.presentation.components.MovieCollectionItem
 import com.jax.movies.presentation.components.MyTopAppBar
 import com.jax.movies.presentation.components.RelatedMoviesSection
+import com.jax.movies.presentation.components.ScreenWithBottomSheet
+import com.jax.movies.presentation.components.SheetType
 import com.jax.movies.presentation.components.StepTitle
 
 @Composable
@@ -53,6 +57,9 @@ fun MovieContent(
     movie: Movie
 ) {
     val state by movieDetailViewModel.state.collectAsStateWithLifecycle()
+    val showBottomSheet = remember { mutableStateOf(false) }
+    var currentSheetType by remember { mutableStateOf<SheetType>(SheetType.None) }
+
     when (val currentState = state) {
         is MovieDetailState.Initial -> {}
         is MovieDetailState.Loading -> LoadingScreen()
@@ -60,11 +67,21 @@ fun MovieContent(
         is MovieDetailState.Success -> {
             MainContent(
                 movie = currentState.movie,
+                isLicked = currentState.isLicked,
+                isFavourite = currentState.isFavourite,
                 onGalleryClick = {
-                    movieDetailViewModel.handleIntent(MovieScreenIntent.MovieScreenNavigationIntent.OnGalleryClick(it))
+                    movieDetailViewModel.handleIntent(
+                        MovieScreenIntent.MovieScreenNavigationIntent.OnGalleryClick(
+                            it
+                        )
+                    )
                 },
                 onActorClick = {
-                    movieDetailViewModel.handleIntent(MovieScreenIntent.MovieScreenNavigationIntent.OnActorClick(it))
+                    movieDetailViewModel.handleIntent(
+                        MovieScreenIntent.MovieScreenNavigationIntent.OnActorClick(
+                            it
+                        )
+                    )
                 },
                 onMovieClick = {
                     movieDetailViewModel.handleIntent(
@@ -75,13 +92,29 @@ fun MovieContent(
                     )
                 },
                 onBackClicked = {
-                    movieDetailViewModel.handleIntent(MovieScreenIntent.MovieScreenNavigationIntent.OnBackClicked(it))
+                    movieDetailViewModel.handleIntent(
+                        MovieScreenIntent.MovieScreenNavigationIntent.OnBackClicked(
+                            it
+                        )
+                    )
                 },
-                onLikeClicked = {
-                    movieDetailViewModel.handleIntent(MovieScreenIntent.OnLickClick(it))
+                onLikeClicked = { likedMovie, isFavourite ->
+                    showBottomSheet.value = true
+                    currentSheetType = SheetType.Collections
+                    movieDetailViewModel.handleIntent(
+                        MovieScreenIntent.OnLickClick(
+                            likedMovie,
+                            isFavourite
+                        )
+                    )
                 },
-                onFavouriteClicked = {
-                    movieDetailViewModel.handleIntent(MovieScreenIntent.OnFavouriteClick(it))
+                onFavouriteClicked = { favouriteMovie, isFavourite ->
+                    movieDetailViewModel.handleIntent(
+                        MovieScreenIntent.OnFavouriteClick(
+                            favouriteMovie,
+                            isFavourite
+                        )
+                    )
                 },
                 onShareClicked = {
                     movieDetailViewModel.handleIntent(MovieScreenIntent.OnShareClick)
@@ -92,30 +125,52 @@ fun MovieContent(
                 onMoreClicked = {
                     movieDetailViewModel.handleIntent(MovieScreenIntent.OnMoreClick)
                 },
+                onAddCollection = {
+                    movieDetailViewModel.handleIntent(MovieScreenIntent.OnNewCollectionAdd(it))
+                },
                 galleries = currentState.gallery,
                 actors = currentState.actors,
                 filmCrew = currentState.filmCrew,
-                similarMovies = currentState.similarMovies
+                similarMovies = currentState.similarMovies,
+                collection = currentState.collection,
+                lickedCount = currentState.seenMovieItemCount,
+                favouriteCount = currentState.favouriteMovieItemCount,
+                onCheck = { movieCollectionItem, isChecked ->
+                    movieDetailViewModel.handleIntent(
+                        MovieScreenIntent.OnCheck(
+                            movie,
+                            movieCollectionItem,
+                            isChecked
+                        )
+                    )
+                }
             )
         }
     }
     LaunchedEffect(key1 = movie) {
-        movieDetailViewModel.handleAction(MovieScreenAction.FetchMovieDetailInfo(movie))
+        movieDetailViewModel.handleAction(MovieScreenAction.FetchMovieDetailInfo)
     }
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 private fun MainContent(
+    onCheck: (MovieCollectionItem, Boolean) -> Unit,
     onGalleryClick: (Movie) -> Unit,
     onActorClick: (Actor) -> Unit,
     onMovieClick: (Movie) -> Unit,
     onBackClicked: (Movie) -> Unit,
-    onLikeClicked: (Movie) -> Unit,
-    onFavouriteClicked: (Movie) -> Unit,
+    onAddCollection: (String) -> Unit,
+    onLikeClicked: (Movie, Boolean) -> Unit,
+    onFavouriteClicked: (Movie, Boolean) -> Unit,
     onShareClicked: () -> Unit,
     onBlindEyeClicked: () -> Unit,
     onMoreClicked: () -> Unit,
+    collection: List<MovieCollectionItem>,
+    lickedCount:Int,
+    favouriteCount:Int,
+    isLicked: Boolean,
+    isFavourite: Boolean,
     movie: Movie,
     galleries: List<GalleryImage>,
     actors: List<Actor>,
@@ -123,103 +178,150 @@ private fun MainContent(
     similarMovies: List<Movie>,
     modifier: Modifier = Modifier
 ) {
-    val actorsId = actors.map { it.actorId }
-    Log.d("dasdasdsa", actorsId.toString())
+    val showBottomSheet = remember { mutableStateOf(false) }
+    var currentSheetType by remember { mutableStateOf<SheetType>(SheetType.Collections) }
 
-    Scaffold(
+    var isFav by remember {
+        mutableStateOf(isFavourite)
+    }
+    var isSeen by remember {
+        mutableStateOf(isLicked)
+    }
+    val checked= mutableListOf<MovieCollectionItem>().apply {
+        if (isFav) add(MovieCollectionItem(name = "Посмотрено", count = lickedCount))
+        if (isSeen) add(MovieCollectionItem(name = "Вам было интересно", count = favouriteCount))
+    }
+
+    ScreenWithBottomSheet(
         topBar = {
             MyTopAppBar(
                 onNavClick = { onBackClicked(movie) },
                 navIcon = R.drawable.icon_back,
                 title = ""
             )
-        }
-    ) {
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(40.dp),
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(it)
-        ) {
-            item {
-                Box(
-                    modifier = modifier
-                        .fillMaxWidth()
-                        .height(600.dp)
-                ) {
-                    FetchedImage(
-                        linkToImage = movie.posterUrl,
-                        modifierForParent = Modifier
+        },
+        movie = movie,
+        collection = collection,
+        sheetType = currentSheetType,
+        onDismiss = {
+            showBottomSheet.value = false
+            currentSheetType = SheetType.Collections
+        },
+        onConfirm = {
+            onAddCollection(it)
+            currentSheetType = SheetType.Collections
+        },
+        onSheetTypeChange = {
+            showBottomSheet.value = true
+            currentSheetType = it
+        },
+        onCheck = { movieCollectionItem, isChecked ->
+            if (movieCollectionItem.name == "Вам было интересно") {
+                isFav = !isFav
+                onFavouriteClicked(movie, !isChecked)
+            } else if (movieCollectionItem.name == "Посмотрено") {
+                isSeen = !isSeen
+                onLikeClicked(movie, !isChecked)
+            }
+        },
+        checked = checked,
+        content = {
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(40.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(it)
+            ) {
+                item {
+                    Box(
+                        modifier = modifier
                             .fillMaxWidth()
-                            .matchParentSize(),
+                            .height(600.dp)
+                    ) {
+                        FetchedImage(
+                            linkToImage = movie.posterUrl,
+                            modifierForParent = Modifier
+                                .fillMaxWidth()
+                                .matchParentSize(),
+                        )
+                        TitleSection(
+                            modifier = Modifier.align(Alignment.BottomCenter),
+                            movie = movie,
+                            isLicked = isSeen,
+                            onLikeClicked = { movie, liked ->
+                                onLikeClicked(movie, liked)
+                                isSeen = !isSeen
+                            },
+                            onFavouriteClicked = {movie, favourite ->
+                                onFavouriteClicked(movie,favourite)
+                                isFav = !isFav
+                            },
+                            onShareClicked = onShareClicked,
+                            onBlindEyeClicked = onBlindEyeClicked,
+                            onMoreClicked = onMoreClicked,
+                            isFavourite = isFav
+                        )
+                    }
+                }
+                item {
+                    MainDescriptionWithSubDescription(
+                        mainDescription = movie.description,
+                        subDescription = movie.shortDescription,
+                        modifier = Modifier
+                            .padding(horizontal = 26.dp)
                     )
-                    TitleSection(
-                        modifier = Modifier.align(Alignment.BottomCenter),
-                        movie = movie,
-                        onLikeClicked = onLikeClicked,
-                        onFavouriteClicked = onFavouriteClicked,
-                        onShareClicked = onShareClicked,
-                        onBlindEyeClicked = onBlindEyeClicked,
-                        onMoreClicked = onMoreClicked
+                }
+                item {
+                    ActorsSection(
+                        title = "В фильме снимались",
+                        countOther = actors.size,
+                        itemInColumn = 2,
+                        actors = actors,
+                        onActorClick = onActorClick,
+                        onTitleClick = {},
+                        modifier = Modifier.padding(horizontal = 26.dp)
+                    )
+                }
+                item {
+                    ActorsSection(
+                        title = "Над фильмом работали",
+                        countOther = filmCrew.size,
+                        itemInColumn = 2,
+                        actors = filmCrew,
+                        onActorClick = onActorClick,
+                        onTitleClick = {},
+                        modifier = Modifier.padding(horizontal = 26.dp)
+                    )
+                }
+                item {
+                    GallerySection(
+                        count = galleries.size,
+                        galleries = galleries,
+                        onGalleryClick = { onGalleryClick(movie) },
+                        modifier = Modifier.padding(horizontal = 26.dp)
+                    )
+                }
+                item {
+                    RelatedMoviesSection(
+                        countOrAll = similarMovies.size.toString(),
+                        relatedMovies = similarMovies,
+                        onMovieClick = onMovieClick,
+                        modifier = Modifier
+                            .padding(horizontal = 26.dp)
                     )
                 }
             }
-            item {
-                MainDescriptionWithSubDescription(
-                    mainDescription = movie.description,
-                    subDescription = movie.shortDescription,
-                    modifier = Modifier
-                        .padding(horizontal = 26.dp)
-                )
-            }
-            item {
-                ActorsSection(
-                    title = "В фильме снимались",
-                    countOther = actors.size,
-                    itemInColumn = 2,
-                    actors = actors,
-                    onActorClick = onActorClick,
-                    onTitleClick = {},
-                    modifier = Modifier.padding(horizontal = 26.dp)
-                )
-            }
-            item {
-                ActorsSection(
-                    title = "Над фильмом работали",
-                    countOther = filmCrew.size,
-                    itemInColumn = 2,
-                    actors = filmCrew,
-                    onActorClick = onActorClick,
-                    onTitleClick = {},
-                    modifier = Modifier.padding(horizontal = 26.dp)
-                )
-            }
-            item {
-                GallerySection(
-                    count = galleries.size,
-                    galleries = galleries,
-                    onGalleryClick = { onGalleryClick(movie) },
-                    modifier = Modifier.padding(horizontal = 26.dp)
-                )
-            }
-            item {
-                RelatedMoviesSection(
-                    countOrAll = similarMovies.size.toString(),
-                    relatedMovies = similarMovies,
-                    onMovieClick = onMovieClick,
-                    modifier = Modifier
-                        .padding(horizontal = 26.dp)
-                )
-            }
-        }
-    }
+        },
+    )
 }
 
 @Composable
 private fun TitleSection(
+    isFavourite: Boolean,
+    isLicked: Boolean,
     movie: Movie,
-    onLikeClicked: (Movie) -> Unit,
-    onFavouriteClicked: (Movie) -> Unit,
+    onLikeClicked: (Movie, Boolean) -> Unit,
+    onFavouriteClicked: (Movie, Boolean) -> Unit,
     onShareClicked: () -> Unit,
     onBlindEyeClicked: () -> Unit,
     onMoreClicked: () -> Unit,
@@ -250,18 +352,24 @@ private fun TitleSection(
             Text(text = "${movie.lengthMovie} ${movie.ageLimit}")
         }
         Row {
-            IconButton(onClick = {onLikeClicked(movie)}) {
+            IconButton(onClick = {
+                onLikeClicked(movie, isLicked)
+            }) {
+                val color = if (isLicked) Color.Red else Color.White
                 Icon(
                     painter = painterResource(id = R.drawable.icon_liked),
                     contentDescription = "",
-                    tint = Color.White
+                    tint = color
                 )
             }
-            IconButton(onClick = {onFavouriteClicked(movie)}) {
+            IconButton(onClick = {
+                onFavouriteClicked(movie, isFavourite)
+            }) {
+                val color = if (isFavourite) Color.Yellow else Color.White
                 Icon(
                     painter = painterResource(id = R.drawable.icon_favourite),
                     contentDescription = "",
-                    tint = Color.White
+                    tint = color
                 )
             }
             IconButton(onClick = onBlindEyeClicked) {

@@ -12,12 +12,12 @@ fun NavGraphBuilder.searchPeriodNavGraph(
     composable(SearchGraph.PERIOD_SCREEN){
         PeriodScreen(
             onClickBack = {
-                navigationState.backToSettings()
+                navigationState.navHostController.popBackStack()
             },
             onChoosePeriod = {from,to->
                 navigationState.navHostController.previousBackStackEntry?.savedStateHandle?.set(
                     PERIOD_PARAMETER,
-                    from
+                    "$from-$to"
                 )
             }
         )

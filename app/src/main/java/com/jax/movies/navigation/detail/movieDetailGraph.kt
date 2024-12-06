@@ -67,6 +67,8 @@ fun NavGraphBuilder.movieDetailGraph(
                 is MovieScreenIntent.OnLickClick -> TODO()
                 is  MovieScreenIntent.OnMoreClick -> TODO()
                 is MovieScreenIntent.OnShareClick -> TODO()
+                is MovieScreenIntent.OnCheck -> {}
+                is MovieScreenIntent.OnNewCollectionAdd -> {}
             }
         }
         MovieContent(

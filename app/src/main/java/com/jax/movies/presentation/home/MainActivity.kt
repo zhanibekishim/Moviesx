@@ -11,7 +11,9 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
 import com.jax.movies.data.remote.api.MoviesApiFactory
 import com.jax.movies.data.remote.api.MoviesApiService
+import com.jax.movies.domain.usecase.movie.AddNewCollectionUseCaseImpl
 import com.jax.movies.navigation.root.RootNavGraph
+import com.jax.movies.presentation.search.main.SearchScreen
 import com.jax.movies.presentation.theme.MoviesTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -24,6 +26,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             MoviesTheme {
                 Box(modifier = Modifier.fillMaxSize()) { RootNavGraph() }
+
             }
            /* lifecycleScope.launch {
                 val responseDto = MoviesApiFactory.apiService.searchByQuery("s")

@@ -2,7 +2,7 @@ package com.jax.movies.presentation.onboarding
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jax.movies.domain.usecase.GetIsEnteredBeforeValueUseCaseImpl
+import com.jax.movies.domain.usecase.onboarding.GetIsEnteredBeforeValueUseCaseImpl
 import com.jax.movies.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel

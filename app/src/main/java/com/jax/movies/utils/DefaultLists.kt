@@ -3,6 +3,8 @@ package com.jax.movies.utils
 import com.jax.movies.R
 import com.jax.movies.presentation.profile.CollectionItem
 import com.jax.movies.presentation.search.setting.FilterType
+import com.jax.movies.presentation.search.setting.ShowType
+import com.jax.movies.presentation.search.setting.SortingType
 
 object DefaultLists {
     val yearsList = listOf(
@@ -20,40 +22,25 @@ object DefaultLists {
         "2009",
     )
 
-    val defaultGenres = listOf(
-        "Комедия",
-        "Мелодрама",
-        "Боевик",
-        "Вестерн",
-        "Драма",
+    val defaultSortingType = listOf(
+        SortingType.RATING,
+        SortingType.YEAR,
+        SortingType.NUM_VOTE,
     )
-    val defaultCountries = listOf(
-        "Россия",
-        "Великобритания",
-        "Германия",
-        "Сша",
-        "Франция",
-    )
-
-    val defaultMovieTypes = listOf(
-        "Все",
-        "Фильмы",
-        "Сериалы",
-    )
-    val defaultSortTypes = listOf(
-        "Дата",
-        "Популярность",
-        "Рейтинг",
+    val defaultShowType = listOf(
+        ShowType.ALL,
+        ShowType.TV_SERIES,
+        ShowType.FILM,
     )
     val defaultFilterTypes = listOf(
-        FilterType.COUNTRY to "Россия",
-        FilterType.GENRE to "Комедия",
-        FilterType.YEAR to "с 1998 до 2017",
-        FilterType.RATING to "любой"
+        FilterType.Country("Россия"),
+        FilterType.Genre("Комедия"),
+        FilterType.Period(from = 1998, to = 2008),
+        FilterType.Rating(5.0)
     )
     val defaultCollectionTypes = listOf(
         CollectionItem(
-            title ="Любимые",
+            title = "Любимые",
             collectionTypeIcon = R.drawable.icon_liked,
             count = 0
         ),
@@ -67,16 +54,6 @@ object DefaultLists {
             collectionTypeIcon = R.drawable.icon_favourite,
             count = 0
         ),
-        CollectionItem(
-            title = "Хочу посмотреть",
-            collectionTypeIcon = R.drawable.icon_favourite,
-            count = 0
-        ),
-        CollectionItem(
-            title = "Хочу посмотреть",
-            collectionTypeIcon = R.drawable.icon_favourite,
-            count = 0
-        )
     )
 }
 

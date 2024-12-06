@@ -18,6 +18,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.jax.movies.R
 import com.jax.movies.domain.entity.home.Movie
+import com.jax.movies.presentation.theme.Blue1
 
 @Composable
 fun RelatedMoviesSection(
@@ -39,9 +40,9 @@ fun RelatedMoviesSection(
             }
         )
         LazyRow(
+            verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier
-                .fillMaxWidth()
+            modifier = Modifier.fillMaxWidth()
         ) {
             relatedMovies.forEach { similarMovie ->
                 item {
@@ -56,12 +57,16 @@ fun RelatedMoviesSection(
                 item {
                     Box(
                         contentAlignment = Alignment.Center,
-                        modifier = Modifier.background(Color.White).padding(8.dp)
-                    ){
+                        modifier = Modifier
+                            .padding(bottom = 80.dp)
+                            .background(Color.White)
+                            .padding(8.dp)
+                    ) {
                         IconButton(onClick = deleteMoviesIconClicked) {
                             Icon(
                                 painter = painterResource(id = R.drawable.icon_basket),
                                 contentDescription = "delete",
+                                tint = Blue1,
                                 modifier = Modifier.size(20.dp)
                             )
                         }

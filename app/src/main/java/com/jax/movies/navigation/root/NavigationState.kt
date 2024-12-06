@@ -1,6 +1,5 @@
 package com.jax.movies.navigation.root
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -86,10 +85,47 @@ class NavigationState(
             restoreState = true
         }
     }
-    fun backToSettings(){
-        Log.d("TAG", "backToSettings:runned ")
-        navHostController.popBackStack(SearchGraph.SearchSetting.route,true)
+
+    fun navigateToCountryScreen() {
+        navHostController.navigate(SearchGraph.COUNTRY_SCREEN) {
+            /*popUpTo(SearchGraph.SearchSetting.route) {
+                saveState = true
+            }*/
+            launchSingleTop = true
+            restoreState = true
+        }
     }
+
+    fun navigateToGenreScreen() {
+        navHostController.navigate(SearchGraph.GENRE_SCREEN) {
+            /*popUpTo(SearchGraph.SearchSetting.route) {
+                saveState = true
+            }*/
+            launchSingleTop = true
+            restoreState = true
+        }
+    }
+
+    fun navigateToPeriodScreen() {
+        navHostController.navigate(SearchGraph.PERIOD_SCREEN) {
+            /*popUpTo(SearchGraph.SearchSetting.route) {
+                saveState = true
+            }*/
+            launchSingleTop = true
+            restoreState = true
+        }
+    }
+
+    fun navigateToSettingScreen() {
+        navHostController.navigate(SearchGraph.SETTING_SCREEN) {
+            /*popUpTo(SearchGraph.SearchMain.route) {
+                saveState = true
+            }*/
+            launchSingleTop = true
+            restoreState = true
+        }
+    }
+
 }
 
 @Composable

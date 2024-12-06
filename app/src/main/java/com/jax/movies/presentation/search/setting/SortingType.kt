@@ -1,7 +1,7 @@
 package com.jax.movies.presentation.search.setting
 
 enum class SortingType {
-    DATE,
-    POPULARITY,
+    YEAR,
+    NUM_VOTE,
     RATING
 }

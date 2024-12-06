@@ -3,6 +3,7 @@ package com.jax.movies.di
 import android.content.Context
 import androidx.room.Room
 import com.jax.movies.data.local.database.FavouriteMoviesDao
+import com.jax.movies.data.local.database.MovieCollectionDao
 import com.jax.movies.data.local.database.MovieDatabase
 import com.jax.movies.data.local.database.SeenMoviesDao
 import com.jax.movies.utils.Constants.MOVIE_DATABASE
@@ -23,10 +24,10 @@ object DataModule {
         @ApplicationContext context: Context
     ): MovieDatabase {
         return Room.databaseBuilder(
-            name = MOVIE_DATABASE,
             context = context,
-            klass = MovieDatabase::class.java
-        ).build()
+            klass = MovieDatabase::class.java,
+            name = MOVIE_DATABASE
+        ).fallbackToDestructiveMigration().build()
     }
 
     @Singleton
@@ -38,6 +39,11 @@ object DataModule {
     @Provides
     fun provideSeenMoviesDao(movieDatabase: MovieDatabase): SeenMoviesDao {
         return movieDatabase.seenMoviesDao
+    }
+    @Singleton
+    @Provides
+    fun provideMovieCollectionDao(movieDatabase: MovieDatabase): MovieCollectionDao {
+        return movieDatabase.movieCollectionDao
     }
 }
 
