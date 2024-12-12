@@ -38,7 +38,6 @@ fun ActorItem(
                 .height(68.dp)
                 .clickable {
                     onActorClick(actor)
-                    Log.d("dsaadas", actor.actorId.toString())
                 }
         )
         Column {
