@@ -36,9 +36,7 @@ fun ActorItem(
             modifierForParent = modifierForImage
                 .width(49.dp)
                 .height(68.dp)
-                .clickable {
-                    onActorClick(actor)
-                }
+                .clickable { onActorClick(actor) }
         )
         Column {
             Text(
