@@ -187,9 +187,10 @@ private fun MainContent(
     var isSeen by remember {
         mutableStateOf(isLicked)
     }
+
     val checked= mutableListOf<MovieCollectionItem>().apply {
-        if (isFav) add(MovieCollectionItem(name = "Посмотрено", count = lickedCount))
-        if (isSeen) add(MovieCollectionItem(name = "Вам было интересно", count = favouriteCount))
+        if (isSeen) { add(MovieCollectionItem(name = "Посмотрено", count = 0)) }
+        if (isFav) { add(MovieCollectionItem(name = "Вам было интересно", count = 0)) }
     }
 
     ScreenWithBottomSheet(

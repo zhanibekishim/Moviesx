@@ -21,6 +21,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val getMovieCollectionUseCase: GetMovieCollectionUseCaseImpl
 ) : ViewModel() {
+
     private val _homeScreenState: MutableStateFlow<HomeScreenState> =
         MutableStateFlow(HomeScreenState())
     val homeScreenState: StateFlow<HomeScreenState> = _homeScreenState.asStateFlow()
@@ -73,6 +74,7 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun updateMovieState(type: MoviesType, newState: HomeScreenState.MoviesState) {
+
         _homeScreenState.update { currentState ->
             when (type) {
                 MoviesType.TOP_250_MOVIES -> currentState.copy(top250MoviesState = newState)

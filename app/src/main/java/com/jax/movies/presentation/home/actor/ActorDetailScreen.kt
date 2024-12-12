@@ -21,7 +21,8 @@ import com.jax.movies.presentation.components.MyTopAppBar
 import com.jax.movies.presentation.components.RelatedMoviesSection
 import com.jax.movies.presentation.components.StepTitle
 
-
+// every composable function which we call is going to be considered as representation of Facade pattern,
+// because it is calling other composable functions which the user doesnt need to know
 @Composable
 fun ActorDetailScreen(
     actorDetailViewModel: ActorDetailViewModel,

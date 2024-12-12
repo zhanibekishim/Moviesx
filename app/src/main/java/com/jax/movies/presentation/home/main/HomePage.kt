@@ -51,12 +51,14 @@ fun HomePage(
     homeViewModel: HomeViewModel,
     currentRoute: String = BottomScreenItem.HomeScreen.route,
     modifier: Modifier = Modifier
-) {
+) {                // OBSERVATION PATTERN
+    // ROLE-> SUBSCRIBE TO STATE WHICH HOLDS DATA FETCHED FROM DATA SOURCE
+    // DUTY -> OBSERVE ALL CHANGES FROM STATE AND THEN UPDATE UI
     val state = homeViewModel.homeScreenState.collectAsStateWithLifecycle()
     Scaffold(
         bottomBar = {
             BottomNavigationBar(
-                currentRoute = currentRoute ,
+                currentRoute = currentRoute,
                 onHomeClick = {},
                 onProfileClick = {
                     homeViewModel.handleIntent(HomeScreenIntent.OnSearchScreenClick)
@@ -66,7 +68,7 @@ fun HomePage(
                 },
             )
         }
-    ) { innerPadding->
+    ) { innerPadding ->
         Column(
             modifier = modifier
                 .fillMaxSize()

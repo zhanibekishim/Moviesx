@@ -7,6 +7,8 @@ import com.jax.movies.presentation.components.MovieCollectionItem
 import com.jax.movies.utils.Resource
 import kotlinx.coroutines.flow.Flow
 
+
+// ABSTRACT INTERFACE THAT MATCHES CONTRACT BUSINESS LOGIC
 interface DetailMovieRepository {
     suspend fun getActors(filmId: Long): Flow<Resource<List<Actor>>>
     suspend fun getGalleries(filmId: Long): Flow<Resource<List<GalleryImage>>>

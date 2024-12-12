@@ -64,6 +64,7 @@ class ActorDetailViewModel @AssistedInject constructor(
         }
     }
 
+
     private fun fetchDetailInfo(actor: Actor) {
         _state.value = ActorDetailState.Loading
         viewModelScope.launch {
@@ -80,10 +81,12 @@ class ActorDetailViewModel @AssistedInject constructor(
             }
         }
     }
+
     @AssistedFactory
     interface ActorDetailViewModelFactory{
         fun create(actor: Actor):ActorDetailViewModel
     }
+
     companion object{
         fun provideActorDetailViewModelFactory(
             actor: Actor,
@@ -93,7 +96,6 @@ class ActorDetailViewModel @AssistedInject constructor(
                 return factory.create(actor) as T
             }
         }
-
     }
 }
 

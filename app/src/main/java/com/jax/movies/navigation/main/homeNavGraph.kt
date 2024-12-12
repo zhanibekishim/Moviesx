@@ -17,6 +17,9 @@ fun NavGraphBuilder.homeNavGraph(
 ) {
     composable(BottomScreenItem.HomeScreen.route) {
         val homeViewModel = hiltViewModel<HomeViewModel>()
+                         // OBSERVATION PATTERN
+        // ROLE-> SUBSCRIBE TO STATE WHICH HOLDS THE NAVIGATION ROUTE
+        // DUTY -> DUE TO ROUTE(SCREEN NAME) NAVIGATE TO THAT SCREEN
         val homeScreenIntent =
             homeViewModel.homeNavigationChannel.collectAsStateWithLifecycle(HomeScreenIntent.Default)
         LaunchedEffect(homeScreenIntent.value) {

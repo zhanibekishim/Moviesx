@@ -33,7 +33,8 @@ object NetworkModule {
 
     @Provides
     fun provideApiClient(interceptor: HttpLoggingInterceptor): OkHttpClient {
-        return OkHttpClient.Builder()
+        return OkHttpClient
+            .Builder()
             .addInterceptor(interceptor)
             .build()
     }

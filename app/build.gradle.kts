@@ -4,8 +4,6 @@ plugins {
     id("kotlin-parcelize")
     id("com.google.dagger.hilt.android")
     id("com.google.devtools.ksp") version "1.9.0-1.0.13"
-    /*  id("com.google.dagger.hilt.android")
-      id("com.google.devtools.ksp")*/
 }
 
 android {
